@@ -158,14 +158,22 @@ main{padding:0 0 96px}
 .qty{color:var(--ok);font-weight:600}
 .thumb{flex:none;width:76px;height:66px;border:1px solid var(--line);background:#fff;padding:3px}
 .thumb svg{width:100%;height:100%;display:block}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb{cursor:pointer}
+.bigthumb{border:1px solid var(--line);background:#fff;padding:10px;height:170px;margin-bottom:14px}
+.bigthumb svg,.bigthumb img{width:100%;height:100%;object-fit:contain;display:block}
+.icongrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;margin-bottom:12px}
+.icongrid button{border:1px solid var(--line);background:#fff;border-radius:2px;padding:4px;height:62px}
+.icongrid button svg{width:100%;height:100%}
+.icongrid button[aria-pressed="true"]{border-color:var(--pen);box-shadow:inset 0 0 0 1px var(--pen);background:#F2F6FF}
 
 #lightbox{position:fixed;inset:0;z-index:70;background:rgba(9,20,38,.94);display:none;align-items:center;justify-content:center;padding:20px;flex-direction:column;gap:14px}
 #lightbox.show{display:flex}
 #lightbox .frame{background:#fff;padding:16px;max-width:420px;width:100%}
 #lightbox .frame svg{width:100%;height:auto}
 #lightbox p{color:#fff;margin:0;text-align:center;font-size:14px}
-#panel,#visitPanel,#visitsPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
-#panel.show,#visitPanel.show,#visitsPanel.show{display:block}
+#panel,#visitPanel,#visitsPanel,#itemPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
+#panel.show,#visitPanel.show,#visitsPanel.show,#itemPanel.show{display:block}
 .sheet{position:absolute;inset-inline:0;bottom:0;background:var(--paper);border-top:3px solid var(--ink);padding:18px 16px 28px;max-height:86vh;overflow:auto}
 .sheet h2{margin:0 0 2px;font-size:17px}
 .sheet .lede{margin:0 0 18px;font-size:13px;color:#6B8199}
@@ -316,6 +324,25 @@ main{padding:0 0 96px}
 </div>
 
 <div id="lightbox"><div class="frame" id="lbFrame"></div><p id="lbCap"></p></div>
+<div id="itemPanel"><div class="sheet">
+  <button class="close-x" id="closeItem">✕</button>
+  <h2 data-i18n="editItem"></h2>
+  <div class="bigthumb" id="itemPreview"></div>
+  <div class="field"><label data-i18n="itemName"></label><input id="iName"></div>
+  <div class="formrow">
+    <div class="field"><label data-i18n="dimsL"></label><input id="iDim"></div>
+    <div class="field"><label data-i18n="qtyL"></label><input id="iQty" type="number" min="1"></div>
+  </div>
+  <label style="font-size:12px;color:#6B8199" data-i18n="chooseIcon"></label>
+  <div class="icongrid" id="iconGrid"></div>
+  <div class="draw-acts" style="margin:0 0 12px">
+    <button id="iPhoto" data-i18n="uploadPhoto"></button>
+    <button id="iNoPhoto" data-i18n="removePhoto"></button>
+  </div>
+  <input id="iFile" type="file" accept="image/*" hidden>
+  <button class="btn-primary" style="background:var(--ink);color:#fff" id="iSave" data-i18n="saveItem"></button>
+  <button class="btn-primary" style="background:#fff;color:#9B2C2C;border:1px solid var(--line)" id="iDel" data-i18n="deleteItem"></button>
+</div></div>
 <div id="visitsPanel"><div class="sheet">
   <button class="close-x" id="closeVisits">✕</button>
   <h2 data-i18n="visitsH"></h2>
@@ -368,7 +395,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block on the plan to select and move it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -383,7 +410,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على أي بلوك في المخطط لتحديده وتحريكه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -1046,8 +1073,8 @@ function renderCards(){
     c.className="card"+(sel===it.no?" on":"");c.id="card-"+it.no;
     c.innerHTML=`<div class="num">${it.no}</div><div class="body"><h3>${lang==="ar"?it.ar:it.en}</h3><p class="en">${lang==="ar"?it.en:it.ar}</p>
       <div class="meta"><span class="dim mono">${it.dim}</span><span class="qty">${qty(it.qty)}</span></div></div>
-      <div class="thumb" role="button" tabindex="0">${sketch(it.type)}</div>`;
-    c.onclick=e=>{if(e.target.closest(".thumb")){lightbox(it);return}select(it.no,"card")};
+      <div class="thumb" role="button" tabindex="0">${it.thumb?`<img src="${it.thumb}" alt="">`:sketch(it.type)}</div>`;
+    c.onclick=e=>{if(e.target.closest(".thumb")){openItem(it.no);return}select(it.no,"card")};
     $("cards").appendChild(c)});
   $("count").textContent=T("itemsN",cur.items.length);
 }
@@ -1057,8 +1084,70 @@ function select(no,from){
   if(sel&&from==="card")box.scrollIntoView({behavior:"smooth",block:"nearest"});
   if(editing)$("editHint").textContent=sel?T("tapMove",sel):T("pickItem");
 }
+/* ================= تحرير البند والمصغّرة ================= */
+let editItemNo=null, pendingThumb=null, pendingType=null;
+function itemPreview(){
+  $("itemPreview").innerHTML = pendingThumb?`<img src="${pendingThumb}" alt="">`:sketch(pendingType);
+}
+function renderIconGrid(){
+  $("iconGrid").innerHTML="";
+  ITEM_TYPES.forEach(t=>{
+    const b=document.createElement("button");
+    b.title=lang==="ar"?t[2]:t[1];
+    b.setAttribute("aria-pressed",!pendingThumb&&pendingType===t[0]);
+    b.innerHTML=sketch(t[0]);
+    b.onclick=()=>{pendingType=t[0];pendingThumb=null;itemPreview();renderIconGrid()};
+    $("iconGrid").appendChild(b);
+  });
+}
+function openItem(no){
+  const it=cur.items.find(i=>i.no===no); if(!it) return;
+  editItemNo=no; pendingThumb=it.thumb||null; pendingType=it.type||"table";
+  $("iName").value=lang==="ar"?it.ar:it.en; $("iDim").value=it.dim||""; $("iQty").value=it.qty||1;
+  itemPreview(); renderIconGrid();
+  $("itemPanel").classList.add("show");
+}
+$("itemPreview").onclick=()=>{const it=cur.items.find(i=>i.no===editItemNo);if(it)lightbox({...it,thumb:pendingThumb,type:pendingType})};
+$("closeItem").onclick=()=>$("itemPanel").classList.remove("show");
+$("itemPanel").onclick=e=>{if(e.target.id==="itemPanel")$("itemPanel").classList.remove("show")};
+$("iPhoto").onclick=()=>$("iFile").click();
+$("iNoPhoto").onclick=()=>{pendingThumb=null;itemPreview();renderIconGrid()};
+$("iFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{                                   /* تصغير الصورة قبل الحفظ */
+    const im=new Image();
+    im.onload=()=>{
+      const M=480, sc=Math.min(1,M/Math.max(im.width,im.height));
+      const cv=document.createElement("canvas");
+      cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      pendingThumb=cv.toDataURL("image/jpeg",.72);
+      itemPreview(); renderIconGrid();
+    };
+    im.onerror=()=>{pendingThumb=rd.result;itemPreview()};
+    im.src=rd.result;
+  };
+  rd.readAsDataURL(f); e.target.value="";
+});
+$("iSave").onclick=()=>{
+  const it=cur.items.find(i=>i.no===editItemNo); if(!it) return;
+  const n=$("iName").value.trim();
+  if(n){ if(lang==="ar"){it.ar=n; if(!it.en)it.en=n} else {it.en=n; if(!it.ar)it.ar=n} }
+  it.dim=$("iDim").value.trim()||"—";
+  it.qty=Math.max(1,+$("iQty").value||1);
+  it.type=pendingType; it.thumb=pendingThumb||null;
+  $("itemPanel").classList.remove("show");
+  renderCards(); renderSelBar(); saveStore();
+};
+$("iDel").onclick=()=>{
+  cur.items=cur.items.filter(i=>i.no!==editItemNo);
+  cur.blocks.forEach(b=>{if(b.item===editItemNo)b.item=null});
+  $("itemPanel").classList.remove("show");
+  renderCards(); renderPlan(); saveStore();
+};
 function lightbox(it){
-  $("lbFrame").innerHTML=sketch(it.type);
+  $("lbFrame").innerHTML=it.thumb?`<img src="${it.thumb}" style="width:100%">`:sketch(it.type);
   $("lbCap").textContent=T("lbCap",it.no,lang==="ar"?it.ar:it.en,it.dim);
   $("lightbox").classList.add("show");
 }
