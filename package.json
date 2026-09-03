@@ -1,0 +1,10 @@
+{
+  "name": "site-visit-log",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Field survey log for commercial kitchen and cold room projects",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  }
+}
