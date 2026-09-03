@@ -512,213 +512,116 @@ const BLK={
    f:(w,d)=>`<circle cx="${w/2}" cy="${d/2}" r="${w*.32}" fill="#fff"/><line x1="${w/2}" y1="${d/2}" x2="${w/2}" y2="${d}"/>`}
 };
 
-/* ================= مصغّرات آيزومترك ================= */
-const C=Math.cos(Math.PI/6), S=.5;
+/* ================= مصغّرات آيزومترك (رسم هندسي) ================= */
+const C=Math.cos(Math.PI/6), S=.5, SQ2=Math.SQRT2;
 const P=(x,y,z)=>[(x-y)*C,(x+y)*S-z];
-const TOPF="#F5F8FB", SIDEF="#D9E2EB", RIGHTF="#C2D0DC", DEEP="#9FB4C8", DARK="#7E93A8", GLASS="#DCEAF4";
-function poly(pts,cls){return `<polygon points="${pts.map(p=>p.map(n=>Math.round(n*10)/10).join(",")).join(" ")}" fill="${cls}"/>`}
-function ln(a,b,o){return `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}"${o?` opacity="${o}"`:""}/>`}
+const f1=v=>(Math.round(v*10)/10);
+const PL=(pts,close)=>`<path d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}${close?" Z":""}"/>`;
 function bx(x,y,z,w,d,h){
   const A=(a,b,c)=>P(x+a,y+b,z+c);
-  return poly([A(0,0,h),A(w,0,h),A(w,d,h),A(0,d,h)],TOPF)
-       + poly([A(0,d,h),A(w,d,h),A(w,d,0),A(0,d,0)],SIDEF)
-       + poly([A(w,0,h),A(w,d,h),A(w,d,0),A(w,0,0)],RIGHTF);
+  return PL([A(0,0,h),A(w,0,h),A(w,d,h),A(0,d,h)],1)
+       + PL([A(0,d,h),A(w,d,h),A(w,d,0),A(0,d,0)],1)
+       + PL([A(w,0,h),A(w,d,h),A(w,d,0),A(w,0,0)],1);
 }
-function topFace(x,y,z,w,d,fill){
-  const A=(a,b)=>P(x+a,y+b,z);
-  return poly([A(0,0),A(w,0),A(w,d),A(0,d)],fill);
+const ell=(cx,cy,z,r)=>{const p=P(cx,cy,z);
+  return `<ellipse cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
+const face=(pts,fill)=>`<path fill="${fill}" d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
+const topRect=(x,y,z,w,d,fill)=>face([P(x,y,z),P(x+w,y,z),P(x+w,y+d,z),P(x,y+d,z)],fill);
+function isoWrap(inner,W,D,H,Z0){
+  Z0=Z0||0;
+  const pad=Math.max(W,D,H)*.09, lw=Math.max(W,D,H)/150;
+  const x1=-D*C-pad, x2=W*C+pad, y1=-H-pad, y2=(W+D)*S-Z0+pad;
+  return `<svg viewBox="${f1(x1)} ${f1(y1)} ${f1(x2-x1)} ${f1(y2-y1)}" xmlns="${NS}">
+    <g fill="#fff" stroke="#12294D" stroke-width="${f1(lw*1.15)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 }
-/* لوح رأسي على مستوى y ثابت (الواجهة الأمامية) */
-function fp(x,z,w,h,y,fill){
-  return poly([P(x,y,z),P(x+w,y,z),P(x+w,y,z+h),P(x,y,z+h)],fill||"none");
+function frame(w,d,levels,leg){
+  leg=leg||50; let o="", z0=0;
+  const cs=[[0,0],[w-leg,0],[0,d-leg],[w-leg,d-leg]];
+  cs.forEach(c=>{o+=bx(c[0]+8,c[1]+8,-28,leg-16,leg-16,28)});
+  levels.forEach(lv=>{
+    cs.forEach(c=>{o+=bx(c[0],c[1],z0,leg,leg,lv.z-z0)});
+    const m=lv.inset||0;
+    o+=bx(m,m,lv.z,w-2*m,d-2*m,lv.t);
+    if(lv.lip) o+=PL([P(m+40,m+40,lv.z+lv.t),P(w-m-40,m+40,lv.z+lv.t),
+                      P(w-m-40,d-m-40,lv.z+lv.t),P(m+40,d-m-40,lv.z+lv.t)],1);
+    z0=lv.z+lv.t;
+  });
+  return o;
 }
-/* دائرة أفقية (على سطح) */
-function disc(cx,cy,z,r,fill,n){n=n||28;const p=[];for(let i=0;i<n;i++){const t=i/n*Math.PI*2;p.push(P(cx+r*Math.cos(t),cy+r*Math.sin(t),z))}return poly(p,fill||"none")}
-/* دائرة رأسية على مستوى y ثابت */
-function vdisc(cx,y,cz,r,fill,n){n=n||28;const p=[];for(let i=0;i<n;i++){const t=i/n*Math.PI*2;p.push(P(cx+r*Math.cos(t),y,cz+r*Math.sin(t)))}return poly(p,fill||"none")}
-/* لوح سميك بين نقطتين في المستوى الأفقي — يُستخدم لدرفة الباب المفتوحة */
-function slab(x1,y1,x2,y2,z,h,t){
-  const dx=x2-x1, dy=y2-y1, L=Math.hypot(dx,dy)||1, nx=-dy/L*t, ny=dx/L*t;
-  const A=[x1,y1], B=[x2,y2], D2=[x2+nx,y2+ny], E=[x1+nx,y1+ny];
-  const q=(a,b,zz,hh)=>[P(a[0],a[1],zz),P(b[0],b[1],zz),P(b[0],b[1],zz+hh),P(a[0],a[1],zz+hh)];
-  return poly([P(A[0],A[1],z+h),P(B[0],B[1],z+h),P(D2[0],D2[1],z+h),P(E[0],E[1],z+h)],TOPF)
-       + poly(q(A,B,z,h),SIDEF) + poly(q(B,D2,z,h),RIGHTF);
-}
-function isoWrap(inner,W,D,H){
-  const pad=Math.max(W,D,H)*.1;
-  const x1=-D*C-pad, x2=W*C+pad, y1=-H-pad, y2=(W+D)*S+pad;
-  return `<svg viewBox="${x1.toFixed(1)} ${y1.toFixed(1)} ${(x2-x1).toFixed(1)} ${(y2-y1).toFixed(1)}" xmlns="${NS}">
-    <g stroke="#0E2340" stroke-width="${(Math.max(W,D,H)/78).toFixed(1)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
-}
-function legs(w,d,h,t){t=t||60;
-  return bx(0,0,0,t,t,h)+bx(w-t,0,0,t,t,h)+bx(0,d-t,0,t,t,h)+bx(w-t,d-t,0,t,t,h);
-}
-/* هيكل طاولة: أرجل + رف سفلي + سطح */
-function bench(w,d,h,shelf){
-  return legs(w,d,h-45)+(shelf===false?"":bx(0,0,190,w,d,26))+bx(0,0,h-45,w,d,45);
-}
-/* صنبور صغير فوق سطح */
-function tapOn(cx,cy,z,k){k=k||1;
-  return bx(cx-70*k,cy-70*k,z,140*k,140*k,50*k)
-       + bx(cx-45*k,cy-45*k,z+50*k,90*k,90*k,330*k)
-       + bx(cx-45*k,cy-45*k,z+330*k,90*k,300*k,80*k)
-       + bx(cx-45*k,cy+215*k,z+215*k,90*k,85*k,115*k);
-}
-/* جدار بفتحة: يرجع كتل الجدار على الجانبين + العتب */
-function wallWithOpening(W,d,h,x0,ow,lint){
-  return bx(0,0,0,x0,d,h)+bx(x0+ow,0,0,W-x0-ow,d,h)+bx(0,0,h,W,d,lint);
-}
-
 const ISO={
- table:()=>{const w=1200,d=700,h=850;
-   return isoWrap(bench(w,d,h),w,d,h)},
-
- tableos:()=>{const w=1200,d=700,h=850,H=1560;
-   return isoWrap(bench(w,d,h)
-     +bx(70,90,h,70,70,H-h-40)+bx(w-140,90,h,70,70,H-h-40)
-     +bx(0,60,H-40,w,340,40),w,d,H)},
-
- sink1:()=>{const w=900,d=700,h=850;
-   return isoWrap(bench(w,d,h,false)
-     +topFace(150,150,h,600,400,DEEP)
-     +topFace(210,205,h,480,290,DARK)
-     +tapOn(w/2,95,h,.9),w,d,h+560)},
-
- sink2:()=>{const w=1400,d=700,h=850;
-   return isoWrap(bench(w,d,h,false)
-     +topFace(110,150,h,540,400,DEEP)+topFace(170,205,h,420,290,DARK)
-     +topFace(750,150,h,540,400,DEEP)+topFace(810,205,h,420,290,DARK)
-     +tapOn(w/2,95,h,.9),w,d,h+560)},
-
- cabinet:()=>{const w=1000,d=700,h=900;
-   return isoWrap(bx(60,60,0,90,90,110)+bx(w-150,60,0,90,90,110)+bx(60,d-150,0,90,90,110)+bx(w-150,d-150,0,90,90,110)
-     +bx(0,0,110,w,d,h-110)
-     +fp(45,175,w/2-70,h-290,d)+fp(w/2+25,175,w/2-70,h-290,d)
-     +bx(w/2-115,d,h*.52,55,55,190)+bx(w/2+60,d,h*.52,55,55,190),w,d+55,h)},
-
- hood:()=>{const w=1800,d=1100,h=560,D=560;
-   let o=bx(w/2-230,d/2-230,h,460,460,D)+bx(0,0,0,w,d,h);
-   for(let i=0;i<4;i++){const seg=(w-200)/4,x=100+i*seg;o+=fp(x+22,150,seg-44,h-260,d,DEEP)}
-   return isoWrap(o,w,d,h+D)},
-
- wshelf:()=>{const w=1200,d=420,h=620;
-   let o=bx(0,0,0,w,55,h+240);
-   [230,w-290].forEach(x=>{o+=poly([P(x,55,h),P(x,d-140,h),P(x,55,h-230)],SIDEF)
-                            +poly([P(x+55,55,h),P(x+55,d-140,h),P(x+55,55,h-230)],RIGHTF)});
-   o+=bx(0,0,h,w,d,34);
-   return isoWrap(o,w,d,h+240)},
-
- pshelf:()=>{const w=1200,d=420,h=620;
-   let o=bx(0,0,0,w,55,h+240);
-   [230,w-290].forEach(x=>{o+=poly([P(x,55,h),P(x,d-140,h),P(x,55,h-230)],SIDEF)
-                            +poly([P(x+55,55,h),P(x+55,d-140,h),P(x+55,55,h-230)],RIGHTF)});
-   o+=bx(0,0,h,w,d,34);
-   for(let i=1;i<=5;i++)o+=disc(w*i/6,d*.58,h+34,52,DEEP);
-   return isoWrap(o,w,d,h+240)},
-
- burner:()=>{const w=1500,d=900,h=880;
-   let o=legs(w,d,h-45)+bx(60,d-90,h-330,w-120,90,285)+bx(0,0,h-45,w,d,45);
-   for(let i=0;i<2;i++)for(let j=0;j<2;j++){const cx=w*(i+.5)/2,cy=d*(j+.5)/2;
-     o+=disc(cx,cy,h,195,DEEP)+disc(cx,cy,h,80,DARK)}
-   for(let k=0;k<3;k++)o+=bx(250+k*420,d,h-250,110,55,110);
-   return isoWrap(o,w,d+55,h)},
-
- grill:()=>{const w=950,d=800,h=880,bh=300;
-   let o=bench(w,d,h,false)+bx(0,0,h,w,110,bh);
-   for(let i=0;i<=7;i++){const y=180+(d-260)*i/7;o+=ln(P(80,y,h+12),P(w-80,y,h+12))}
-   return isoWrap(o,w,d,h+bh)},
-
- fridge:()=>{const w=760,d=800,h=2000;
-   return isoWrap(bx(60,60,0,90,90,120)+bx(w-150,60,0,90,90,120)+bx(60,d-150,0,90,90,120)+bx(w-150,d-150,0,90,90,120)
-     +bx(0,0,120,w,d,h-120)
-     +fp(45,240,w-90,h-560,d)
-     +fp(45,h-260,w-90,150,d,DEEP)
-     +bx(w-230,d,h*.42,55,55,520),w,d+55,h)},
-
- coldH:()=>{const W=2300,d=170,h=2100,ow=1000,x0=560,a=Math.PI*.33;
-   const lx=x0+ow*Math.cos(a), ly=d+ow*Math.sin(a);
-   let o=wallWithOpening(W,d,h,x0,ow,180);
-   o+=slab(x0,d,lx,ly,0,h,130);
-   o+=bx(lx-90,ly+130,h*.45,80,90,300);
-   return isoWrap(o,W,d+ow*Math.sin(a)+220,h+180)},
-
- coldS:()=>{const W=2700,d=170,h=2100,ow=1200,x0=340;
-   let o=wallWithOpening(W,d,h,x0,ow,180);
-   o+=bx(0,d-50,h+180,W,70,70);
-   o+=bx(x0+ow-120,d+70,0,ow,130,h+70);
-   o+=bx(x0+ow+520,d+200,h*.45,80,90,300);
-   return isoWrap(o,W+ow*.15,d+200,h+250)},
-
- evap:()=>{const w=1800,d=620,h=540,hang=240;
-   let o=bx(140,d*.28,h,110,110,hang)+bx(w-250,d*.28,h,110,110,hang)+bx(0,0,0,w,d,h);
-   for(let i=0;i<2;i++){const cx=w*(i+.5)/2;o+=vdisc(cx,d,h*.55,150,DEEP)+vdisc(cx,d,h*.55,42,DARK)}
-   o+=fp(70,90,w-140,80,d,DEEP);
-   return isoWrap(o,w,d,h+hang)},
-
- rack:()=>{const w=1800,d=600,h=1800,t=75;
-   let o=legs(w,d,h,t);
-   for(let k=0;k<4;k++){const z=200+k*(h-300)/3;o+=bx(0,0,z,w,d,26);
-     for(let i=1;i<7;i++)o+=ln(P(w*i/7,10,z+26),P(w*i/7,d-10,z+26),".5")}
+ table:()=>{const w=1300,d=750,h=880;
+   return isoWrap(frame(w,d,[{z:180,t:22,inset:60},{z:480,t:22,inset:60},{z:h-45,t:45,lip:1}]),w,d,h,-28)},
+ table2:()=>{const w=1300,d=750,h=880,H=1620,pz1=H-430,pz2=H-22;
+   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45,lip:1}]);
+   const px=[60,w-105];
+   px.forEach(x=>{o+=bx(x,210,h,45,45,pz1-h)});
+   o+=bx(0,0,pz1,w,320,22);
+   px.forEach(x=>{o+=bx(x,210,pz1+22,45,45,pz2-pz1-22)});
+   o+=bx(0,0,pz2,w,320,22);
+   return isoWrap(o,w,d,H,-28)},
+ sink:()=>{const w=1300,d=750,h=880,ox=190,oy=150,ow=780,od=450,dep=200;
+   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
+   const zt=h, zb=h-dep;
+   o+=topRect(ox,oy,zb,ow,od,"#F1F5F9");
+   o+=PL([P(ox,oy,zt),P(ox,oy+od,zt),P(ox,oy+od,zb),P(ox,oy,zb)],1);
+   o+=PL([P(ox,oy,zt),P(ox+ow,oy,zt),P(ox+ow,oy,zb),P(ox,oy,zb)],1);
+   o+=PL([P(ox,oy,zt),P(ox+ow,oy,zt),P(ox+ow,oy+od,zt),P(ox,oy+od,zt)],1);
+   o+=ell(ox+ow/2,oy+od/2,zb,60);
+   const fx=w-260, fy=90;
+   o+=ell(fx,fy,zt,110)+bx(fx-45,fy-45,zt,90,90,320);
+   o+=bx(fx-35,fy-35,zt+320,70,330,65);
+   o+=bx(fx-28,fy+230,zt+250,56,56,75);
+   return isoWrap(o,w,d,zt+390,-28)},
+ shelf:()=>{const w=1300,d=430,h=300;
+   let o="";
+   [110,w-190].forEach(x=>{ o+=bx(x,0,-h,70,90,h); o+=bx(x,90,-70,70,d-140,70); });
+   o+=bx(0,0,0,w,d,26)+bx(0,0,26,w,70,110);
+   return isoWrap(o,w,d,140,-h)},
+ pshelf:()=>{const w=1300,d=420,h=60;
+   let o=bx(0,0,0,w,d,26);
+   for(let i=1;i<=7;i++)for(let j=1;j<=2;j++) o+=ell(w*i/8,d*j/3,26,34);
    return isoWrap(o,w,d,h)},
-
- door1:()=>{const W=1900,d=110,h=2100,ow=900,x0=500,a=Math.PI*.32;
-   const lx=x0+ow*Math.cos(a), ly=d+ow*Math.sin(a);
-   let o=wallWithOpening(W,d,h,x0,ow,140);
-   o+=slab(x0,d,lx,ly,0,h,65);
-   o+=bx(lx-70,ly+65,h*.45,60,70,150);
-   return isoWrap(o,W,d+ow*Math.sin(a)+180,h+140)},
-
- door2:()=>{const W=2500,d=110,h=2100,ow=1600,x0=450,a=Math.PI*.30,hf=ow/2;
-   let o=wallWithOpening(W,d,h,x0,ow,140);
-   o+=slab(x0,d,x0+hf*Math.cos(a),d+hf*Math.sin(a),0,h,65);
-   o+=slab(x0+ow-hf*Math.cos(a),d+hf*Math.sin(a),x0+ow,d,0,h,65);
-   return isoWrap(o,W,d+hf*Math.sin(a)+180,h+140)},
-
- window:()=>{const W=2000,d=140,h=2300,ow=1200,x0=400,sill=950,wh=1000;
-   let o=bx(0,0,0,x0,d,h)+bx(x0+ow,0,0,W-x0-ow,d,h)
-     +bx(x0,0,0,ow,d,sill)+bx(x0,0,sill+wh,ow,d,h-sill-wh);
-   o+=fp(x0+45,sill+45,ow-90,wh-90,d,GLASS);
-   o+=ln(P(x0+ow/2,d,sill+45),P(x0+ow/2,d,sill+wh-45));
-   o+=bx(x0-70,d-30,sill-70,ow+140,100,70);
-   return isoWrap(o,W,d+80,h)},
-
- faucet:()=>{const w=380,d=700,h=820,R=210,t=48,Cy=180+R,Cz=h-430,N=14;
-   const pt=(x,a,r)=>P(x,Cy-r*Math.cos(a),Cz+r*Math.sin(a));
-   let o=disc(180,180,0,160,SIDEF)+bx(120,120,0,120,120,80)+bx(135,135,80,90,90,Cz-80);
-   let outer=[],right=[];
-   for(let i=0;i<=N;i++){const a=i/N*Math.PI/2;outer.push(pt(135,a,R+t));right.push(pt(225,a,R+t))}
-   for(let i=N;i>=0;i--){const a=i/N*Math.PI/2;right.push(pt(225,a,R-t))}
-   for(let i=N;i>=0;i--){const a=i/N*Math.PI/2;outer.push(pt(225,a,R+t))}
-   o+=poly(outer,TOPF)+poly(right,RIGHTF);
-   o+=bx(135,Cy+R-t-45,Cz+R-t-190,90,90,190);
-   o+=bx(225,140,Cz-60,215,70,60);
-   return isoWrap(o,w,d,h)},
+ cabinet:()=>{const w=1100,dd=750,h=900;
+   let o=bx(60,60,0,w-120,dd-120,120)+bx(0,0,120,w,dd,h-120);
+   o+=PL([P(w/2,dd,120),P(w/2,dd,h)]);
+   o+=bx(w/2-260,dd,h*.55,120,32,45)+bx(w/2+140,dd,h*.55,120,32,45);
+   return isoWrap(o,w,dd,h)},
+ hood:()=>{const w=1700,d=1050,h=520,coll=420,t=170;
+   const A=(x,y,z)=>P(x,y,z);
+   let o=PL([A(0,0,0),A(w,0,0),A(w,d,0),A(0,d,0)],1);
+   o+=PL([A(0,d,0),A(t,d-t,h),A(w-t,d-t,h),A(w,d,0)],1);
+   o+=PL([A(w,0,0),A(w,d,0),A(w-t,d-t,h),A(w-t,t,h)],1);
+   o+=PL([A(t,t,h),A(w-t,t,h),A(w-t,d-t,h),A(t,d-t,h)],1);
+   o+=bx(w/2-coll/2,d/2-coll/2,h,coll,coll,300);
+   o+=PL([A(160,150,0),A(w/2-40,150,0),A(w/2-40,d-150,0),A(160,d-150,0)],1);
+   o+=PL([A(w/2+40,150,0),A(w-160,150,0),A(w-160,d-150,0),A(w/2+40,d-150,0)],1);
+   return isoWrap(o,w,d,h+300)},
+ burner:()=>{const w=1500,d=850,h=880;
+   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
+   for(let i=0;i<2;i++)for(let j=0;j<2;j++){
+     const cx=w*(i?.72:.28), cy=d*(j?.7:.3);
+     o+=ell(cx,cy,h,160)+ell(cx,cy,h,95)+ell(cx,cy,h,35);}
+   return isoWrap(o,w,d,h,-28)},
+ grill:()=>{const w=1000,d=850,h=880;
+   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
+   o+=topRect(90,90,h,w-180,d-180,"#F1F5F9")+PL([P(90,90,h),P(w-90,90,h),P(w-90,d-90,h),P(90,d-90,h)],1);
+   for(let i=1;i<9;i++){const y=90+(d-180)*i/9; o+=PL([P(110,y,h+18),P(w-110,y,h+18)])}
+   return isoWrap(o,w,d,h+40,-28)},
+ faucet:()=>{const w=460,d=460,h=860;
+   const cx=w/2, cy=d/2;
+   let o=ell(cx,cy,0,150)+bx(cx-70,cy-70,0,140,140,60);
+   o+=bx(cx-45,cy-45,60,90,90,500);
+   o+=bx(cx-38,cy-38,560,76,330,70);
+   o+=bx(cx-30,cy+225,470,60,60,90);
+   o+=bx(cx-20,cy-170,530,40,130,40);
+   return isoWrap(o,w,d,h)}
 };
 const isoCache={};
 const sketch=t=>isoCache[t]||(isoCache[t]=(ISO[t]||ISO.table)());
 
 /* ================= المشاريع ================= */
 
-let projects=[
- {id:"hitten",client:"MEEZ",site:"Hitten — New production kitchen",city:"Riyadh",date:"2026-08-24",loc:"24.7742, 46.7386",notes:"",scale:"2700 × 3600 mm",mode:"draw",img:null,wallT:100,
-  draw:{pts:[],closed:false,kinds:[]},blocks:[],view:null,
-  items:[
-   {no:1,ar:"طاولة عمل برف علوي وسفلي ووسطي",en:"Work table w/ over, under & mid shelf",dim:"1000 × 700 × 850",qty:1,type:"table2",x:20,y:12},
-   {no:2,ar:"طاولة عمل برف سفلي ووسطي + ظهر وجانب",en:"Work table w/ under & mid shelf",dim:"1200 × 700 × 850",qty:2,type:"table",x:64,y:12},
-   {no:3,ar:"رف جداري",en:"Wall shelf",dim:"1200 × 400",qty:2,type:"shelf",x:64,y:6},
-   {no:4,ar:"حوض مزدوج مع خلاط",en:"Double bowl sink + faucet",dim:"1220 × 700 × 850",qty:1,type:"sink",x:43,y:12},
-   {no:5,ar:"رف جداري مثقّب",en:"Perforated wall shelf",dim:"1220 × 400",qty:1,type:"pshelf",x:43,y:6},
-   {no:6,ar:"طاولة عمل برف سفلي وظهر",en:"Work table w/ under shelf",dim:"770 × 510 × 850",qty:1,type:"table",x:16,y:32},
-   {no:7,ar:"رف جداري",en:"Wall shelf",dim:"770 × 250",qty:1,type:"shelf",x:8,y:53},
-   {no:8,ar:"طاولة عمل برف سفلي وظهر",en:"Work table w/ undershelf",dim:"1220 × 700 × 850",qty:1,type:"table",x:84,y:29}]},
- {id:"sulimanya",client:"MEEZ",site:"Sulimanya — Kitchen fit-out",city:"Riyadh",date:"2026-08-31",loc:"24.6903, 46.6858",notes:"",scale:"__SURVEY__",mode:"draw",img:null,wallT:100,
-  draw:{pts:[],closed:false,kinds:[]},blocks:[],view:null,
-  items:[
-   {no:1,ar:"طاولة عمل برف علوي طبقتين",en:"Work table w/ 2-layer overshelf",dim:"1050 × 350 × 900",qty:1,type:"table2",x:76,y:14},
-   {no:2,ar:"طاولة عمل برف علوي طبقتين",en:"Work table w/ 2-layer overshelf",dim:"1200 × 700 × 900",qty:3,type:"table2",x:52,y:14},
-   {no:3,ar:"حوض بحوض واحد كبير",en:"Bowl sink (large bowl)",dim:"800 × 700 × 900",qty:1,type:"sink",x:26,y:14},
-   {no:4,ar:"خلاط مياه",en:"Faucet",dim:"—",qty:1,type:"faucet",x:18,y:44},
-   {no:5,ar:"رف جداري مثقّب",en:"Perforated wall shelf",dim:"1200 × 400",qty:1,type:"pshelf",x:82,y:34}]}];
+let projects=[];
 
 let users=[], me=null;
 let cur=projects[0], sel=null, editing=false, panMode=false, autoFit=true;
