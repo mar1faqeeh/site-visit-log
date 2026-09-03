@@ -236,6 +236,7 @@ main{padding:0 0 96px}
   <div class="modes">
     <button data-mode="draw" aria-pressed="true" data-i18n="mDraw"></button>
     <button data-mode="img" data-i18n="mUpload"></button>
+    <button data-mode="iso" data-i18n="mIso"></button>
   </div>
   <input id="upl" type="file" accept="image/*" hidden>
 
@@ -243,6 +244,14 @@ main{padding:0 0 96px}
     <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button><button id="cfree" data-i18n-title="unlock">✕</button></div>
   </div>
 
+  <div class="draw-panel" id="isoPanel" hidden>
+    <div class="draw-row">
+      <label for="roomH" data-i18n="roomH"></label>
+      <input class="len-input" id="roomH" type="number" step="50" min="1800" value="2600">
+      <label data-i18n="mm"></label>
+    </div>
+    <div class="readout" id="isoNote"></div>
+  </div>
   <div class="draw-panel" id="drawPanel" hidden>
     <div class="tabs">
       <button data-tool="line" aria-pressed="true" data-i18n="tLine"></button>
@@ -402,7 +411,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block on the plan to select and move it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -417,7 +426,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على أي بلوك في المخطط لتحديده وتحريكه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -781,6 +790,128 @@ function blocksSVG(){
     return g+tag;
   }).join("");
 }
+/* ================= المنظور الآيزومترك من المسقط ================= */
+/* ارتفاع كل نوع ومنسوب قاعدته بالمليمتر */
+const H3D={table:{z:0,h:850},tableos:{z:0,h:850,over:[1400,1750]},sink1:{z:0,h:850},sink2:{z:0,h:850},
+ cabinet:{z:0,h:900},fridge:{z:0,h:2000},burner:{z:0,h:850},grill:{z:0,h:850},rack:{z:0,h:1800},
+ wshelf:{z:1500,h:40},pshelf:{z:1500,h:40},hood:{z:1900,h:600},evap:{z:1800,h:600},faucet:{z:850,h:300},
+ door1:{skip:1},door2:{skip:1},window:{skip:1},coldH:{skip:1},coldS:{skip:1}};
+const OPENING={door1:[0,2100],door2:[0,2100],coldH:[0,2100],coldS:[0,2100],window:[1000,2000]};
+const p3=(x,y,z)=>[(x-y)*C,(x+y)*S-z];
+const poly3=(pts,fill,cls)=>`<path fill="${fill}" class="${cls||""}" d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
+function prism(cs,z0,z1,fill){
+  const edges=[];
+  for(let i=0;i<cs.length;i++){
+    const a=cs[i], b=cs[(i+1)%cs.length];
+    edges.push({a,b,k:(a[0]+a[1]+b[0]+b[1])/2});
+  }
+  edges.sort((p,q)=>p.k-q.k);
+  let o="";
+  edges.forEach(e=>{o+=poly3([p3(e.a[0],e.a[1],z1),p3(e.b[0],e.b[1],z1),p3(e.b[0],e.b[1],z0),p3(e.a[0],e.a[1],z0)],fill)});
+  o+=poly3(cs.map(c=>p3(c[0],c[1],z1)),fill);
+  return o;
+}
+function wallBands3(){
+  const d=cur.draw, WT=cur.wallT||100;
+  const list=d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts, out=[];
+  for(let i=0;i<list.length-1;i++){
+    const [ax,ay]=list[i],[bx2,by]=list[i+1];
+    const L=Math.hypot(bx2-ax,by-ay); if(L<1) continue;
+    const ux=(bx2-ax)/L, uy=(by-ay)/L, nx=-uy*WT/2, ny=ux*WT/2;
+    out.push({cs:[[ax+nx,ay+ny],[bx2+nx,by+ny],[bx2-nx,by-ny],[ax-nx,ay-ny]],
+      mid:[(ax+bx2)/2,(ay+by)/2], kind:(d.kinds||[])[i]||"wall", L,
+      ux,uy, a:[ax,ay], b:[bx2,by]});
+  }
+  return out;
+}
+function iso3dSVG(){
+  const d=cur.draw, WT=cur.wallT||100, RH=cur.roomH||2600;
+  const walls=wallBands3(), blocks=cur.blocks.filter(b=>!(H3D[b.k]||{}).skip);
+  if(!d.pts.length&&!cur.blocks.length)
+    return `<svg viewBox="0 0 600 380" xmlns="${NS}"><text x="300" y="190" text-anchor="middle"
+      font-family="IBM Plex Sans Arabic" font-size="20" fill="#8FA5D6">${T("emptyHint")}</text></svg>`;
+  /* مركز الغرفة لتحديد الجدران البعيدة */
+  const pts=d.pts.length?d.pts:cur.blocks.flatMap(b=>corners(b));
+  const cxr=pts.reduce((m,p)=>m+p[0],0)/pts.length, cyr=pts.reduce((m,p)=>m+p[1],0)/pts.length;
+  let far="",near="",body="",tags="";
+  /* الأرضية */
+  if(d.closed&&d.pts.length>2) far+=poly3(d.pts.map(p=>p3(p[0],p[1],0)),"#F4F7FA");
+  /* الجدران: البعيدة بارتفاع كامل، القريبة كعتبة منخفضة حتى ينكشف الداخل */
+  const sill=180;
+  walls.forEach(w=>{
+    const isFar = Math.abs(w.ux)>Math.abs(w.uy) ? w.mid[1]<cyr : w.mid[0]<cxr;
+    const fill = w.kind==="panel" ? "#EDF2F7" : "#FFFFFF";
+    const g = prism(w.cs,0,isFar?RH:sill,fill);
+    if(isFar) far+=g; else near+=g;
+    if(isFar&&w.kind==="panel"){                     /* فواصل ألواح البانل */
+      for(let t=1000;t<w.L-1;t+=1000){
+        const px=w.a[0]+w.ux*t, py=w.a[1]+w.uy*t, nx=-w.uy*WT/2, ny=w.ux*WT/2;
+        far+=`<path class="thin" d="M${f1(p3(px-nx,py-ny,0)[0])} ${f1(p3(px-nx,py-ny,0)[1])}
+          L${f1(p3(px-nx,py-ny,RH)[0])} ${f1(p3(px-nx,py-ny,RH)[1])}"/>`;
+      }
+    }
+  });
+  /* فتحات الأبواب والشبابيك على وجه الجدار */
+  cur.blocks.filter(b=>OPENING[b.k]).forEach(b=>{
+    const cs=corners(b), [z0,z1]=OPENING[b.k];
+    far+=prism(cs,z0,z1,"#DCE5EE");
+  });
+  /* الوحدات: من الخلف للأمام */
+  blocks.map(b=>({b,cs:corners(b)}))
+    .map(o=>({...o,k:Math.min(...o.cs.map(c=>c[0]+c[1]))}))
+    .sort((p,q)=>p.k-q.k)
+    .forEach(o=>{
+      const H=H3D[o.b.k]||{z:0,h:850};
+      body+=prism(o.cs,H.z,H.z+H.h,"#FFFFFF");
+      if(H.over){                                     /* رف علوي فوق الطاولة */
+        const shrink=o.cs;                            /* نفس البصمة */
+        body+=prism(shrink,H.over[0],H.over[0]+40,"#FFFFFF");
+        body+=prism(shrink,H.over[1],H.over[1]+40,"#FFFFFF");
+      }
+      if(o.b.item){
+        const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
+        const q=p3(c[0],c[1],H.z+H.h);
+        tags+=`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="160" fill="#2B4FA8" stroke="#fff" stroke-width="40"/>
+          <text x="${f1(q[0])}" y="${f1(q[1])}" text-anchor="middle" dominant-baseline="central"
+            font-family="IBM Plex Sans Arabic" font-size="190" fill="#fff" stroke="none">${o.b.item}</text>`;
+      }
+    });
+  /* الأبعاد الخارجية */
+  let dim="";
+  if(d.pts.length>1){
+    const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+    const x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
+    const off=Math.max(x1-x0,y1-y0)*.13;
+    const dl=(A,B,txt)=>{
+      const a=p3(A[0],A[1],A[2]), b=p3(B[0],B[1],B[2]);
+      const m=[(a[0]+b[0])/2,(a[1]+b[1])/2];
+      const vx=b[0]-a[0], vy=b[1]-a[1], L=Math.hypot(vx,vy)||1, tx=-vy/L*90, ty=vx/L*90;
+      return `<path d="M${f1(a[0])} ${f1(a[1])} L${f1(b[0])} ${f1(b[1])}
+        M${f1(a[0]-tx)} ${f1(a[1]-ty)} L${f1(a[0]+tx)} ${f1(a[1]+ty)}
+        M${f1(b[0]-tx)} ${f1(b[1]-ty)} L${f1(b[0]+tx)} ${f1(b[1]+ty)}"/>
+        <text x="${f1(m[0]+tx*1.6)}" y="${f1(m[1]+ty*1.6)}" text-anchor="middle" dominant-baseline="central"
+          font-family="IBM Plex Mono,monospace" font-size="190" fill="#2B4FA8" stroke="none">${txt}</text>`;
+    };
+    dim+=dl([x0,y1+off,0],[x1,y1+off,0],(x1-x0)+"");
+    dim+=dl([x1+off,y0,0],[x1+off,y1,0],(y1-y0)+"");
+    dim+=dl([x0-off*.55,y1+off*.55,0],[x0-off*.55,y1+off*.55,RH],RH+"");
+  }
+  /* الإطار */
+  const all=[];
+  const push=(x,y,z)=>{const q=p3(x,y,z);all.push(q)};
+  pts.forEach(p=>{push(p[0],p[1],0);push(p[0],p[1],RH)});
+  cur.blocks.forEach(b=>corners(b).forEach(c=>{push(c[0],c[1],0);push(c[0],c[1],2200)}));
+  const X=all.map(q=>q[0]), Y=all.map(q=>q[1]);
+  const pad=Math.max(...X)-Math.min(...X);
+  const vb=[Math.min(...X)-pad*.14,Math.min(...Y)-pad*.12,
+            (Math.max(...X)-Math.min(...X))*1.28,(Math.max(...Y)-Math.min(...Y))+pad*.24];
+  $("isoNote").textContent=T("isoNote",blocks.length);
+  return `<svg viewBox="${vb.map(f1).join(" ")}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet">
+    <g stroke="#12294D" stroke-width="${f1(vb[2]/420)}" stroke-linejoin="round" fill="#fff">
+      ${far}${body}${near}${tags}
+      <g class="thin" stroke-width="${f1(vb[2]/900)}" fill="none">${dim}</g>
+    </g></svg>`;
+}
 function drawSVG(){
   const d=cur.draw; if(!cur.view) fitView();
   const v=cur.view, fs=v.w/38, r=v.w/130, gs=gridStep(v.w);
@@ -920,6 +1051,7 @@ document.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
   if(lineKind==="panel"){cur.wallT=100;$("wallT").value=100;renderPlan()}
 });
 $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan()});
+$("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan()});
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
@@ -1088,7 +1220,8 @@ $("vGeo").onclick=()=>{
 function renderPlan(){
   const hud=$("hud"), dyn=$("dyn");
   if(cur.mode==="img"&&!cur.img) cur.mode="draw";
-  box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`:drawSVG();
+  box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`
+                : cur.mode==="iso"?iso3dSVG():drawSVG();
   box.appendChild(hud); box.appendChild(dyn);
   if(cur.mode!=="draw"||editing) cur.items.forEach(it=>{
     const pin=document.createElement("button");
@@ -1102,7 +1235,9 @@ function renderPlan(){
   box.classList.toggle("tool-sel",cur.mode==="draw"&&tool==="sel");
   box.classList.toggle("editing",editing);
   $("drawPanel").hidden=cur.mode!=="draw";
+  $("isoPanel").hidden=cur.mode!=="iso";
   if(document.activeElement!==$("wallT")) $("wallT").value=cur.wallT||100;
+  if(document.activeElement!==$("roomH")) $("roomH").value=cur.roomH||2600;
   document.querySelectorAll(".modes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===cur.mode));
   $("planScale").textContent=cur.mode==="draw"?T("viewW",Math.round(cur.view?cur.view.w:0)):cur.scale.replace("__SURVEY__",T("surveying"));
   chipUpdate();
@@ -1265,11 +1400,11 @@ const isBlank=v=>!v.client&&!v.site&&!v.items.length&&!v.blocks.length&&!v.draw.
 function rowToVisit(r){const d=r.data||{};
   return {id:r.id,client:r.client||"",site:r.site||"",city:r.city||"",date:r.visit_date||"",loc:r.loc||"",
     notes:r.notes||"",owner:r.owner,author:r.author_name||"",wallT:r.wall_t||100,scale:"",
-    mode:d.mode||"draw",img:d.img||null,view:d.view||null,
+    mode:d.mode||"draw",img:d.img||null,view:d.view||null,roomH:d.roomH||2600,
     draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:d.blocks||[],items:d.items||[]}}
 const visitToRow=v=>({id:v.id,owner:v.owner||me.id,author_name:v.author||me.name,
   client:v.client,site:v.site,city:v.city,visit_date:v.date||null,loc:v.loc,notes:v.notes,wall_t:v.wallT||100,
-  data:{mode:v.mode,img:v.img,view:v.view,draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
+  data:{mode:v.mode,img:v.img,view:v.view,roomH:v.roomH||2600,draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
 async function loadVisits(){
   const {data,error}=await sb.from("visits").select("*").order("visit_date",{ascending:false});
   if(error){saveState(T("offline"));return}
@@ -1304,7 +1439,7 @@ async function saveStore(){
 }
 function newDraft(){
   const v={id:uuid(),client:"",site:"",city:"",date:new Date().toISOString().slice(0,10),loc:"",notes:"",
-    owner:me?me.id:null,author:me?me.name:"",scale:"",mode:"draw",img:null,wallT:100,
+    owner:me?me.id:null,author:me?me.name:"",scale:"",mode:"draw",img:null,wallT:100,roomH:2600,
     draw:{pts:[],closed:false,kinds:[]},blocks:[],view:null,items:[]};
   projects.push(v); cur=v; sel=null; selBlock=null; return v;
 }
