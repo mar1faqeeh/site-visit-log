@@ -94,5 +94,26 @@ drop trigger if exists visits_touch on public.visits;
 create trigger visits_touch before update on public.visits
   for each row execute function public.touch_updated_at();
 
+
+-- 6) Type thumbnail library ---------------------------------
+-- One image per item type (table, sink, hood ...). Upload your own
+-- SolidWorks / AutoCAD renders once and every item of that type uses them.
+create table if not exists public.type_thumbs (
+  type       text primary key,
+  image      text not null,             -- data URL (downscaled JPEG)
+  updated_by uuid references auth.users,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.type_thumbs enable row level security;
+
+drop policy if exists thumbs_read on public.type_thumbs;
+create policy thumbs_read on public.type_thumbs
+  for select to authenticated using (true);
+
+drop policy if exists thumbs_write on public.type_thumbs;
+create policy thumbs_write on public.type_thumbs
+  for all to authenticated using (true) with check (true);
+
 -- 5) Make yourself an admin (run after your first sign-up):
 -- update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@company.com');
