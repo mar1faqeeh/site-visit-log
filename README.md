@@ -68,6 +68,19 @@ The anon key is meant to be public — row level security is what protects the d
 - **Export PDF** prints the visit header (client, site, city, date, GPS, and
   *Surveyed by: <your name>*), the plan, and the item table.
 
+## Item thumbnails
+
+Every item shows a thumbnail. Priority:
+
+1. a photo uploaded for **that one item**;
+2. the **type thumbnail** — your own drawing for that type (work table, sink, hood …),
+   stored once in `type_thumbs` and used by every item of that type;
+3. the built-in isometric drawing.
+
+Open an item → **Upload for this type** to replace the default with a SolidWorks or AutoCAD
+export. **Back to the default drawing** removes it again. Type thumbnails are shared by the
+whole team.
+
 ## Data model
 
 `visits` keeps one row per site visit. The drawing itself lives in the `data` jsonb column:

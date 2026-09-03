@@ -335,11 +335,18 @@ main{padding:0 0 96px}
   </div>
   <label style="font-size:12px;color:#6B8199" data-i18n="chooseIcon"></label>
   <div class="icongrid" id="iconGrid"></div>
-  <div class="draw-acts" style="margin:0 0 12px">
+  <div class="draw-acts" style="margin:0 0 14px">
     <button id="iPhoto" data-i18n="uploadPhoto"></button>
     <button id="iNoPhoto" data-i18n="removePhoto"></button>
   </div>
+  <label style="font-size:12px;color:#6B8199" data-i18n="typeLib"></label>
+  <div class="draw-acts" style="margin:6px 0 14px">
+    <button id="iTypeUp" data-i18n="setTypeThumb"></button>
+    <button id="iTypeReset" data-i18n="resetTypeThumb"></button>
+  </div>
+  <div class="err" id="ierr" style="color:var(--ok)"></div>
   <input id="iFile" type="file" accept="image/*" hidden>
+  <input id="iTypeFile" type="file" accept="image/*" hidden>
   <button class="btn-primary" style="background:var(--ink);color:#fff" id="iSave" data-i18n="saveItem"></button>
   <button class="btn-primary" style="background:#fff;color:#9B2C2C;border:1px solid var(--line)" id="iDel" data-i18n="deleteItem"></button>
 </div></div>
@@ -395,7 +402,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block on the plan to select and move it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -410,7 +417,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على أي بلوك في المخطط لتحديده وتحريكه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -617,7 +624,11 @@ const ISO={
    return isoWrap(o,w,d,h)}
 };
 const isoCache={};
-const sketch=t=>isoCache[t]||(isoCache[t]=(ISO[t]||ISO.table)());
+const drawing=t=>isoCache[t]||(isoCache[t]=(ISO[t]||ISO.table)());
+let typeThumbs={};                                   /* مكتبة مصغّرات الأنواع */
+const img=src=>`<img src="${src}" alt="">`;
+const sketch=t=>typeThumbs[t]?img(typeThumbs[t]):drawing(t);
+const thumbOf=it=>it.thumb?img(it.thumb):sketch(it.type);
 
 /* ================= المشاريع ================= */
 
@@ -640,7 +651,7 @@ async function signIn(){
   $("gerr").textContent="";
   if(!CLOUD){
     me={id:"local",email:"",name:$("u").value.trim()||"local",role:"admin"};
-    $("gate").style.display="none"; loadLocal(); newDraft(); render(); saveStore(); return;
+    $("gate").style.display="none"; loadLocal(); await loadTypeThumbs(); newDraft(); render(); saveStore(); return;
   }
   const {data,error}=await sb.auth.signInWithPassword({email:$("u").value.trim(),password:$("p").value});
   if(error){$("gerr").textContent=T("badCred");return}
@@ -652,7 +663,7 @@ async function afterAuth(user){
   $("gate").style.display="none";
   $("openPanel").style.display=me.role==="admin"?"grid":"none";
   saveState(T("loadingV"));
-  await loadVisits(); await loadUsers();
+  await loadVisits(); await loadUsers(); await loadTypeThumbs();
   newDraft(); render(); saveState("");
 }
 $("login").onclick=signIn;
@@ -1103,7 +1114,7 @@ function renderCards(){
     c.className="card"+(sel===it.no?" on":"");c.id="card-"+it.no;
     c.innerHTML=`<div class="num">${it.no}</div><div class="body"><h3>${lang==="ar"?it.ar:it.en}</h3><p class="en">${lang==="ar"?it.en:it.ar}</p>
       <div class="meta"><span class="dim mono">${it.dim}</span><span class="qty">${qty(it.qty)}</span></div></div>
-      <div class="thumb" role="button" tabindex="0">${it.thumb?`<img src="${it.thumb}" alt="">`:sketch(it.type)}</div>`;
+      <div class="thumb" role="button" tabindex="0">${thumbOf(it)}</div>`;
     c.onclick=e=>{if(e.target.closest(".thumb")){openItem(it.no);return}select(it.no,"card")};
     $("cards").appendChild(c)});
   $("count").textContent=T("itemsN",cur.items.length);
@@ -1117,7 +1128,7 @@ function select(no,from){
 /* ================= تحرير البند والمصغّرة ================= */
 let editItemNo=null, pendingThumb=null, pendingType=null;
 function itemPreview(){
-  $("itemPreview").innerHTML = pendingThumb?`<img src="${pendingThumb}" alt="">`:sketch(pendingType);
+  $("itemPreview").innerHTML = pendingThumb?img(pendingThumb):sketch(pendingType);
 }
 function renderIconGrid(){
   $("iconGrid").innerHTML="";
@@ -1140,25 +1151,54 @@ function openItem(no){
 $("itemPreview").onclick=()=>{const it=cur.items.find(i=>i.no===editItemNo);if(it)lightbox({...it,thumb:pendingThumb,type:pendingType})};
 $("closeItem").onclick=()=>$("itemPanel").classList.remove("show");
 $("itemPanel").onclick=e=>{if(e.target.id==="itemPanel")$("itemPanel").classList.remove("show")};
-$("iPhoto").onclick=()=>$("iFile").click();
-$("iNoPhoto").onclick=()=>{pendingThumb=null;itemPreview();renderIconGrid()};
-$("iFile").addEventListener("change",e=>{
-  const f=e.target.files[0]; if(!f) return;
+function shrink(file,cb){
   const rd=new FileReader();
-  rd.onload=()=>{                                   /* تصغير الصورة قبل الحفظ */
+  rd.onload=()=>{
     const im=new Image();
     im.onload=()=>{
       const M=480, sc=Math.min(1,M/Math.max(im.width,im.height));
       const cv=document.createElement("canvas");
       cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
-      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
-      pendingThumb=cv.toDataURL("image/jpeg",.72);
-      itemPreview(); renderIconGrid();
+      const g=cv.getContext("2d"); g.fillStyle="#fff"; g.fillRect(0,0,cv.width,cv.height);
+      g.drawImage(im,0,0,cv.width,cv.height);
+      cb(cv.toDataURL("image/jpeg",.75));
     };
-    im.onerror=()=>{pendingThumb=rd.result;itemPreview()};
+    im.onerror=()=>cb(rd.result);
     im.src=rd.result;
   };
-  rd.readAsDataURL(f); e.target.value="";
+  rd.readAsDataURL(file);
+}
+async function loadTypeThumbs(){
+  if(CLOUD){
+    const {data}=await sb.from("type_thumbs").select("*");
+    typeThumbs={}; (data||[]).forEach(r=>{if(r.image) typeThumbs[r.type]=r.image});
+  }else{
+    try{typeThumbs=JSON.parse(localStorage.getItem("svl.thumbs")||"{}")}catch(e){typeThumbs={}}
+  }
+}
+async function setTypeThumb(type,image){
+  if(image) typeThumbs[type]=image; else delete typeThumbs[type];
+  if(CLOUD){
+    if(image) await sb.from("type_thumbs").upsert({type,image,updated_by:me.id,updated_at:new Date().toISOString()});
+    else await sb.from("type_thumbs").delete().eq("type",type);
+  }else{
+    try{localStorage.setItem("svl.thumbs",JSON.stringify(typeThumbs))}catch(e){}
+  }
+  isoCache[type]=isoCache[type];
+  itemPreview(); renderIconGrid(); renderCards();
+  $("ierr").textContent=T("typeSaved"); setTimeout(()=>{$("ierr").textContent=""},2500);
+}
+$("iTypeUp").onclick=()=>$("iTypeFile").click();
+$("iTypeFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  shrink(f,d=>setTypeThumb(pendingType,d)); e.target.value="";
+});
+$("iTypeReset").onclick=()=>setTypeThumb(pendingType,null);
+$("iPhoto").onclick=()=>$("iFile").click();
+$("iNoPhoto").onclick=()=>{pendingThumb=null;itemPreview();renderIconGrid()};
+$("iFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  shrink(f,d=>{pendingThumb=d;itemPreview();renderIconGrid()}); e.target.value="";
 });
 $("iSave").onclick=()=>{
   const it=cur.items.find(i=>i.no===editItemNo); if(!it) return;
@@ -1177,7 +1217,7 @@ $("iDel").onclick=()=>{
   renderCards(); renderPlan(); saveStore();
 };
 function lightbox(it){
-  $("lbFrame").innerHTML=it.thumb?`<img src="${it.thumb}" style="width:100%">`:sketch(it.type);
+  $("lbFrame").innerHTML=it.thumb?`<img src="${it.thumb}" style="width:100%">`:(typeThumbs[it.type]?`<img src="${typeThumbs[it.type]}" style="width:100%">`:drawing(it.type));
   $("lbCap").textContent=T("lbCap",it.no,lang==="ar"?it.ar:it.en,it.dim);
   $("lightbox").classList.add("show");
 }
