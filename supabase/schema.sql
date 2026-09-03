@@ -115,5 +115,24 @@ drop policy if exists thumbs_write on public.type_thumbs;
 create policy thumbs_write on public.type_thumbs
   for all to authenticated using (true) with check (true);
 
+
+-- 7) Block symbol library (plan view SVG) --------------------
+create table if not exists public.block_svgs (
+  kind       text primary key,          -- table, sink2, hood, coldH ...
+  svg        text not null,             -- the uploaded SVG file, as text
+  updated_by uuid references auth.users,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.block_svgs enable row level security;
+
+drop policy if exists blocksvg_read on public.block_svgs;
+create policy blocksvg_read on public.block_svgs
+  for select to authenticated using (true);
+
+drop policy if exists blocksvg_write on public.block_svgs;
+create policy blocksvg_write on public.block_svgs
+  for all to authenticated using (true) with check (true);
+
 -- 5) Make yourself an admin (run after your first sign-up):
 -- update public.profiles set role = 'admin' where id = (select id from auth.users where email = 'you@company.com');
