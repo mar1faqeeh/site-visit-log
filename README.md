@@ -81,6 +81,27 @@ Open an item → **Upload for this type** to replace the default with a SolidWor
 export. **Back to the default drawing** removes it again. Type thumbnails are shared by the
 whole team.
 
+## Block symbols (plan view)
+
+The blocks you drop on the plan use built-in symbols. To use your own factory drawings,
+select a block on the plan → **Replace symbol (SVG)** and upload an SVG shaped like this:
+
+```svg
+<svg viewBox="0 0 1200 700" xmlns="http://www.w3.org/2000/svg">
+  <g id="frame">...</g>   <!-- stretches with the block's width and depth -->
+  <g id="detail">...</g>  <!-- keeps its proportions, stays centred -->
+</svg>
+```
+
+- `viewBox` units are millimetres, and its size is the reference size of the symbol.
+- Put the outline, edges and shelf lines in `frame`; put circles (burners, bowls, fans) in `detail`
+  so they stay round when the block is resized.
+- `fill="none"`, no text, no embedded images. An SVG with no ids is treated as all-frame.
+- Export from AutoCAD with `EXPORTSVG`, or DXF → Inkscape/Illustrator → Save as SVG.
+
+Symbols are stored in `block_svgs` and shared by the whole team. **Restore built-in symbol**
+removes yours again.
+
 ## Data model
 
 `visits` keeps one row per site visit. The drawing itself lives in the `data` jsonb column:

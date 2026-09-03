@@ -239,6 +239,7 @@ main{padding:0 0 96px}
     <button data-mode="iso" data-i18n="mIso"></button>
   </div>
   <input id="upl" type="file" accept="image/*" hidden>
+  <input id="svgFile" type="file" accept=".svg,image/svg+xml" hidden>
 
   <div class="plan-box" id="planBox"><div class="hud mono" id="hud"></div>
     <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button><button id="cfree" data-i18n-title="unlock">✕</button></div>
@@ -411,7 +412,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block on the plan to select and move it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",svgUp:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -426,7 +427,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على أي بلوك في المخطط لتحديده وتحريكه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",svgUp:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -660,7 +661,7 @@ async function signIn(){
   $("gerr").textContent="";
   if(!CLOUD){
     me={id:"local",email:"",name:$("u").value.trim()||"local",role:"admin"};
-    $("gate").style.display="none"; loadLocal(); await loadTypeThumbs(); newDraft(); render(); saveStore(); return;
+    $("gate").style.display="none"; loadLocal(); await loadTypeThumbs(); await loadBlockSVGs(); newDraft(); render(); saveStore(); return;
   }
   const {data,error}=await sb.auth.signInWithPassword({email:$("u").value.trim(),password:$("p").value});
   if(error){$("gerr").textContent=T("badCred");return}
@@ -672,7 +673,7 @@ async function afterAuth(user){
   $("gate").style.display="none";
   $("openPanel").style.display=me.role==="admin"?"grid":"none";
   saveState(T("loadingV"));
-  await loadVisits(); await loadUsers(); await loadTypeThumbs();
+  await loadVisits(); await loadUsers(); await loadTypeThumbs(); await loadBlockSVGs();
   newDraft(); render(); saveState("");
 }
 $("login").onclick=signIn;
@@ -776,13 +777,66 @@ function zoom(f){const v=cur.view,cx=v.x+v.w/2,cy=v.y+v.h/2;
   cur.view={w:v.w*f,h:v.h*f,x:cx-v.w*f/2,y:cy-v.h*f/2};autoFit=false;renderPlan()}
 const gridStep=w=>[100,250,500,1000,2000,5000].find(s=>w/s<26)||10000;
 
+/* ================= مكتبة رموز البلوكات (SVG) ================= */
+let blockSVG={};                       /* kind -> {w,h,frame,detail} */
+const clean=x=>x.replace(/<script[\s\S]*?<\/script>/gi,"").replace(/\son\w+="[^"]*"/gi,"");
+function parseBlockSVG(txt){
+  const doc=new DOMParser().parseFromString(clean(txt),"image/svg+xml");
+  const root=doc.querySelector("svg"); if(!root) return null;
+  let vb=(root.getAttribute("viewBox")||"").trim().split(/[\s,]+/).map(Number);
+  if(vb.length!==4||!vb[2]||!vb[3]){
+    const w=parseFloat(root.getAttribute("width")), h=parseFloat(root.getAttribute("height"));
+    if(!w||!h) return null; vb=[0,0,w,h];
+  }
+  const ser=new XMLSerializer();
+  const grab=id=>{const g=doc.getElementById(id);return g?[...g.childNodes].map(n=>ser.serializeToString(n)).join(""):""};
+  let frame=grab("frame"), detail=grab("detail");
+  if(!frame&&!detail){
+    frame=[...root.childNodes].filter(n=>n.nodeType===1&&!/^(defs|title|desc|metadata)$/i.test(n.nodeName))
+      .map(n=>ser.serializeToString(n)).join("");
+  }
+  const defs=doc.querySelector("defs");
+  return {x:vb[0],y:vb[1],w:vb[2],h:vb[3],frame,detail,defs:defs?ser.serializeToString(defs):""};
+}
+/* الهيكل يتمدد مع المقاس، والتفاصيل تحافظ على نسبتها وتتوسّط */
+function customSymbol(kind,w,d){
+  const S0=blockSVG[kind]; if(!S0) return null;
+  const sx=w/S0.w, sy=d/S0.h, u=Math.min(sx,sy);
+  let o=S0.defs;
+  if(S0.frame) o+=`<g transform="translate(${-S0.x*sx} ${-S0.y*sy}) scale(${sx} ${sy})">${S0.frame}</g>`;
+  if(S0.detail) o+=`<g transform="translate(${w/2} ${d/2}) scale(${u}) translate(${-(S0.x+S0.w/2)} ${-(S0.y+S0.h/2)})">${S0.detail}</g>`;
+  return `<g vector-effect="non-scaling-stroke">${o}</g>`;
+}
+const symbol=(kind,w,d)=>customSymbol(kind,w,d)||BLK[kind].f(w,d);
+async function loadBlockSVGs(){
+  let raw={};
+  if(CLOUD){ const {data}=await sb.from("block_svgs").select("*"); (data||[]).forEach(r=>raw[r.kind]=r.svg); }
+  else { try{raw=JSON.parse(localStorage.getItem("svl.blocks")||"{}")}catch(e){raw={}} }
+  blockSVG={}; Object.entries(raw).forEach(([k,v])=>{const parsed=parseBlockSVG(v); if(parsed) blockSVG[k]=parsed});
+  blockRaw=raw;
+}
+let blockRaw={};
+async function setBlockSVG(kind,txt){
+  if(txt){
+    const parsed=parseBlockSVG(txt);
+    if(!parsed){ $("selErr").textContent=T("svgBad"); return }
+    blockSVG[kind]=parsed; blockRaw[kind]=txt;
+  }else{ delete blockSVG[kind]; delete blockRaw[kind]; }
+  if(CLOUD){
+    if(txt) await sb.from("block_svgs").upsert({kind,svg:txt,updated_by:me.id,updated_at:new Date().toISOString()});
+    else await sb.from("block_svgs").delete().eq("kind",kind);
+  }else{ try{localStorage.setItem("svl.blocks",JSON.stringify(blockRaw))}catch(e){} }
+  renderPalette(); renderPlan();
+  $("selErr").style.color="var(--ok)"; $("selErr").textContent=T("svgSaved");
+  setTimeout(()=>{$("selErr").textContent=""},2500);
+}
 function blocksSVG(){
   const v=cur.view, fs=v.w/40;
   return cur.blocks.map(b=>{
     const B=BLK[b.k], on=selBlock===b.id||(b.item&&b.item===sel);
     const g=`<g data-block="${b.id}" transform="translate(${b.x},${b.y}) rotate(${b.rot})"
       stroke="${on?"#E0A020":"#0E2340"}" stroke-width="${on?3:2}" vector-effect="non-scaling-stroke" fill="none">
-      ${B.f(b.w,b.d)}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
+      ${symbol(b.k,b.w,b.d)}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
     const r=b.rot*Math.PI/180, cx=b.x+(b.w/2)*Math.cos(r)-(b.d/2)*Math.sin(r), cy=b.y+(b.w/2)*Math.sin(r)+(b.d/2)*Math.cos(r);
     const tag=b.item?`<circle cx="${cx}" cy="${cy}" r="${fs*.75}" fill="${b.item===sel?"#E0A020":"#2B4FA8"}" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke" pointer-events="none"/>
       <text x="${cx}" y="${cy}" font-family="IBM Plex Sans Arabic" font-size="${fs*.85}" fill="${b.item===sel?"#231704":"#fff"}" text-anchor="middle" dominant-baseline="central" pointer-events="none">${b.item}</text>`
@@ -1057,7 +1111,7 @@ function renderPalette(){
   Object.entries(BLK).forEach(([k,B])=>{
     const b=document.createElement("button");
     b.className="pal"; b.setAttribute("aria-pressed",pending===k);
-    b.innerHTML=`<svg viewBox="${B.vb?B.vb(B.w,B.d):`-40 -40 ${B.w+80} ${B.d+80}`}" xmlns="${NS}"><g stroke="#0E2340" stroke-width="${B.w/28}" fill="none">${B.f(B.w,B.d)}</g></svg><span>${bn(k)}</span>`;
+    b.innerHTML=`<svg viewBox="${B.vb?B.vb(B.w,B.d):`-40 -40 ${B.w+80} ${B.d+80}`}" xmlns="${NS}"><g stroke="#0E2340" stroke-width="${B.w/28}" fill="none">${symbol(k,B.w,B.d)}</g></svg><span>${bn(k)}</span>`;
     b.onclick=()=>{pending=k;$("bw").value=B.w;$("bd").value=B.d;setTool("place");
       $("blockHint").textContent=T("blockReady",bn(k)); renderPalette()};
     $("palette").appendChild(b);
@@ -1073,13 +1127,20 @@ function renderSelBar(){
     <select id="slink"><option value="">${T("notLinked")}</option>
       ${cur.items.map(i=>`<option value="${i.no}" ${b.item===i.no?"selected":""}>${T("itemOpt",i.no,lang==="ar"?i.ar:i.en)}</option>`).join("")}</select>
     <div class="draw-acts" style="margin:0">
-      <button id="rot">${T("rotate")}</button><button id="dup">${T("dup")}</button><button id="del">${T("del")}</button></div></div>`;
+      <button id="rot">${T("rotate")}</button><button id="dup">${T("dup")}</button><button id="del">${T("del")}</button></div>
+    <div class="draw-acts" style="margin:8px 0 0">
+      <button id="svgUp">${T("svgUp")}</button><button id="svgReset">${T("svgReset")}</button></div>
+    <div class="err" id="selErr" style="color:var(--ok)"></div></div>`;
   $("sw").onchange=()=>{b.w=Math.max(50,+$("sw").value||b.w);constrain(b);renderPlan()};
   $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);renderPlan()};
   $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan()};
   $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan()};
   $("dup").onclick=()=>{const c={...b,id:bid++,x:b.x+b.w+100};cur.blocks.push(c);selBlock=c.id;renderSelBar();autoFit?fitView():growView();renderPlan()};
   $("del").onclick=()=>{cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan()};
+  $("svgUp").onclick=()=>$("svgFile").click();
+  $("svgReset").onclick=()=>setBlockSVG(b.k,null);
+  $("svgFile").onchange=e=>{const f=e.target.files[0];if(!f)return;
+    const rd=new FileReader(); rd.onload=()=>setBlockSVG(b.k,rd.result); rd.readAsText(f); e.target.value=""};
 }
 $("undo").onclick=()=>{const d=cur.draw;if(d.closed)d.closed=false;else{d.pts.pop();(d.kinds||[]).pop()}fitView();renderPlan()};
 $("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan()}};
