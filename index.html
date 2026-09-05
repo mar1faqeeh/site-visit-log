@@ -440,7 +440,7 @@ const L={
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
   userExists:"That username already exists.",tapMove:"Tap the plan to move tag {0}",pickItem:"Select an item first",
-  readout:"{0} lines · {1} blocks · perimeter {2} m · {4}",emptyHint:"Draw walls or place a block",
+  closedHint:"tap a wall to edit it",readout:"{0} lines · {1} blocks · perimeter {2} m · {4}",emptyHint:"Draw walls or place a block",
   gridN:"grid {0} mm",viewW:"View {0} mm",schem:"Schematic plan — dimensions in mm",surveying:"Being surveyed",pc:"{0} pc",pcs:"{0} pcs",
   lbCap:"Item {0} — {1} — {2}",lang:"ع"},
  ar:{tagline:"سجل الزيارات الميدانية — الرفع، البلوكات، وجدول البنود",user:"اسم المستخدم",pass:"كلمة المرور",
@@ -455,7 +455,7 @@ const L={
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
   userExists:"هذا الاسم مستخدم بالفعل.",tapMove:"اضغط على المخطط لنقل الرقم {0}",pickItem:"اختر بندًا أولًا",
-  readout:"{0} خط · {1} بلوك · محيط {2} م · {4}",emptyHint:"ارسم الجدران أو ضع بلوك",
+  closedHint:"اضغط على أي جدار لتعديله",readout:"{0} خط · {1} بلوك · محيط {2} م · {4}",emptyHint:"ارسم الجدران أو ضع بلوك",
   gridN:"شبكة {0} مم",viewW:"عرض {0} مم",schem:"مخطط تخطيطي — المقاسات بالمليمتر",surveying:"قيد الرفع",pc:"{0} قطعة",pcs:"{0} قطع",
   lbCap:"بند {0} — {1} — {2}",lang:"EN"}};
 let lang="en";
@@ -1132,7 +1132,7 @@ function drawSVG(){
     joints+=`<path d="M${ax+nx} ${ay+ny} L${bx2+nx} ${by+ny} M${ax-nx} ${ay-ny} L${bx2-nx} ${by-ny}" fill="none" stroke="#2B4FA8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
   }
   let hits="";
-  if(tool==="sel"){
+  if(tool==="sel"||(tool==="line"&&d.closed)){
     for(let i=0;i<list.length-1;i++){
       const [ax,ay]=list[i],[bx2,by]=list[i+1];
       hits+=`<line data-seg="${i}" x1="${ax}" y1="${ay}" x2="${bx2}" y2="${by}" stroke="${selSeg===i?"#E0A020":"transparent"}"
@@ -1155,7 +1155,7 @@ function drawSVG(){
     dots+=`<circle cx="${p[0]}" cy="${p[1]}" r="${last?r*1.6:r}" fill="${last?"#E0A020":"#2B4FA8"}"/>`});
   const empty=!d.pts.length&&!cur.blocks.length;
   const hint=empty?`<text x="${v.x+v.w/2}" y="${v.y+v.h/2}" text-anchor="middle" font-family="IBM Plex Sans Arabic" font-size="${fs}" fill="#8FA5D6">${T("emptyHint")}</text>`:"";
-  $("readout").textContent = T("readout",Math.max(0,list.length-1),cur.blocks.length,(total/1000).toFixed(2),gs,panels?T("panelsN",panels):T("gridN",gs));
+  $("readout").textContent = (d.closed?T("closedHint")+" · ":"")+T("readout",Math.max(0,list.length-1),cur.blocks.length,(total/1000).toFixed(2),gs,panels?T("panelsN",panels):T("gridN",gs));
   return `<svg viewBox="${v.x} ${v.y} ${v.w} ${v.h}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet" style="aspect-ratio:${v.w}/${v.h}">
    <defs><pattern id="g" width="${gs}" height="${gs}" patternUnits="userSpaceOnUse">
      <path d="M${gs} 0H0V${gs}" fill="none" stroke="#DCE4EC" stroke-width="1" vector-effect="non-scaling-stroke"/></pattern></defs>
@@ -1201,8 +1201,9 @@ function ghost(sn){
 function clearGhost(){const g=$("planBox").querySelector("#ghost");if(g)g.innerHTML="";$("hud").className="hud mono"}
 function commit(sn){
   const d=cur.draw; d.kinds=d.kinds||[];
+  if(d.closed) return;                    /* الشكل مقفل — استخدم التحديد لتعديل الجدران */
   if(!d.pts.length){d.pts.push([rnd(sn.x),rnd(sn.y)])}
-  else if(sn.end&&d.pts.length>2&&sn.x===d.pts[0][0]&&sn.y===d.pts[0][1]){d.closed=true;d.kinds[d.pts.length-1]=lineKind}
+  else if(sn.end&&d.pts.length>2&&sn.x===d.pts[0][0]&&sn.y===d.pts[0][1]){d.closed=true;d.kinds[d.pts.length-1]=lineKind;selSeg=null}
   else{if(!sn.L||sn.L<MINL)return; d.kinds[d.pts.length-1]=lineKind; d.pts.push([Math.round(sn.x),Math.round(sn.y)])}
   autoFit?fitView():growView(); renderPlan(); queueSave();
 }
@@ -1279,7 +1280,7 @@ function segLen(i){const l=segList();if(!l[i+1])return 0;
 function sbarUpdate(){
   const bar=$("sbar"), d=cur.draw;
   if(selSeg!==null&&!segList()[selSeg+1]) selSeg=null;
-  const on = selSeg!==null && cur.mode==="draw" && tool==="sel" && !editing && !panMode && segList()[selSeg+1];
+  const on = selSeg!==null && cur.mode==="draw" && (tool==="sel"||tool==="line") && !editing && !panMode && segList()[selSeg+1];
   bar.classList.toggle("show",!!on);
   if(!on){selSeg=on?selSeg:selSeg;return}
   if(document.activeElement!==$("segLen")) $("segLen").value=segLen(selSeg);
@@ -1410,7 +1411,7 @@ function renderSelBar(){
 
 }
 $("undo").onclick=()=>{const d=cur.draw;if(d.closed)d.closed=false;else{d.pts.pop();(d.kinds||[]).pop()}fitView();renderPlan();queueSave()};
-$("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan();queueSave()}};
+$("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan();sbarUpdate();queueSave()}};
 $("clear").onclick=()=>{cur.draw={pts:[],closed:false,kinds:[]};autoFit=true;fitView();renderPlan();queueSave()};
 $("fit").onclick=()=>{autoFit=true;fitView();renderPlan()};
 $("zin").onclick=()=>zoom(.8); $("zout").onclick=()=>zoom(1.25);
@@ -1449,7 +1450,10 @@ function act(e){
   if(cur.mode!=="draw"||editing||panMode) return;
   const q=pos(e)||lastPos; if(!q) return;
   if(tool==="place"&&pending){placeBlock(q.x,q.y);lastAct=Date.now();return}
-  if(tool==="line"){commit(snap(q.x,q.y));lastAct=Date.now();return}
+  if(tool==="line"){
+    const wseg=e.target.closest?e.target.closest("[data-seg]"):null;
+    if(wseg){ selSeg=+wseg.dataset.seg; renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
+    commit(snap(q.x,q.y)); lastAct=Date.now(); return }
   if(tool==="sel"){
     const w=e.target.closest?e.target.closest("[data-seg]"):null;
     if(w){ selSeg=+w.dataset.seg; selBlock=null; renderSelBar(); renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
