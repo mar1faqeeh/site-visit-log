@@ -251,6 +251,11 @@ main{padding:0 0 96px}
   <input id="svgFile" type="file" accept=".svg,.dxf,image/svg+xml" hidden>
 
   <div class="plan-box" id="planBox"><div class="hud mono" id="hud"></div>
+    <div class="bbar" id="sbar">
+      <input id="segLen" type="number" step="10" inputmode="numeric"><span class="x" data-i18n="mm"></span>
+      <button id="segKind" style="width:auto;padding:0 9px;font-size:12px"></button>
+      <button id="segDel" class="warn" data-i18n-title="del">🗑</button>
+    </div>
     <div class="bbar" id="bbar">
       <input id="bw2" type="number" step="10" inputmode="numeric"><span class="x">×</span>
       <input id="bd2" type="number" step="10" inputmode="numeric"><span class="x" data-i18n="mm"></span>
@@ -426,7 +431,7 @@ const L={
   mDraw:"Draw to scale",tLine:"Walls & lines",tBlock:"Blocks",tSel:"Select & move",length:"Length",mm:"mm",
   padHint:"Type a length,<br>then tap a direction",undo:"Undo",closeShape:"Close shape",clearLines:"Clear lines",
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
-  blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block on the plan to select and move it",
+  blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
   cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
@@ -441,7 +446,7 @@ const L={
   mDraw:"رسم بالمقاس",tLine:"جدران وخطوط",tBlock:"بلوكات",tSel:"تحديد وتحريك",length:"الطول",mm:"مم",
   padHint:"اكتب الطول<br>واضغط الاتجاه",undo:"تراجع",closeShape:"إغلاق الشكل",clearLines:"مسح الخطوط",
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
-  blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على أي بلوك في المخطط لتحديده وتحريكه",
+  blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
   cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
@@ -662,7 +667,7 @@ let projects=[];
 
 let users=[], me=null;
 let cur=projects[0], sel=null, editing=false, panMode=false, autoFit=true;
-let tool="line", pending=null, selBlock=null, bid=1, lineKind="wall";
+let tool="line", pending=null, selBlock=null, bid=1, lineKind="wall", selSeg=null;
 const home={}; projects.forEach(p=>p.items.forEach(i=>home[p.id+i.no]=[i.x,i.y]));
 
 /* ================= الاتصال بـ Supabase ================= */
@@ -1124,10 +1129,19 @@ function drawSVG(){
     }
     joints+=`<path d="M${ax+nx} ${ay+ny} L${bx2+nx} ${by+ny} M${ax-nx} ${ay-ny} L${bx2-nx} ${by-ny}" fill="none" stroke="#2B4FA8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
   }
+  let hits="";
+  if(tool==="sel"){
+    for(let i=0;i<list.length-1;i++){
+      const [ax,ay]=list[i],[bx2,by]=list[i+1];
+      hits+=`<line data-seg="${i}" x1="${ax}" y1="${ay}" x2="${bx2}" y2="${by}" stroke="${selSeg===i?"#E0A020":"transparent"}"
+        stroke-opacity="${selSeg===i?.35:1}" stroke-width="${Math.max(WT*1.7,v.w/70)}" fill="none"
+        pointer-events="stroke" style="cursor:pointer"/>`;
+    }
+  }
   const seg=dpath?`<path d="${dpath}" fill="none" stroke="#0E2340" stroke-width="${WT}" stroke-linejoin="miter" stroke-linecap="butt"/>
     <path d="${dpath}" fill="none" stroke="#EAF0F6" stroke-width="${Math.max(WT-2*ow,WT*.2)}" stroke-linejoin="miter" stroke-linecap="butt"/>
     ${joints}
-    <path d="${dpath}" fill="none" stroke="#8FA5D6" stroke-width="1" stroke-dasharray="14 10" vector-effect="non-scaling-stroke"/>`:"";
+    <path d="${dpath}" fill="none" stroke="#8FA5D6" stroke-width="1" stroke-dasharray="14 10" vector-effect="non-scaling-stroke"/>${hits}`:"";
   for(let i=0;i<list.length-1;i++){
     const [ax,ay]=list[i],[bx2,by]=list[i+1],dx=bx2-ax,dy=by-ay,L=Math.round(Math.hypot(dx,dy));total+=L;
     const a=Math.atan2(dy,dx);let deg=a*180/Math.PI;
@@ -1188,7 +1202,7 @@ function commit(sn){
   if(!d.pts.length){d.pts.push([rnd(sn.x),rnd(sn.y)])}
   else if(sn.end&&d.pts.length>2&&sn.x===d.pts[0][0]&&sn.y===d.pts[0][1]){d.closed=true;d.kinds[d.pts.length-1]=lineKind}
   else{if(!sn.L||sn.L<MINL)return; d.kinds[d.pts.length-1]=lineKind; d.pts.push([Math.round(sn.x),Math.round(sn.y)])}
-  autoFit?fitView():growView(); renderPlan();
+  autoFit?fitView():growView(); renderPlan(); queueSave();
 }
 function addByPad(deg){
   const d=cur.draw; if(d.closed)return;
@@ -1198,13 +1212,13 @@ function addByPad(deg){
   const [px,py]=d.pts[d.pts.length-1],r=-deg*Math.PI/180;
   d.kinds[d.pts.length-1]=lineKind;
   d.pts.push([Math.round(px+Math.cos(r)*L),Math.round(py+Math.sin(r)*L)]);
-  autoFit?fitView():growView(); renderPlan();
+  autoFit?fitView():growView(); renderPlan(); queueSave();
 }
 function placeBlock(x,y){
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
   const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null};
   constrain(nb); cur.blocks.push(nb); selBlock=nb.id;
-  setTool("sel"); autoFit?fitView():growView(); renderPlan();
+  setTool("sel"); autoFit?fitView():growView(); renderPlan(); queueSave();
 }
 
 /* ===== توليد بلوك لكل بند من الجدول ===== */
@@ -1225,13 +1239,13 @@ function autoPlace(){
     cur.blocks.push({id:nextId(),k,x:rnd(x),y:rnd(y),w,d,rot:0,item:it.no});
     x+=w+250;
   });
-  selBlock=null; autoFit=true; fitView(); renderSelBar(); renderPlan();
+  selBlock=null; autoFit=true; fitView(); renderSelBar(); renderPlan(); queueSave();
   $("blockHint").textContent=T("placed",cur.items.length);
 }
 
 /* ================= الأدوات ================= */
 function setTool(t){
-  tool=t; if(t!=="place")pending=null;
+  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null;
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===(t==="place"?"block":t)));
   $("tabLine").hidden=t!=="line"; $("tabBlock").hidden=!(t==="block"||t==="place"); $("tabSel").hidden=t!=="sel";
   renderSelBar(); renderPlan();
@@ -1243,8 +1257,8 @@ document.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("[data-kind]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.kind===lineKind));
   if(lineKind==="panel"){cur.wallT=100;$("wallT").value=100;renderPlan()}
 });
-$("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan()});
-$("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan()});
+$("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan();queueSave()});
+$("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
@@ -1256,6 +1270,53 @@ function renderPalette(){
     $("palette").appendChild(b);
   });
 }
+/* ===== تحرير الجدار المحدد ===== */
+function segList(){const d=cur.draw;return d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts}
+function segLen(i){const l=segList();if(!l[i+1])return 0;
+  return Math.round(Math.hypot(l[i+1][0]-l[i][0],l[i+1][1]-l[i][1]))}
+function sbarUpdate(){
+  const bar=$("sbar"), d=cur.draw;
+  const on = selSeg!==null && cur.mode==="draw" && tool==="sel" && !editing && !panMode && segList()[selSeg+1];
+  bar.classList.toggle("show",!!on);
+  if(!on){selSeg=on?selSeg:selSeg;return}
+  if(document.activeElement!==$("segLen")) $("segLen").value=segLen(selSeg);
+  $("segKind").textContent = (d.kinds||[])[selSeg]==="panel"?T("panelType"):T("wallType");
+  try{
+    const svg=$("planBox").querySelector("svg"); if(!svg) return;
+    const l=segList(), m=[(l[selSeg][0]+l[selSeg+1][0])/2,(l[selSeg][1]+l[selSeg+1][1])/2];
+    const p=svg.createSVGPoint(); p.x=m[0]; p.y=m[1];
+    const q=p.matrixTransform(svg.getScreenCTM()), r=$("planBox").getBoundingClientRect();
+    bar.style.left=(q.x-r.left)+"px"; bar.style.top=Math.max(34,q.y-r.top)+"px";
+  }catch(e){}
+}
+["pointerdown","pointerup","click","pointermove"].forEach(t=>$("sbar").addEventListener(t,e=>e.stopPropagation()));
+$("segLen").addEventListener("change",()=>{
+  const d=cur.draw, i=selSeg; if(i===null) return;
+  const l=segList(), L=segLen(i), N=Math.max(SNAP_L,rnd(+$("segLen").value||L));
+  if(!L) return;
+  const ux=(l[i+1][0]-l[i][0])/L, uy=(l[i+1][1]-l[i][1])/L, dx=ux*(N-L), dy=uy*(N-L);
+  for(let k=i+1;k<d.pts.length;k++){d.pts[k][0]=Math.round(d.pts[k][0]+dx);d.pts[k][1]=Math.round(d.pts[k][1]+dy)}
+  cur.blocks.forEach(b=>constrain(b));
+  autoFit?fitView():growView(); renderPlan(); queueSave();
+});
+$("segKind").onclick=()=>{
+  const d=cur.draw; if(selSeg===null) return;
+  d.kinds=d.kinds||[];
+  d.kinds[selSeg]=d.kinds[selSeg]==="panel"?"wall":"panel";
+  renderPlan(); queueSave();
+};
+$("segDel").onclick=()=>{
+  const d=cur.draw, i=selSeg; if(i===null) return;
+  d.kinds=d.kinds||[];
+  if(d.closed&&i<d.pts.length){                       /* فتح الشكل من هذا الجدار */
+    d.pts=[...d.pts.slice(i+1),...d.pts.slice(0,i+1)];
+    d.kinds=[...d.kinds.slice(i+1),...d.kinds.slice(0,i+1)];
+    d.kinds.pop(); d.closed=false;
+  }else if(i===d.pts.length-2){ d.pts.pop(); d.kinds.splice(i,1) }
+  else { d.pts.splice(i+1,1); d.kinds.splice(i,1) }
+  selSeg=null; fitView(); renderPlan(); sbarUpdate(); queueSave();
+};
+
 /* ===== شريط سريع فوق البلوك المحدد ===== */
 function bbarUpdate(){
   const bar=$("bbar"), b=cur.blocks.find(x=>x.id===selBlock);
@@ -1274,22 +1335,44 @@ function bbarUpdate(){
   }catch(e){}
 }
 function bbarBlock(){return cur.blocks.find(x=>x.id===selBlock)}
+let svgTarget=null;
+$("svgFile").onchange=e=>{
+  const f=e.target.files[0], kind=svgTarget; if(!f||!kind) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const isDxf=/\.dxf$/i.test(f.name)||/^\s*0\s*[\r\n]+SECTION/.test(rd.result);
+    if(!isDxf) return setBlockSVG(kind,rd.result);
+    const out=dxfToSVG(rd.result), box=$("selErr");
+    if(out.err){ if(box){box.style.color="";
+      box.textContent = out.err==="binary" ? T("dxfBinary")
+        : out.dimOnly ? T("dxfDimsOnly")
+        : out.inserts ? T("dxfInsert",out.inserts)
+        : T("dxfEmpty")+(out.found?"  ("+T("dxfFound",out.found)+")":"")} 
+      alert(box?box.textContent:T("dxfEmpty")); return }
+    setBlockSVG(kind,out.svg).then(()=>{
+      if(!box) return;
+      if(out.is3d){box.style.color="";box.textContent=T("dxf3d")}
+      else if(out.inserts){box.style.color="";box.textContent=T("dxfInsert",out.inserts)}
+    });
+  };
+  rd.readAsText(f); e.target.value="";
+};
 const nextId=()=>{bid=Math.max(bid,...cur.blocks.map(b=>b.id),0)+1;return bid};
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("bbar").addEventListener(t,e=>e.stopPropagation()));
 $("bw2").addEventListener("change",()=>{const b=bbarBlock();if(!b)return;
-  b.w=Math.max(50,+$("bw2").value||b.w);constrain(b);renderSelBar();renderPlan()});
+  b.w=Math.max(50,+$("bw2").value||b.w);constrain(b);renderSelBar();renderPlan();queueSave()});
 $("bd2").addEventListener("change",()=>{const b=bbarBlock();if(!b)return;
-  b.d=Math.max(50,+$("bd2").value||b.d);constrain(b);renderSelBar();renderPlan()});
+  b.d=Math.max(50,+$("bd2").value||b.d);constrain(b);renderSelBar();renderPlan();queueSave()});
 $("bRot").onclick=()=>{const b=bbarBlock();if(!b)return;
-  b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan()};
+  b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
 $("bDup").onclick=()=>{const b=bbarBlock();if(!b)return;
   const c={...b,id:nextId(),x:b.x+b.w+100};constrain(c);cur.blocks.push(c);selBlock=c.id;
-  renderSelBar();autoFit?fitView():growView();renderPlan()};
+  renderSelBar();autoFit?fitView():growView();renderPlan();queueSave()};
 $("bDel").onclick=()=>{const b=bbarBlock();if(!b)return;
-  cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan()};
+  cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan();queueSave()};
 function renderSelBar(){
   const b=cur.blocks.find(x=>x.id===selBlock);
-  if(!b){$("selBox").innerHTML=`<div class="hintbox">${T("selHint")}</div>`;return}
+  if(!b){$("selBox").innerHTML=`<div class="hintbox">${T(selSeg!==null?"segHint":"selHint")}</div>`;return}
   $("selBox").innerHTML=`<div class="sel-bar"><h4>${bn(b.k)}</h4>
     <div class="sizes"><div><label>${T("widthMM")}</label><input id="sw" type="number" step="10" value="${b.w}"></div>
     <div><label>${T("depthMM")}</label><input id="sd" type="number" step="10" value="${b.d}"></div></div>
@@ -1301,37 +1384,19 @@ function renderSelBar(){
     <div class="draw-acts" style="margin:8px 0 0">
       <button id="svgUp">${T("svgUp")}</button><button id="svgReset">${T("svgReset")}</button></div>
     <div class="err" id="selErr" style="color:var(--ok)"></div></div>`;
-  $("sw").onchange=()=>{b.w=Math.max(50,+$("sw").value||b.w);constrain(b);renderPlan()};
-  $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);renderPlan()};
-  $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan()};
-  $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan()};
+  $("sw").onchange=()=>{b.w=Math.max(50,+$("sw").value||b.w);constrain(b);renderPlan();queueSave()};
+  $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);renderPlan();queueSave()};
+  $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
+  $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
   $("dup").onclick=()=>{const c={...b,id:nextId(),x:b.x+b.w+100};cur.blocks.push(c);selBlock=c.id;renderSelBar();autoFit?fitView():growView();renderPlan()};
-  $("del").onclick=()=>{cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan()};
-  $("svgUp").onclick=()=>$("svgFile").click();
+  $("del").onclick=()=>{cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan();queueSave()};
+  $("svgUp").onclick=()=>{svgTarget=b.k;$("svgFile").click()};
   $("svgReset").onclick=()=>setBlockSVG(b.k,null);
-  $("svgFile").onchange=e=>{const f=e.target.files[0];if(!f)return;
-    const rd=new FileReader();
-    rd.onload=()=>{
-      const isDxf=/\.dxf$/i.test(f.name)||/^\s*0\s*[\r\n]+SECTION/.test(rd.result);
-      if(!isDxf) return setBlockSVG(b.k,rd.result);
-      const out=dxfToSVG(rd.result);
-      const box=$("selErr");
-      if(out.err){ if(box){box.style.color="";
-        box.textContent = out.err==="binary" ? T("dxfBinary")
-          : out.dimOnly ? T("dxfDimsOnly")
-          : out.inserts ? T("dxfInsert",out.inserts)
-          : T("dxfEmpty")+(out.found?"  ("+T("dxfFound",out.found)+")":"")} return }
-      setBlockSVG(b.k,out.svg).then(()=>{
-        if(!box) return;
-        if(out.is3d){box.style.color="";box.textContent=T("dxf3d")}
-        else if(out.inserts){box.style.color="";box.textContent=T("dxfInsert",out.inserts)}
-      });
-    };
-    rd.readAsText(f); e.target.value=""};
+
 }
-$("undo").onclick=()=>{const d=cur.draw;if(d.closed)d.closed=false;else{d.pts.pop();(d.kinds||[]).pop()}fitView();renderPlan()};
-$("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan()}};
-$("clear").onclick=()=>{cur.draw={pts:[],closed:false,kinds:[]};autoFit=true;fitView();renderPlan()};
+$("undo").onclick=()=>{const d=cur.draw;if(d.closed)d.closed=false;else{d.pts.pop();(d.kinds||[]).pop()}fitView();renderPlan();queueSave()};
+$("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan();queueSave()}};
+$("clear").onclick=()=>{cur.draw={pts:[],closed:false,kinds:[]};autoFit=true;fitView();renderPlan();queueSave()};
 $("fit").onclick=()=>{autoFit=true;fitView();renderPlan()};
 $("zin").onclick=()=>zoom(.8); $("zout").onclick=()=>zoom(1.25);
 $("pan").onclick=()=>{panMode=!panMode;$("pan").setAttribute("aria-pressed",panMode);renderPlan()};
@@ -1370,7 +1435,11 @@ function act(e){
   const q=pos(e)||lastPos; if(!q) return;
   if(tool==="place"&&pending){placeBlock(q.x,q.y);lastAct=Date.now();return}
   if(tool==="line"){commit(snap(q.x,q.y));lastAct=Date.now();return}
-  if(tool==="sel"){const t=e.target.closest?e.target.closest("[data-block]"):null;
+  if(tool==="sel"){
+    const w=e.target.closest?e.target.closest("[data-seg]"):null;
+    if(w){ selSeg=+w.dataset.seg; selBlock=null; renderSelBar(); renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
+    selSeg=null;
+    const t=e.target.closest?e.target.closest("[data-block]"):null;
     selBlock=t?+t.dataset.block:null;
     const b=cur.blocks.find(x=>x.id===selBlock);
     if(b&&b.item) sel=b.item, renderCards();
@@ -1404,7 +1473,7 @@ box.addEventListener("pointermove",e=>{
 });
 box.addEventListener("pointerup",e=>{
   panStart=null;
-  if(drag){const moved=drag.moved;drag=null;if(moved){growView();renderPlan();lastAct=Date.now();return}}
+  if(drag){const moved=drag.moved;drag=null;if(moved){growView();renderPlan();queueSave();lastAct=Date.now();return}}
   act(e);
 });
 box.addEventListener("pointercancel",()=>{panStart=null;drag=null;clearGhost()});
@@ -1425,7 +1494,7 @@ document.querySelectorAll(".modes button").forEach(b=>b.onclick=()=>{
   cur.mode=b.dataset.mode;renderPlan()});
 $("upl").addEventListener("change",e=>{
   const f=e.target.files[0];if(!f)return;
-  const rd=new FileReader();rd.onload=()=>{cur.img=rd.result;cur.mode="img";renderPlan()};rd.readAsDataURL(f)});
+  const rd=new FileReader();rd.onload=()=>{cur.img=rd.result;cur.mode="img";renderPlan();queueSave()};rd.readAsDataURL(f)});
 let sortKey="date", vQuery="";
 const mapURL=v=>!v.loc?null:(/^https?:/i.test(v.loc)?v.loc:"https://www.google.com/maps?q="+encodeURIComponent(v.loc));
 function renderVisits(){
@@ -1467,11 +1536,11 @@ $("vGeo").onclick=()=>{
     ()=>{$("verr").textContent=T("gpsFail")},{enableHighAccuracy:true,timeout:8000});
 };
 function renderPlan(){
-  const hud=$("hud"), dyn=$("dyn"), bbar=$("bbar");
+  const hud=$("hud"), dyn=$("dyn"), bbar=$("bbar"), sbar=$("sbar");
   if(cur.mode==="img"&&!cur.img) cur.mode="draw";
   box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`
                 : cur.mode==="iso"?iso3dSVG():drawSVG();
-  box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar);
+  box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar); box.appendChild(sbar);
   if(cur.mode!=="draw"||editing) cur.items.forEach(it=>{
     const pin=document.createElement("button");
     pin.className="pin"+(sel===it.no?" on":"");pin.textContent=it.no;
@@ -1484,7 +1553,7 @@ function renderPlan(){
   box.classList.toggle("tool-sel",cur.mode==="draw"&&tool==="sel");
   box.classList.toggle("editing",editing);
   $("drawPanel").hidden=cur.mode!=="draw";
-  bbarUpdate();
+  bbarUpdate(); sbarUpdate();
   $("isoPanel").hidden=cur.mode!=="iso";
   if(document.activeElement!==$("wallT")) $("wallT").value=cur.wallT||100;
   if(document.activeElement!==$("roomH")) $("roomH").value=cur.roomH||2600;
@@ -1641,12 +1710,19 @@ $("addUser").onclick=async()=>{
 const KEY="svl.v1"; let savingNow=false, dirty=false;
 const touch=()=>{dirty=true};
 const saveState=t=>{$("saveState").textContent=t};
+let saveTimer=null;
+function queueSave(){                       /* حفظ بعد أي تعديل على الرسم */
+  if(!me) return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>saveStore(),1200);
+}
 const uuid=()=>(crypto&&crypto.randomUUID)?crypto.randomUUID()
   :"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return (c==="x"?r:(r&3|8)).toString(16)});
 function pruneEmpty(){
   projects=projects.filter(v=>v.id===cur.id||v.client||v.site||v.items.length||v.blocks.length||v.draw.pts.length);
 }
 const isBlank=v=>!v.client&&!v.site&&!v.items.length&&!v.blocks.length&&!v.draw.pts.length;
+const needsInfo=v=>!v.client&&!v.site;
 function rowToVisit(r){const d=r.data||{};
   return {id:r.id,client:r.client||"",site:r.site||"",city:r.city||"",date:r.visit_date||"",loc:r.loc||"",
     notes:r.notes||"",owner:r.owner,author:r.author_name||"",wallT:r.wall_t||100,scale:"",
@@ -1673,6 +1749,7 @@ async function saveStore(){
   if(!me||!cur) return;
   pruneEmpty();
   if(isBlank(cur)) return;
+  if(needsInfo(cur)){ saveState(T("needSite")); return; }   /* زيارة بلا عميل وموقع لا تُحفظ */
   if(!CLOUD){
     try{localStorage.setItem(KEY,JSON.stringify({projects,ts:Date.now()}));
       const d=new Date();saveState(T("savedAt",d.getHours()+":"+String(d.getMinutes()).padStart(2,"0")));
