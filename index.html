@@ -254,6 +254,8 @@ main{padding:0 0 96px}
     <div class="bbar" id="sbar">
       <input id="segLen" type="number" step="10" inputmode="numeric"><span class="x" data-i18n="mm"></span>
       <button id="segKind" style="width:auto;padding:0 9px;font-size:12px"></button>
+      <button id="segUndo" data-i18n-title="undo">↶</button>
+      <button id="segClose" data-i18n-title="closeShape">⬡</button>
       <button id="segDel" class="warn" data-i18n-title="del">🗑</button>
     </div>
     <div class="bbar" id="bbar">
@@ -1276,11 +1278,14 @@ function segLen(i){const l=segList();if(!l[i+1])return 0;
   return Math.round(Math.hypot(l[i+1][0]-l[i][0],l[i+1][1]-l[i][1]))}
 function sbarUpdate(){
   const bar=$("sbar"), d=cur.draw;
+  if(selSeg!==null&&!segList()[selSeg+1]) selSeg=null;
   const on = selSeg!==null && cur.mode==="draw" && tool==="sel" && !editing && !panMode && segList()[selSeg+1];
   bar.classList.toggle("show",!!on);
   if(!on){selSeg=on?selSeg:selSeg;return}
   if(document.activeElement!==$("segLen")) $("segLen").value=segLen(selSeg);
   $("segKind").textContent = (d.kinds||[])[selSeg]==="panel"?T("panelType"):T("wallType");
+  $("segClose").style.display = (!d.closed&&d.pts.length>2)?"grid":"none";
+  $("segUndo").style.display = d.pts.length?"grid":"none";
   try{
     const svg=$("planBox").querySelector("svg"); if(!svg) return;
     const l=segList(), m=[(l[selSeg][0]+l[selSeg+1][0])/2,(l[selSeg][1]+l[selSeg+1][1])/2];
@@ -1304,6 +1309,16 @@ $("segKind").onclick=()=>{
   d.kinds=d.kinds||[];
   d.kinds[selSeg]=d.kinds[selSeg]==="panel"?"wall":"panel";
   renderPlan(); queueSave();
+};
+$("segUndo").onclick=()=>{
+  const d=cur.draw;
+  if(d.closed) d.closed=false; else {d.pts.pop();(d.kinds||[]).pop()}
+  selSeg=null; fitView(); renderPlan(); sbarUpdate(); queueSave();
+};
+$("segClose").onclick=()=>{
+  const d=cur.draw;
+  if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;
+    renderPlan(); sbarUpdate(); queueSave()}
 };
 $("segDel").onclick=()=>{
   const d=cur.draw, i=selSeg; if(i===null) return;
