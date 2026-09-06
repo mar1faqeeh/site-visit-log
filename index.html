@@ -83,7 +83,7 @@ main{padding:0 0 96px}
 .modes button{flex:1;padding:8px;border:1px solid var(--line);border-radius:2px;font-size:13px;color:#4A6180;background:#fff}
 .modes button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
 
-.plan-box{position:relative;border:1px solid var(--line);background:#FBFCFD;overflow:hidden;min-height:240px;display:flex;align-items:center;justify-content:center}
+.plan-box{position:relative;border:1px solid var(--line);background:#FBFCFD;overflow:visible;min-height:240px;display:flex;align-items:center;justify-content:center}
 .plan-box svg,.plan-box img{display:block;width:100%;height:auto;max-height:72vh}
 .plan-box.drawing,.plan-box.drawing *{touch-action:none;-webkit-user-select:none;user-select:none}
 .plan-box.drawing{box-shadow:inset 0 0 0 2px var(--pen)}
@@ -95,7 +95,7 @@ main{padding:0 0 96px}
  display:grid;place-items:center;font-size:13px;font-weight:600;border:2px solid #fff;box-shadow:0 1px 4px rgba(14,35,64,.4)}
 .pin.on{background:var(--mark);color:#231704;transform:translate(50%,-50%) scale(1.25);z-index:5}
 .bbar{position:absolute;z-index:7;display:none;align-items:center;gap:4px;background:#fff;border:1px solid var(--ink);
- border-radius:3px;padding:4px;box-shadow:0 3px 10px rgba(14,35,64,.3);transform:translate(-50%,-135%)}
+ border-radius:3px;padding:4px;box-shadow:0 3px 10px rgba(14,35,64,.3);transform:translate(-50%,-100%)}
 .bbar.show{display:flex}
 .bbar input{width:62px;padding:6px 2px;border:1px solid var(--line);border-radius:2px;text-align:center;
  font-family:"IBM Plex Mono",monospace;font-size:14px;font-weight:600;color:var(--ink)}
@@ -104,14 +104,14 @@ main{padding:0 0 96px}
  border-radius:2px;font-size:15px;background:#fff}
 .bbar button.warn{color:#9B2C2C}
 .dyn{position:absolute;z-index:6;display:none;align-items:center;gap:5px;background:#fff;border:1px solid var(--ink);
- border-radius:3px;padding:4px 5px;box-shadow:0 2px 8px rgba(14,35,64,.28);transform:translate(-50%,-150%)}
+ border-radius:3px;padding:4px 5px;box-shadow:0 2px 8px rgba(14,35,64,.28);transform:translate(-50%,-100%)}
 .dyn.show{display:flex}
 .dyn input{width:76px;padding:6px 4px;border:1px solid var(--line);border-radius:2px;text-align:center;
  font-family:"IBM Plex Mono",monospace;font-size:15px;font-weight:600;color:var(--ink)}
 .dyn.lock input{border-color:var(--mark);background:#FFF9EC}
 .dyn .u{font-size:11px;color:#6B8199}
 .dyn .ang{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--pen);min-width:30px;text-align:center}
-.dyn button{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;font-size:14px}
+.dyn button{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line);border-radius:2px;font-size:14px}
 .dyn .ok{background:var(--ink);color:#fff;border-color:var(--ink)}
 .hud{position:absolute;bottom:8px;inset-inline-start:8px;background:rgba(14,35,64,.92);color:#fff;font-family:"IBM Plex Mono",monospace;
  font-size:12px;padding:5px 9px;border-radius:2px;pointer-events:none;display:none}
@@ -265,7 +265,10 @@ main{padding:0 0 96px}
       <button id="bDup" data-i18n-title="dup">⧉</button>
       <button id="bDel" class="warn" data-i18n-title="del">🗑</button>
     </div>
-    <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10" data-i18n-title="typeLen"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button><button id="cfree" data-i18n-title="unlock">✕</button></div>
+    <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10" data-i18n-title="typeLen"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button>
+      <button id="cundo" data-i18n-title="undo">↶</button>
+      <button id="cclose" data-i18n-title="closeShape">⬡</button>
+      <button id="cfree" data-i18n-title="unlock">✕</button></div>
   </div>
 
   <div class="draw-panel" id="isoPanel" hidden>
@@ -1307,7 +1310,7 @@ function sbarUpdate(){
     const l=segList(), m=[(l[selSeg][0]+l[selSeg+1][0])/2,(l[selSeg][1]+l[selSeg+1][1])/2];
     const p=svg.createSVGPoint(); p.x=m[0]; p.y=m[1];
     const q=p.matrixTransform(svg.getScreenCTM()), r=$("planBox").getBoundingClientRect();
-    bar.style.left=(q.x-r.left)+"px"; bar.style.top=Math.max(34,q.y-r.top)+"px";
+    placeBar(bar, q.x-r.left, q.y-r.top);
   }catch(e){}
 }
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("sbar").addEventListener(t,e=>e.stopPropagation()));
@@ -1362,7 +1365,7 @@ function bbarUpdate(){
     const top=Math.min(...cs.map(q=>q[1]));
     const p=svg.createSVGPoint(); p.x=c[0]; p.y=top;
     const q=p.matrixTransform(svg.getScreenCTM()), r=$("planBox").getBoundingClientRect();
-    bar.style.left=(q.x-r.left)+"px"; bar.style.top=Math.max(34,q.y-r.top)+"px";
+    placeBar(bar, q.x-r.left, q.y-r.top);
   }catch(e){}
 }
 function bbarBlock(){return cur.blocks.find(x=>x.id===selBlock)}
@@ -1434,19 +1437,29 @@ $("pan").onclick=()=>{panMode=!panMode;$("pan").setAttribute("aria-pressed",panM
 document.querySelectorAll(".pad button[data-a]").forEach(b=>b.onclick=()=>addByPad(+b.dataset.a));
 
 /* ===== مربع المقاس على المخطط (إدخال ديناميكي) ===== */
+function placeBar(el,x,y){          /* يمنع خروج الشريط خارج إطار المخطط */
+  const box=$("planBox"), r=box.getBoundingClientRect();
+  const w=el.offsetWidth||220, h=el.offsetHeight||40, pad=8;
+  const left=Math.min(Math.max(x,w/2+pad), Math.max(w/2+pad, r.width-w/2-pad));
+  const above = y-h-12 >= 0;
+  el.style.left=left+"px";
+  el.style.top=(above ? y-12 : Math.min(y+12+h, r.height-pad)) + "px";
+  el.style.transform = above ? "translate(-50%,-100%)" : "translate(-50%,-100%)";
+}
 function chipUpdate(live){
   const d=cur.draw, dyn=$("dyn");
-  const on = cur.mode==="draw" && tool==="line" && !editing && !panMode && d.pts.length && !d.closed;
+  const on = cur.mode==="draw" && tool==="line" && !editing && !panMode && d.pts.length>0 && !d.closed;
   dyn.classList.toggle("show",!!on); if(!on) return;
   dyn.classList.toggle("lock",lenLock);
   $("cang").textContent = lastDeg+"\u00B0";
+  $("cclose").style.display = (d.pts.length>2&&!d.closed)?"grid":"none";
   if(live!==undefined && !lenLock && document.activeElement!==$("clen")) $("clen").value=Math.round(live);
   try{
     const svg=$("planBox").querySelector("svg"); if(!svg) return;
     const p=svg.createSVGPoint(), t=d.pts[d.pts.length-1];
     p.x=t[0]; p.y=t[1];
     const q=p.matrixTransform(svg.getScreenCTM()), r=$("planBox").getBoundingClientRect();
-    dyn.style.left=(q.x-r.left)+"px"; dyn.style.top=(q.y-r.top)+"px";
+    placeBar(dyn, q.x-r.left, q.y-r.top);
   }catch(e){}
 }
 const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
@@ -1470,6 +1483,13 @@ $("clen").addEventListener("focus",()=>{lenLock=true;$("len").value=$("clen").va
 $("clen").addEventListener("input",()=>{lenLock=true;$("len").value=$("clen").value;chipUpdate()});
 $("clen").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();$("clen").blur();addByPad(lastDeg)}});
 $("cok").onclick=e=>{e.stopPropagation();lenLock=true;$("len").value=$("clen").value;addByPad(lastDeg)};
+$("cundo").onclick=e=>{e.stopPropagation();
+  const d=cur.draw; if(d.closed)d.closed=false; else {d.pts.pop();(d.kinds||[]).pop()}
+  selSeg=null; fitView(); renderPlan(); queueSave()};
+$("cclose").onclick=e=>{e.stopPropagation();
+  const d=cur.draw;
+  if(d.pts.length>2&&!d.closed){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;
+    renderPlan(); sbarUpdate(); queueSave()}};
 $("cfree").onclick=e=>{e.stopPropagation();lenLock=false;chipUpdate()};
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("dyn").addEventListener(t,e=>e.stopPropagation()));
 
