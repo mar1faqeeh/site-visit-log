@@ -720,17 +720,33 @@ function corners(b){
 }
 
 /* ===== منع تراكب البلوك مع الجدار + المحاذاة التلقائية ===== */
-function wallBands(){
+/* الخط المرسوم = الوجه الداخلي للجدار المبني، والوجه الخارجي لألواح البانل */
+function wallGeom(){
   const d=cur.draw, WT=cur.wallT||100;
-  const list=d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts, out=[];
+  const list=d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts;
+  const out=[]; if(list.length<2) return out;
+  const cx=list.reduce((m,p)=>m+p[0],0)/list.length, cy=list.reduce((m,p)=>m+p[1],0)/list.length;
   for(let i=0;i<list.length-1;i++){
-    const [ax,ay]=list[i],[cx,cy]=list[i+1];
-    if(Math.abs(ay-cy)<1&&Math.abs(ax-cx)>1)
-      out.push({h:1,x1:Math.min(ax,cx)-WT/2,x2:Math.max(ax,cx)+WT/2,y1:ay-WT/2,y2:ay+WT/2});
-    else if(Math.abs(ax-cx)<1&&Math.abs(ay-cy)>1)
-      out.push({h:0,x1:ax-WT/2,x2:ax+WT/2,y1:Math.min(ay,cy)-WT/2,y2:Math.max(ay,cy)+WT/2});
+    const [ax,ay]=list[i],[bx2,by]=list[i+1];
+    const L=Math.hypot(bx2-ax,by-ay); if(L<1) continue;
+    const ux=(bx2-ax)/L, uy=(by-ay)/L;
+    let nx=-uy, ny=ux;
+    const mx=(ax+bx2)/2, my=(ay+by)/2;
+    if((cx-mx)*nx+(cy-my)*ny < 0){nx=-nx;ny=-ny}          /* الاتجاه إلى داخل الغرفة */
+    const kind=(d.kinds||[])[i]||"wall";
+    const sx = kind==="panel" ? nx : -nx;                 /* البانل للداخل، الجدار للخارج */
+    const sy = kind==="panel" ? ny : -ny;
+    const e=WT/2, A=[ax-ux*e,ay-uy*e], B=[bx2+ux*e,by+uy*e];
+    out.push({i,kind,L,ux,uy,nx:sx,ny:sy,a:[ax,ay],b:[bx2,by],
+      quad:[A,B,[B[0]+sx*WT,B[1]+sy*WT],[A[0]+sx*WT,A[1]+sy*WT]]});
   }
   return out;
+}
+function wallBands(){
+  return wallGeom().filter(g=>Math.abs(g.ux)<1e-6||Math.abs(g.uy)<1e-6).map(g=>{
+    const xs=g.quad.map(q=>q[0]), ys=g.quad.map(q=>q[1]);
+    return {h:Math.abs(g.uy)<1e-6?1:0,x1:Math.min(...xs),x2:Math.max(...xs),y1:Math.min(...ys),y2:Math.max(...ys)};
+  });
 }
 function aabb(b){
   const c=corners(b);
@@ -1015,17 +1031,8 @@ function prism(cs,z0,z1,fill){
   return o;
 }
 function wallBands3(){
-  const d=cur.draw, WT=cur.wallT||100;
-  const list=d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts, out=[];
-  for(let i=0;i<list.length-1;i++){
-    const [ax,ay]=list[i],[bx2,by]=list[i+1];
-    const L=Math.hypot(bx2-ax,by-ay); if(L<1) continue;
-    const ux=(bx2-ax)/L, uy=(by-ay)/L, nx=-uy*WT/2, ny=ux*WT/2;
-    out.push({cs:[[ax+nx,ay+ny],[bx2+nx,by+ny],[bx2-nx,by-ny],[ax-nx,ay-ny]],
-      mid:[(ax+bx2)/2,(ay+by)/2], kind:(d.kinds||[])[i]||"wall", L,
-      ux,uy, a:[ax,ay], b:[bx2,by]});
-  }
-  return out;
+  return wallGeom().map(g=>({cs:g.quad,mid:[(g.a[0]+g.b[0])/2,(g.a[1]+g.b[1])/2],
+    kind:g.kind,L:g.L,ux:g.ux,uy:g.uy,a:g.a,b:g.b}));
 }
 function iso3dSVG(){
   const d=cur.draw, WT=cur.wallT||100, RH=cur.roomH||2600;
@@ -1122,18 +1129,19 @@ function drawSVG(){
   const WT=cur.wallT||100, ow=Math.max(v.w/300,3);
   const list=d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts;
   const dpath=d.pts.length>1?"M"+d.pts.map(q=>q[0]+" "+q[1]).join(" L")+(d.closed?" Z":""):"";
-  const kinds=d.kinds||[]; let panels=0, joints="";
-  for(let i=0;i<list.length-1;i++){
-    const [ax,ay]=list[i],[bx2,by]=list[i+1],L=Math.hypot(bx2-ax,by-ay);
-    if(kinds[i]!=="panel"||L<1) continue;
-    panels+=Math.ceil(L/1000);
-    const ux=(bx2-ax)/L, uy=(by-ay)/L, nx=-uy*WT/2, ny=ux*WT/2;
-    for(let t=1000;t<L-1;t+=1000){
-      const px=ax+ux*t, py=ay+uy*t;
-      joints+=`<line x1="${px+nx}" y1="${py+ny}" x2="${px-nx}" y2="${py-ny}" stroke="#0E2340" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+  const geom=wallGeom(); let panels=0, bands="", joints="";
+  geom.forEach(g=>{
+    bands+=`<path d="M${g.quad.map(q=>f1(q[0])+" "+f1(q[1])).join(" L")} Z" fill="#EAF0F6" stroke="#0E2340"
+      stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+    if(g.kind==="panel"){
+      panels+=Math.ceil(g.L/1000);
+      for(let t=1000;t<g.L-1;t+=1000){
+        const px=g.a[0]+g.ux*t, py=g.a[1]+g.uy*t;
+        joints+=`<line x1="${f1(px)}" y1="${f1(py)}" x2="${f1(px+g.nx*WT)}" y2="${f1(py+g.ny*WT)}"
+          stroke="#2B4FA8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
+      }
     }
-    joints+=`<path d="M${ax+nx} ${ay+ny} L${bx2+nx} ${by+ny} M${ax-nx} ${ay-ny} L${bx2-nx} ${by-ny}" fill="none" stroke="#2B4FA8" stroke-width="2" vector-effect="non-scaling-stroke"/>`;
-  }
+  });
   let hits="";
   if(tool==="sel"||(tool==="line"&&d.closed)){
     for(let i=0;i<list.length-1;i++){
@@ -1143,10 +1151,8 @@ function drawSVG(){
         pointer-events="stroke" style="cursor:pointer"/>`;
     }
   }
-  const seg=dpath?`<path d="${dpath}" fill="none" stroke="#0E2340" stroke-width="${WT}" stroke-linejoin="miter" stroke-linecap="butt"/>
-    <path d="${dpath}" fill="none" stroke="#EAF0F6" stroke-width="${Math.max(WT-2*ow,WT*.2)}" stroke-linejoin="miter" stroke-linecap="butt"/>
-    ${joints}
-    <path d="${dpath}" fill="none" stroke="#8FA5D6" stroke-width="1" stroke-dasharray="14 10" vector-effect="non-scaling-stroke"/>${hits}`:"";
+  const seg = bands ? bands+joints+`<path d="${dpath}" fill="none" stroke="#8FA5D6" stroke-width="1"
+    stroke-dasharray="14 10" vector-effect="non-scaling-stroke"/>${hits}` : "";
   for(let i=0;i<list.length-1;i++){
     const [ax,ay]=list[i],[bx2,by]=list[i+1],dx=bx2-ax,dy=by-ay,L=Math.round(Math.hypot(dx,dy));total+=L;
     const a=Math.atan2(dy,dx);let deg=a*180/Math.PI;
