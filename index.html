@@ -265,7 +265,7 @@ main{padding:0 0 96px}
       <button id="bDup" data-i18n-title="dup">⧉</button>
       <button id="bDel" class="warn" data-i18n-title="del">🗑</button>
     </div>
-    <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button><button id="cfree" data-i18n-title="unlock">✕</button></div>
+    <div class="dyn" id="dyn"><input id="clen" type="number" inputmode="numeric" step="10" min="10" data-i18n-title="typeLen"><span class="u" data-i18n="mm"></span><span class="ang" id="cang"></span><button class="ok" id="cok" data-i18n-title="drawBtn">✓</button><button id="cfree" data-i18n-title="unlock">✕</button></div>
   </div>
 
   <div class="draw-panel" id="isoPanel" hidden>
@@ -438,7 +438,7 @@ const L={
   cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
-  drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
+  typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
   userExists:"That username already exists.",tapMove:"Tap the plan to move tag {0}",pickItem:"Select an item first",
   closedHint:"tap a wall to edit it",readout:"{0} lines · {1} blocks · perimeter {2} m · {4}",emptyHint:"Draw walls or place a block",
   gridN:"grid {0} mm",viewW:"View {0} mm",schem:"Schematic plan — dimensions in mm",surveying:"Being surveyed",pc:"{0} pc",pcs:"{0} pcs",
@@ -453,7 +453,7 @@ const L={
   cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
-  drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
+  typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
   userExists:"هذا الاسم مستخدم بالفعل.",tapMove:"اضغط على المخطط لنقل الرقم {0}",pickItem:"اختر بندًا أولًا",
   closedHint:"اضغط على أي جدار لتعديله",readout:"{0} خط · {1} بلوك · محيط {2} م · {4}",emptyHint:"ارسم الجدران أو ضع بلوك",
   gridN:"شبكة {0} مم",viewW:"عرض {0} مم",schem:"مخطط تخطيطي — المقاسات بالمليمتر",surveying:"قيد الرفع",pc:"{0} قطعة",pcs:"{0} قطع",
@@ -1202,14 +1202,16 @@ function clearGhost(){const g=$("planBox").querySelector("#ghost");if(g)g.innerH
 function commit(sn){
   const d=cur.draw; d.kinds=d.kinds||[];
   if(d.closed) return;                    /* الشكل مقفل — استخدم التحديد لتعديل الجدران */
+  const first=!d.pts.length;
   if(!d.pts.length){d.pts.push([rnd(sn.x),rnd(sn.y)])}
   else if(sn.end&&d.pts.length>2&&sn.x===d.pts[0][0]&&sn.y===d.pts[0][1]){d.closed=true;d.kinds[d.pts.length-1]=lineKind;selSeg=null}
   else{if(!sn.L||sn.L<MINL)return; d.kinds[d.pts.length-1]=lineKind; d.pts.push([Math.round(sn.x),Math.round(sn.y)])}
   autoFit?fitView():growView(); renderPlan(); queueSave();
+  if(first&&!coarse) setTimeout(()=>{$("clen").focus();$("clen").select()},0);  /* الكيبورد جاهز للمقاس */
 }
 function addByPad(deg){
   const d=cur.draw; if(d.closed)return;
-  const L=Math.max(MINL,+$("len").value||0);
+  const L=Math.max(MINL, (+$("clen").value||0) || (+$("len").value||0));
   d.kinds=d.kinds||[];
   if(!d.pts.length)d.pts.push([0,0]);
   const [px,py]=d.pts[d.pts.length-1],r=-deg*Math.PI/180;
@@ -1447,9 +1449,26 @@ function chipUpdate(live){
     dyn.style.left=(q.x-r.left)+"px"; dyn.style.top=(q.y-r.top)+"px";
   }catch(e){}
 }
+const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+function typingOK(){
+  return cur.mode==="draw" && tool==="line" && !editing && !panMode
+      && cur.draw.pts.length && !cur.draw.closed;
+}
+document.addEventListener("keydown",e=>{
+  if(!typingOK()) return;
+  const el=document.activeElement, inField = el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && el.id!=="clen";
+  if(inField) return;
+  if(/^[0-9]$/.test(e.key)){
+    if(el!==$("clen")){ $("clen").value=""; $("clen").focus(); }
+    lenLock=true; chipUpdate();
+    return;                       /* الرقم نفسه يدخل الحقل */
+  }
+  if(el===$("clen")) return;      /* الحقل يتولى Backspace و Enter بنفسه */
+  if(e.key==="Enter"){ e.preventDefault(); addByPad(lastDeg); }
+});
 $("clen").addEventListener("focus",()=>{lenLock=true;$("len").value=$("clen").value;chipUpdate()});
 $("clen").addEventListener("input",()=>{lenLock=true;$("len").value=$("clen").value;chipUpdate()});
-$("clen").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();$("clen").blur();addByPad(lastDeg)}});
+$("clen").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();e.stopPropagation();$("clen").blur();addByPad(lastDeg)}});
 $("cok").onclick=e=>{e.stopPropagation();lenLock=true;$("len").value=$("clen").value;addByPad(lastDeg)};
 $("cfree").onclick=e=>{e.stopPropagation();lenLock=false;chipUpdate()};
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("dyn").addEventListener(t,e=>e.stopPropagation()));
