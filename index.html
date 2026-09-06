@@ -787,10 +787,10 @@ function constrain(b){
   b.x=Math.round(b.x); b.y=Math.round(b.y);
 }
 function extents(pts){
-  if(!pts.length) return {x:-2000,y:-1500,w:4000,h:3000};
+  if(!pts.length) return {x:-5000,y:-3750,w:10000,h:7500};
   let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity;
   pts.forEach(p=>{a=Math.min(a,p[0]);b=Math.min(b,p[1]);c=Math.max(c,p[0]);d=Math.max(d,p[1])});
-  const w=Math.max(c-a,800),h=Math.max(d-b,600),pad=Math.max(w,h)*.14;
+  const w=Math.max(c-a,2500),h=Math.max(d-b,1900),pad=Math.max(w,h)*.14;
   return {x:a-pad,y:b-pad,w:w+pad*2,h:h+pad*2};
 }
 function fitView(){cur.view=extents(allPts())}
