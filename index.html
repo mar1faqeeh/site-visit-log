@@ -754,8 +754,41 @@ function aabb(b){
           y1:Math.min(...c.map(p=>p[1])),y2:Math.max(...c.map(p=>p[1]))};
 }
 const INWALL=["door1","door2","window","coldH","coldS"];
+/* تجاذب حواف البلوك مع حواف البلوكات الأخرى — مثل endpoint snap */
+function snapToBlocks(b){
+  const tol=Math.max(120,(cur.view?cur.view.w:6000)/45);
+  const r=aabb(b); let best=null;
+  const near=(v,t,ax,mv)=>{const g=Math.abs(v-t); if(g<tol&&(!best||g<best.g)) best={g,ax,mv}};
+  cur.blocks.forEach(o=>{
+    if(o.id===b.id) return;
+    const q=aabb(o);
+    const overlapY = r.y1 < q.y2+tol && r.y2 > q.y1-tol;
+    const overlapX = r.x1 < q.x2+tol && r.x2 > q.x1-tol;
+    if(overlapY){                       /* ملاصقة يمين/يسار + محاذاة الوجوه */
+      near(r.x1,q.x2,"x",q.x2-r.x1); near(r.x2,q.x1,"x",q.x1-r.x2);
+      near(r.x1,q.x1,"x",q.x1-r.x1);   near(r.x2,q.x2,"x",q.x2-r.x2);
+    }
+    if(overlapX){                       /* ملاصقة أعلى/أسفل + محاذاة */
+      near(r.y1,q.y2,"y",q.y2-r.y1); near(r.y2,q.y1,"y",q.y1-r.y2);
+      near(r.y1,q.y1,"y",q.y1-r.y1);   near(r.y2,q.y2,"y",q.y2-r.y2);
+    }
+  });
+  if(!best) return false;
+  if(best.ax==="x") b.x=Math.round(b.x+best.mv); else b.y=Math.round(b.y+best.mv);
+  /* محاذاة ثانية على المحور الآخر إن وُجدت */
+  const r2=aabb(b); let second=null;
+  cur.blocks.forEach(o=>{
+    if(o.id===b.id) return; const q=aabb(o);
+    const ax=best.ax==="x"?"y":"x";
+    const pairs = ax==="y" ? [[r2.y1,q.y1],[r2.y2,q.y2],[r2.y1,q.y2],[r2.y2,q.y1]]
+                           : [[r2.x1,q.x1],[r2.x2,q.x2],[r2.x1,q.x2],[r2.x2,q.x1]];
+    pairs.forEach(([v,t])=>{const g=Math.abs(v-t); if(g<tol&&(!second||g<second.g)) second={g,ax,mv:t-v}});
+  });
+  if(second){ if(second.ax==="x") b.x=Math.round(b.x+second.mv); else b.y=Math.round(b.y+second.mv) }
+  return true;
+}
 function constrain(b){
-  const bands=wallBands(); if(!bands.length) return;
+  const bands=wallBands(); if(!bands.length){ snapToBlocks(b); return; }
   const tol=Math.max(180,(cur.wallT||100)*1.6);
   if(INWALL.includes(b.k)){            /* الأبواب والشبابيك تُركّب داخل الجدار */
     const r=aabb(b); const cx=(r.x1+r.x2)/2, cy=(r.y1+r.y2)/2;
@@ -800,6 +833,7 @@ function constrain(b){
     }
   }
   if(best){ if(best.ax==="x") b.x+=best.mv; else b.y+=best.mv; }
+  else snapToBlocks(b);          /* لا جدار قريب: جرّب البلوكات المجاورة */
   b.x=Math.round(b.x); b.y=Math.round(b.y);
 }
 function extents(pts){
@@ -815,8 +849,13 @@ function growView(){
   const x1=Math.min(v.x,e.x),y1=Math.min(v.y,e.y),x2=Math.max(v.x+v.w,e.x+e.w),y2=Math.max(v.y+v.h,e.y+e.h);
   cur.view={x:x1,y:y1,w:x2-x1,h:y2-y1};
 }
-function zoom(f){const v=cur.view,cx=v.x+v.w/2,cy=v.y+v.h/2;
-  cur.view={w:v.w*f,h:v.h*f,x:cx-v.w*f/2,y:cy-v.h*f/2};autoFit=false;renderPlan()}
+function zoom(f,ax,ay){                       /* ax,ay = نقطة الارتكاز بالمليمتر */
+  const v=cur.view;
+  const px=(ax===undefined?v.x+v.w/2:ax), py=(ay===undefined?v.y+v.h/2:ay);
+  cur.view={w:v.w*f,h:v.h*f,
+    x:px-(px-v.x)*f, y:py-(py-v.y)*f};
+  autoFit=false; renderPlan();
+}
 const gridStep=w=>[100,250,500,1000,2000,5000].find(s=>w/s<26)||10000;
 
 /* ================= مكتبة رموز البلوكات (SVG) ================= */
@@ -1438,7 +1477,21 @@ $("undo").onclick=()=>{const d=cur.draw;if(d.closed)d.closed=false;else{d.pts.po
 $("close").onclick=()=>{const d=cur.draw;if(d.pts.length>2){d.kinds=d.kinds||[];d.kinds[d.pts.length-1]=lineKind;d.closed=true;renderPlan();sbarUpdate();queueSave()}};
 $("clear").onclick=()=>{cur.draw={pts:[],closed:false,kinds:[]};autoFit=true;fitView();renderPlan();queueSave()};
 $("fit").onclick=()=>{autoFit=true;fitView();renderPlan()};
-$("zin").onclick=()=>zoom(.8); $("zout").onclick=()=>zoom(1.25);
+function zoomAnchor(){
+  const b=cur.blocks.find(x=>x.id===selBlock);
+  if(b){const c=corners(b);return [c.reduce((m,p)=>m+p[0]/4,0), c.reduce((m,p)=>m+p[1]/4,0)]}
+  if(selSeg!==null){const l=segList();
+    if(l[selSeg+1]) return [(l[selSeg][0]+l[selSeg+1][0])/2,(l[selSeg][1]+l[selSeg+1][1])/2]}
+  return [undefined,undefined];
+}
+function zoomBtn(f){
+  const a=zoomAnchor(); zoom(f,a[0],a[1]);
+  if(a[0]!==undefined){                      /* توسيط المحدد بعد التكبير */
+    const v=cur.view; cur.view={w:v.w,h:v.h,x:a[0]-v.w/2,y:a[1]-v.h/2}; renderPlan();
+  }
+}
+$("zin").onclick=()=>zoomBtn(.8);
+$("zout").onclick=()=>zoomBtn(1.25);
 $("pan").onclick=()=>{panMode=!panMode;$("pan").setAttribute("aria-pressed",panMode);renderPlan()};
 document.querySelectorAll(".pad button[data-a]").forEach(b=>b.onclick=()=>addByPad(+b.dataset.a));
 
@@ -1500,7 +1553,7 @@ $("cfree").onclick=e=>{e.stopPropagation();lenLock=false;chipUpdate()};
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("dyn").addEventListener(t,e=>e.stopPropagation()));
 
 /* ================= التفاعل ================= */
-let lastDeg=0,lastPos=null,panStart=null,lastAct=0,drag=null,lenLock=false;
+let lastDeg=0,lastPos=null,panStart=null,lastAct=0,drag=null,lenLock=false,pinch=null,handPan=false;
 const box=$("planBox");
 function pos(e){const svg=box.querySelector("svg");if(!svg)return null;
   const q=toMM(svg,e.clientX,e.clientY);return {x:q.x,y:q.y,svg}}
@@ -1526,8 +1579,24 @@ function act(e){
     if(b&&b.item) sel=b.item, renderCards();
     renderSelBar(); renderPlan(); lastAct=Date.now();}
 }
+let spacePan=false;
+document.addEventListener("keydown",e=>{if(e.code==="Space"&&cur.mode==="draw"){spacePan=true;
+  if(document.activeElement===document.body)e.preventDefault();}});
+document.addEventListener("keyup",e=>{if(e.code==="Space")spacePan=false});
+const touches=new Map();
 box.addEventListener("pointerdown",e=>{
   if(cur.mode!=="draw"||editing) return;
+  if(e.button===1||spacePan){                 /* زر الماوس الأوسط أو مسافة = كف */
+    const q=pos(e); if(q){panStart=[q.x,q.y,cur.view.x,cur.view.y];handPan=true;
+      box.classList.add("panning");e.preventDefault();return}
+  }
+  touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(touches.size===2){                       /* بداية التكبير بإصبعين */
+    const [p1,p2]=[...touches.values()];
+    const q=pos({clientX:(p1.x+p2.x)/2,clientY:(p1.y+p2.y)/2});
+    pinch={d:Math.hypot(p1.x-p2.x,p1.y-p2.y), a:q?[q.x,q.y]:[undefined,undefined]};
+    drag=null; clearGhost(); return;
+  }
   const q=pos(e); if(!q) return;
   if(panMode){panStart=[q.x,q.y,cur.view.x,cur.view.y];return}
   const t=e.target.closest?e.target.closest("[data-block]"):null;
@@ -1537,8 +1606,24 @@ box.addEventListener("pointerdown",e=>{
 });
 box.addEventListener("pointermove",e=>{
   if(cur.mode!=="draw"||editing) return;
+  if(touches.has(e.pointerId)) touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&touches.size===2){
+    const [p1,p2]=[...touches.values()];
+    const dist=Math.hypot(p1.x-p2.x,p1.y-p2.y);
+    const mid=[(p1.x+p2.x)/2,(p1.y+p2.y)/2];
+    const r=box.getBoundingClientRect(), mmPx=cur.view.w/(r.width||1);
+    if(pinch.mid){                              /* تحريك بإصبعين */
+      cur.view.x-=(mid[0]-pinch.mid[0])*mmPx;
+      cur.view.y-=(mid[1]-pinch.mid[1])*mmPx;
+      autoFit=false;
+    }
+    pinch.mid=mid;
+    if(dist>4&&pinch.d>4){ zoom(pinch.d/dist, pinch.a[0], pinch.a[1]); pinch.d=dist; }
+    else renderPlan();
+    return;
+  }
   const q=pos(e); if(!q) return; lastPos=q;
-  if(panMode&&panStart){
+  if((panMode||handPan)&&panStart){
     if(e.buttons===0&&e.pointerType==="mouse") return;
     cur.view.x=panStart[2]-(q.x-panStart[0]); cur.view.y=panStart[3]-(q.y-panStart[1]);
     autoFit=false; q.svg.setAttribute("viewBox",`${cur.view.x} ${cur.view.y} ${cur.view.w} ${cur.view.h}`); return;
@@ -1555,11 +1640,14 @@ box.addEventListener("pointermove",e=>{
   const s=snap(q.x,q.y); if(s.deg!==undefined)lastDeg=((-s.deg%360)+360)%360; ghost(s); chipUpdate(s.L);
 });
 box.addEventListener("pointerup",e=>{
+  touches.delete(e.pointerId);
+  if(pinch){ if(touches.size<2){pinch=null} return; }
+  if(handPan){handPan=false;panStart=null;box.classList.remove("panning");return}
   panStart=null;
   if(drag){const moved=drag.moved;drag=null;if(moved){growView();renderPlan();queueSave();lastAct=Date.now();return}}
   act(e);
 });
-box.addEventListener("pointercancel",()=>{panStart=null;drag=null;clearGhost()});
+box.addEventListener("pointercancel",e=>{touches.delete(e.pointerId);pinch=null;panStart=null;drag=null;clearGhost()});
 box.addEventListener("pointerleave",()=>{panStart=null;clearGhost()});
 box.addEventListener("click",e=>{
   if(editing&&sel){const r=box.getBoundingClientRect(),it=cur.items.find(i=>i.no===sel);
@@ -1567,7 +1655,11 @@ box.addEventListener("click",e=>{
     it.y=+(((e.clientY-r.top)/r.height)*100).toFixed(1);renderPlan();return}
   if(Date.now()-lastAct>300) act(e);
 });
-box.addEventListener("wheel",e=>{if(cur.mode!=="draw")return;e.preventDefault();zoom(e.deltaY>0?1.12:.89)},{passive:false});
+box.addEventListener("wheel",e=>{
+  if(cur.mode!=="draw")return; e.preventDefault();
+  const q=pos(e);
+  zoom(e.deltaY>0?1.12:.89, q&&q.x, q&&q.y);
+},{passive:false});
 $("len").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addByPad(lastDeg)}});
 $("len").addEventListener("input",()=>{$("clen").value=$("len").value;lenLock=true;chipUpdate()});
 
