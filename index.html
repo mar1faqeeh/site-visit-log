@@ -1275,6 +1275,19 @@ function renderPalette(){
 }
 /* ===== تحرير الجدار المحدد ===== */
 function segList(){const d=cur.draw;return d.closed&&d.pts.length>2?[...d.pts,d.pts[0]]:d.pts}
+function pickSeg(x,y){
+  const l=segList(); if(l.length<2) return null;
+  const tol=Math.max((cur.wallT||100)*1.6, (cur.view?cur.view.w:4000)/45);
+  let best=null, bd=Infinity;
+  for(let i=0;i<l.length-1;i++){
+    const [ax,ay]=l[i],[bx2,by]=l[i+1];
+    const vx=bx2-ax, vy=by-ay, L2=vx*vx+vy*vy; if(!L2) continue;
+    let t=((x-ax)*vx+(y-ay)*vy)/L2; t=Math.max(0,Math.min(1,t));
+    const dx=x-(ax+vx*t), dy=y-(ay+vy*t), dist=Math.hypot(dx,dy);
+    if(dist<bd){bd=dist;best=i}
+  }
+  return bd<=tol?best:null;
+}
 function segLen(i){const l=segList();if(!l[i+1])return 0;
   return Math.round(Math.hypot(l[i+1][0]-l[i][0],l[i+1][1]-l[i][1]))}
 function sbarUpdate(){
@@ -1451,14 +1464,18 @@ function act(e){
   const q=pos(e)||lastPos; if(!q) return;
   if(tool==="place"&&pending){placeBlock(q.x,q.y);lastAct=Date.now();return}
   if(tool==="line"){
-    const wseg=e.target.closest?e.target.closest("[data-seg]"):null;
-    if(wseg){ selSeg=+wseg.dataset.seg; renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
+    if(cur.draw.closed){                       /* الشكل مقفل: اللمسة تحدد جدارًا */
+      const i=pickSeg(q.x,q.y);
+      selSeg=(i===null?null:i); renderPlan(); sbarUpdate(); lastAct=Date.now(); return;
+    }
     commit(snap(q.x,q.y)); lastAct=Date.now(); return }
   if(tool==="sel"){
-    const w=e.target.closest?e.target.closest("[data-seg]"):null;
-    if(w){ selSeg=+w.dataset.seg; selBlock=null; renderSelBar(); renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
-    selSeg=null;
     const t=e.target.closest?e.target.closest("[data-block]"):null;
+    if(!t){                                    /* لا يوجد بلوك تحت الإصبع: جرّب الجدران */
+      const i=pickSeg(q.x,q.y);
+      if(i!==null){ selSeg=i; selBlock=null; renderSelBar(); renderPlan(); sbarUpdate(); lastAct=Date.now(); return }
+    }
+    selSeg=null;
     selBlock=t?+t.dataset.block:null;
     const b=cur.blocks.find(x=>x.id===selBlock);
     if(b&&b.item) sel=b.item, renderCards();
@@ -1470,7 +1487,8 @@ box.addEventListener("pointerdown",e=>{
   if(panMode){panStart=[q.x,q.y,cur.view.x,cur.view.y];return}
   const t=e.target.closest?e.target.closest("[data-block]"):null;
   if(tool==="sel"&&t){const b=cur.blocks.find(x=>x.id===+t.dataset.block);
-    if(b){selBlock=b.id;drag={b,dx:q.x-b.x,dy:q.y-b.y,moved:false};renderSelBar();renderPlan()}}
+    if(b){selBlock=b.id;selSeg=null;drag={b,dx:q.x-b.x,dy:q.y-b.y,moved:false,x0:q.x,y0:q.y};
+      renderSelBar();renderPlan();sbarUpdate()}}
 });
 box.addEventListener("pointermove",e=>{
   if(cur.mode!=="draw"||editing) return;
@@ -1481,6 +1499,7 @@ box.addEventListener("pointermove",e=>{
     autoFit=false; q.svg.setAttribute("viewBox",`${cur.view.x} ${cur.view.y} ${cur.view.w} ${cur.view.h}`); return;
   }
   if(drag){
+    if(Math.hypot(q.x-drag.x0,q.y-drag.y0)<15) return;   /* لمسة ثابتة ليست سحبًا */
     drag.b.x=rnd(q.x-drag.dx); drag.b.y=rnd(q.y-drag.dy); drag.moved=true;
     constrain(drag.b);
     const g=box.querySelector(`[data-block="${drag.b.id}"]`);
