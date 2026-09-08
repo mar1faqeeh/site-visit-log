@@ -52,6 +52,9 @@ header.top .sub{display:block;font-size:11px;color:var(--pen-soft);font-weight:4
 .sortrow button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .geo{display:flex;gap:8px}.geo input{flex:1}
 .geo button{flex:none;padding:0 12px;border:1px solid var(--line);border-radius:2px;background:#fff;font-size:12.5px}
+.skbox{border:1px solid var(--line);background:#fff;touch-action:none;user-select:none}
+.skbox svg{width:100%;height:auto;display:block;cursor:crosshair}
+.draw-acts button.prim{background:var(--ink);color:#fff;border-color:var(--ink)}
 .robar{display:flex;gap:8px;align-items:center;padding:8px 14px;background:#FFF4D6;border-bottom:1px solid #E8C97A;font-size:13px;color:#5A4308}
 .robar span{flex:1}
 .robar button{padding:5px 10px;border:1px solid #C9A85C;border-radius:2px;background:#fff;font-size:12px}
@@ -201,8 +204,8 @@ main{padding:0 0 96px}
 #lightbox .frame{background:#fff;padding:16px;max-width:420px;width:100%}
 #lightbox .frame svg{width:100%;height:auto}
 #lightbox p{color:#fff;margin:0;text-align:center;font-size:14px}
-#panel,#visitPanel,#visitsPanel,#itemPanel,#revsPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
-#panel.show,#visitPanel.show,#visitsPanel.show,#itemPanel.show,#revsPanel.show{display:block}
+#panel,#visitPanel,#visitsPanel,#itemPanel,#revsPanel,#sketchPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
+#panel.show,#visitPanel.show,#visitsPanel.show,#itemPanel.show,#revsPanel.show,#sketchPanel.show{display:block}
 .sheet{position:absolute;inset-inline:0;bottom:0;background:var(--paper);border-top:3px solid var(--ink);padding:18px 16px 28px;max-height:86vh;overflow:auto}
 .sheet h2{margin:0 0 2px;font-size:17px}
 .sheet .lede{margin:0 0 18px;font-size:13px;color:#6B8199}
@@ -433,16 +436,30 @@ main{padding:0 0 96px}
     <button id="iTypeUp" data-i18n="setTypeThumb"></button>
     <button id="iTypeReset" data-i18n="resetTypeThumb"></button>
   </div>
-  <div class="draw-acts" style="margin:0 0 14px">
+  <div class="draw-acts" style="margin:0 0 8px">
     <button id="iIsoUp" data-i18n="setIsoArt"></button>
     <button id="iIsoReset" data-i18n="resetIsoArt"></button>
   </div>
+  <div class="draw-acts" style="margin:0 0 14px"><button id="iSketch" class="prim" data-i18n="sketchBtn"></button></div>
   <input id="iIsoFile" type="file" accept="image/*" hidden>
   <div class="err" id="ierr" style="color:var(--ok)"></div>
   <input id="iFile" type="file" accept="image/*" hidden>
   <input id="iTypeFile" type="file" accept="image/*" hidden>
   <button class="btn-primary" style="background:var(--ink);color:#fff" id="iSave" data-i18n="saveItem"></button>
   <button class="btn-primary" style="background:#fff;color:#9B2C2C;border:1px solid var(--line)" id="iDel" data-i18n="deleteItem"></button>
+</div></div>
+<div id="sketchPanel"><div class="sheet" style="max-height:96vh">
+  <button class="close-x" id="closeSketch">✕</button>
+  <h2 data-i18n="sketchH"></h2><p class="lede" data-i18n="sketchLede"></p>
+  <div class="skbox" id="skbox"><svg id="sksvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 800"></svg></div>
+  <div class="draw-acts" style="margin:8px 0">
+    <button id="skUndo" data-i18n="undo"></button><button id="skClear" data-i18n="clearLines"></button>
+    <button id="skBeautify" class="prim" data-i18n="beautify"></button><button id="skRaw" data-i18n="showRaw"></button>
+  </div>
+  <div class="draw-acts" style="margin:0 0 6px">
+    <button id="skSaveType" data-i18n="skSaveType"></button><button id="skSaveItem" data-i18n="skSaveItem"></button><button id="skSaveIso" data-i18n="skSaveIso"></button>
+  </div>
+  <div class="err" id="skmsg" style="color:var(--ok)"></div>
 </div></div>
 <div id="revsPanel"><div class="sheet">
   <button class="close-x" id="closeRevs">✕</button>
@@ -502,7 +519,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Hide",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",sketchBtn:"Sketch the isometric by hand",sketchH:"Isometric sketch",sketchLede:"Draw the unit freehand on the isometric grid. Beautify straightens every stroke onto the 30°/90° axes, joins corners and turns round strokes into true iso circles.",beautify:"Beautify",showRaw:"Show sketch",skSaveType:"Use for this type",skSaveItem:"Use for this item only",skSaveIso:"Use in 3D view",skSaved:"Saved.",skEmpty:"Draw something first.",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Start a visit",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -517,7 +534,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"إخفاء",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",sketchBtn:"ارسم الآيزومترك بيدك",sketchH:"سكيتش آيزومترك",sketchLede:"ارسم القطعة بإصبعك على شبكة الآيزومترك. زر «تحسين» يقوّم كل خطة على محاور ٣٠° و٩٠°، يصل الأركان، ويحوّل الخطوط المستديرة إلى دوائر آيزومترك صحيحة.",beautify:"تحسين",showRaw:"عرض السكيتش",skSaveType:"اعتمده لهذا النوع",skSaveItem:"لهذا البند فقط",skSaveIso:"استخدمه في المنظور ٣D",skSaved:"تم الحفظ.",skEmpty:"ارسم شيئًا أولًا.",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"بدء زيارة",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -2349,6 +2366,113 @@ $("editPins").onclick=()=>{editing=!editing;$("editPins").setAttribute("aria-pre
   $("editHint").textContent=editing?(sel?T("tapMove",sel):T("pickItem")):"";renderPlan()};
 $("resetPins").onclick=()=>{cur.items.forEach(i=>{const h=home[cur.id+i.no];if(h){i.x=h[0];i.y=h[1]}});renderPlan()};
 $("exportPdf").onclick=()=>window.print();
+/* ================= سكيتش آيزومترك بخط اليد → رسم هندسي ================= */
+const SK={strokes:[],cur:null,clean:null,showClean:false};
+const skSvg=()=>$("sksvg");
+function skPt(e){const svg=skSvg(),p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;
+  const q=p.matrixTransform(svg.getScreenCTM().inverse());return [q.x,q.y]}
+function skGrid(){                                     /* شبكة آيزومترك خفيفة للاسترشاد */
+  let g=""; const W=1000,H=800,st=40, t=Math.tan(Math.PI/6);
+  for(let x=-H/t;x<W+H/t;x+=st/Math.cos(Math.PI/6)){ g+=`M${x} 0 L${x+H/t} ${H} `; g+=`M${x} 0 L${x-H/t} ${H} `; }
+  for(let x=0;x<W;x+=st) g+=`M${x} 0 L${x} ${H} `;
+  return `<path d="${g}" stroke="#E4EAF0" stroke-width="1" fill="none"/>`;
+}
+function skRender(){
+  const svg=skSvg(); let o=skGrid();
+  const raw=SK.strokes.concat(SK.cur?[SK.cur]:[]);
+  if(!SK.showClean||!SK.clean){
+    raw.forEach(st=>{o+=`<path d="M${st.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}" stroke="#8FA5D6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`});
+  }else o+=SK.clean.inner;
+  svg.innerHTML=o;
+}
+/* تبسيط دوغلاس-بيكر */
+function rdp(pts,eps){
+  if(pts.length<3) return pts;
+  const [a,b]=[pts[0],pts[pts.length-1]]; let maxD=0,idx=0;
+  const L=Math.hypot(b[0]-a[0],b[1]-a[1])||1e-9;
+  for(let i=1;i<pts.length-1;i++){const p=pts[i];
+    const d=Math.abs((b[0]-a[0])*(a[1]-p[1])-(a[0]-p[0])*(b[1]-a[1]))/L; if(d>maxD){maxD=d;idx=i}}
+  if(maxD>eps){const l=rdp(pts.slice(0,idx+1),eps),r=rdp(pts.slice(idx),eps);return l.slice(0,-1).concat(r)}
+  return [a,b];
+}
+/* محاور الآيزومترك على الشاشة: 30° و150° و90° (+0° للتفاصيل) */
+const ISO_AXES=[30,150,90,270,210,330,0,180].map(a=>a*Math.PI/180);
+function snapAngle(a){let best=ISO_AXES[0],bd=9;ISO_AXES.forEach(x=>{let d=Math.abs(Math.atan2(Math.sin(a-x),Math.cos(a-x)));if(d<bd){bd=d;best=x}});return best}
+function isRound(pts,eps){
+  if(pts.length<8) return null;
+  const closed=Math.hypot(pts[0][0]-pts[pts.length-1][0],pts[0][1]-pts[pts.length-1][1]);
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys),w=x1-x0,h=y1-y0;
+  if(closed>Math.max(w,h)*.35) return null;
+  /* الدائرة بلا أركان حادة: الانحناء موزّع على نقاط كثيرة */
+  const sp=rdp(pts,(eps||8)*1.6); if(sp.length<6) return null;
+  for(let i=1;i<sp.length-1;i++){
+    const a1=Math.atan2(sp[i][1]-sp[i-1][1],sp[i][0]-sp[i-1][0]), a2=Math.atan2(sp[i+1][1]-sp[i][1],sp[i+1][0]-sp[i][0]);
+    const t=Math.abs(Math.atan2(Math.sin(a2-a1),Math.cos(a2-a1)))*180/Math.PI;
+    if(t>75) return null;                          /* ركن حاد = ليست دائرة */
+  }
+  const cx=(x0+x1)/2,cy=(y0+y1)/2, rx=w/2||1, ry=h/2||1;
+  let dev=0; pts.forEach(p=>{const r=Math.hypot((p[0]-cx)/rx,(p[1]-cy)/ry);dev+=Math.abs(r-1)});
+  return dev/pts.length<.22 ? {cx,cy,w,h} : null;
+}
+function beautify(){
+  const size=1000, eps=size*.012, tol=size*.03;
+  const shapes=[]; const ends=[];
+  SK.strokes.forEach(st=>{
+    const rnd_=isRound(st,eps);
+    if(rnd_){ const r=Math.max(rnd_.w,rnd_.h)/2/ (Math.SQRT2*Math.cos(Math.PI/6));   /* دائرة آيزومترك حقيقية */
+      shapes.push({type:"ell",cx:rnd_.cx,cy:rnd_.cy,rx:r*Math.SQRT2*Math.cos(Math.PI/6),ry:r*Math.SQRT2*.5}); return; }
+    const sp=rdp(st,eps); const out=[sp[0]];
+    for(let i=1;i<sp.length;i++){
+      const prev=out[out.length-1], dx=sp[i][0]-prev[0], dy=sp[i][1]-prev[1], L=Math.hypot(dx,dy);
+      if(L<eps) continue;
+      const a=snapAngle(Math.atan2(dy,dx));
+      out.push([prev[0]+Math.cos(a)*L, prev[1]+Math.sin(a)*L]);
+    }
+    if(out.length>1){
+      const c=Math.hypot(out[0][0]-out[out.length-1][0],out[0][1]-out[out.length-1][1]);
+      const closed=c<tol&&out.length>3;
+      shapes.push({type:"pl",pts:out,closed}); ends.push(out[0],out[out.length-1]);
+    }
+  });
+  /* وصل الأركان: نهايات الخطوط القريبة تلتحم */
+  const all=[]; shapes.forEach(s=>{if(s.type==="pl") s.pts.forEach(p=>all.push(p))});
+  shapes.forEach(s=>{ if(s.type!=="pl") return;
+    [0,s.pts.length-1].forEach(i=>{const p=s.pts[i]; let best=null,bd=tol;
+      all.forEach(q=>{if(q===p) return; const d=Math.hypot(q[0]-p[0],q[1]-p[1]); if(d<bd){bd=d;best=q}});
+      if(best){p[0]=best[0];p[1]=best[1]} });
+  });
+  /* تجميع الناتج */
+  let inner=""; const X=[],Y=[];
+  shapes.forEach(s=>{
+    if(s.type==="ell"){inner+=`<ellipse cx="${f1(s.cx)}" cy="${f1(s.cy)}" rx="${f1(s.rx)}" ry="${f1(s.ry)}"/>`;X.push(s.cx-s.rx,s.cx+s.rx);Y.push(s.cy-s.ry,s.cy+s.ry)}
+    else{inner+=`<path d="M${s.pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}${s.closed?" Z":""}"/>`;s.pts.forEach(p=>{X.push(p[0]);Y.push(p[1])})}
+  });
+  if(!X.length) return null;
+  const pad=12, x0=Math.min(...X)-pad,y0=Math.min(...Y)-pad,w=Math.max(...X)-x0+pad,h=Math.max(...Y)-y0+pad;
+  const g=`<g fill="none" stroke="#12294D" stroke-width="${f1(Math.max(w,h)/110)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g>`;
+  return {inner:g, svg:`<svg xmlns="${NS}" viewBox="${f1(x0)} ${f1(y0)} ${f1(w)} ${f1(h)}"><g id="frame">${g}</g></svg>`, w, h};
+}
+function openSketch(){ SK.strokes=[];SK.cur=null;SK.clean=null;SK.showClean=false; $("skmsg").textContent=""; skRender(); $("sketchPanel").classList.add("show") }
+$("iSketch").onclick=openSketch;
+$("closeSketch").onclick=()=>$("sketchPanel").classList.remove("show");
+$("sketchPanel").onclick=e=>{if(e.target.id==="sketchPanel")$("sketchPanel").classList.remove("show")};
+$("skbox").addEventListener("pointerdown",e=>{e.preventDefault();SK.cur=[skPt(e)];SK.showClean=false;$("skbox").setPointerCapture(e.pointerId)});
+$("skbox").addEventListener("pointermove",e=>{if(!SK.cur)return;const p=skPt(e),l=SK.cur[SK.cur.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>3){SK.cur.push(p);skRender()}});
+$("skbox").addEventListener("pointerup",()=>{if(SK.cur&&SK.cur.length>1)SK.strokes.push(SK.cur);SK.cur=null;skRender()});
+$("skbox").addEventListener("pointercancel",()=>{SK.cur=null;skRender()});
+$("skUndo").onclick=()=>{SK.strokes.pop();SK.showClean=false;skRender()};
+$("skClear").onclick=()=>{SK.strokes=[];SK.clean=null;SK.showClean=false;skRender()};
+$("skBeautify").onclick=()=>{SK.clean=beautify(); if(!SK.clean){$("skmsg").style.color="";$("skmsg").textContent=T("skEmpty");return} SK.showClean=true;skRender()};
+$("skRaw").onclick=()=>{SK.showClean=false;skRender()};
+function skResult(){ if(!SK.clean) SK.clean=beautify(); if(!SK.clean){$("skmsg").style.color="";$("skmsg").textContent=T("skEmpty");return null} return SK.clean }
+const svgDataURL=svg=>"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+$("skSaveType").onclick=async()=>{const r=skResult();if(!r)return; await setTypeThumb(pendingType,svgDataURL(r.svg)); $("skmsg").style.color="var(--ok)";$("skmsg").textContent=T("skSaved")};
+$("skSaveItem").onclick=()=>{const r=skResult();if(!r)return; pendingThumb=svgDataURL(r.svg); itemPreview(); renderIconGrid(); $("skmsg").style.color="var(--ok)";$("skmsg").textContent=T("skSaved")};
+$("skSaveIso").onclick=async()=>{const r=skResult();if(!r)return; const parsed=parseBlockSVG(r.svg); if(!parsed)return;
+  const ref=isoRefSize(); await setIsoArt(pendingType,{vec:parsed.frame+parsed.detail,defs:parsed.defs,x:parsed.fx,y:parsed.fy,w:parsed.fw,h:parsed.fh,refW:ref[0],refD:ref[1]});
+  $("skmsg").style.color="var(--ok)";$("skmsg").textContent=T("skSaved")};
+
 /* ===== الإصدارات: يوم زيارة = إصدار ===== */
 let liveVisit=null;                                   /* الزيارة الحية أثناء عرض إصدار قديم */
 const today=()=>new Date().toISOString().slice(0,10);
@@ -2413,7 +2537,12 @@ let dashHidden=false;
 function renderDash(){
   const real=projects.filter(v=>v.site||v.client);
   const show=!dashHidden && me && isBlank(cur);          /* تظهر عند فتح التطبيق على زيارة فارغة */
-  $("dash").hidden=!show; if(!show) return;
+  $("dash").hidden=!show;
+  /* اللوحة وحدها في الواجهة: المخطط والقائمة وشريط الإجراءات يظهرون بعد بدء الزيارة */
+  document.querySelector("main .wrap").hidden=show;
+  document.querySelector(".actions").hidden=show;
+  document.querySelectorAll(".visitbar")[1].hidden=show;
+  if(!show) return;
   const ym=new Date().toISOString().slice(0,7);
   const month=real.filter(v=>(v.date||"").startsWith(ym)).length;
   const clients=new Map(); real.forEach(v=>{const k=(v.client||"—").trim();clients.set(k,(clients.get(k)||0)+1)});
@@ -2430,7 +2559,7 @@ function renderDash(){
     if(v){saveStore();cur=v;sel=null;selBlock=null;render()}});
   $("clientList").querySelectorAll("button").forEach(b=>b.onclick=()=>{vQuery=b.dataset.c;$("vSearch").value=vQuery;$("quickSearch").value=vQuery;renderVisits();$("visitsPanel").classList.add("show")});
 }
-$("dashHide").onclick=()=>{dashHidden=true;renderDash()};
+$("dashHide").onclick=()=>{dashHidden=true;renderDash();openVisit("draft")};
 $("openPanel").onclick=()=>$("panel").classList.add("show");
 $("closePanel").onclick=()=>$("panel").classList.remove("show");
 $("panel").onclick=e=>{if(e.target.id==="panel")$("panel").classList.remove("show")};
