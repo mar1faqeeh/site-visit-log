@@ -318,6 +318,9 @@ main{padding:0 0 96px}
         <div><label for="bw" data-i18n="widthMM"></label><input id="bw" type="number" step="10" value="1200"></div>
         <div><label for="bd" data-i18n="depthMM"></label><input id="bd" type="number" step="10" value="700"></div>
       </div>
+      <div id="tableVar" class="sortrow" style="margin-top:10px" hidden>
+        <button data-v="1"></button><button data-v="2" aria-pressed="true"></button><button data-v="3"></button>
+      </div>
       <div class="draw-acts" style="margin-top:10px"><button id="autoBlocks" data-i18n="autoBlocks"></button></div>
       <div class="hintbox" id="blockHint" data-i18n="blockHint"></div>
     </div>
@@ -381,10 +384,15 @@ main{padding:0 0 96px}
     <button id="iNoPhoto" data-i18n="removePhoto"></button>
   </div>
   <label style="font-size:12px;color:#6B8199" data-i18n="typeLib"></label>
-  <div class="draw-acts" style="margin:6px 0 14px">
+  <div class="draw-acts" style="margin:6px 0 10px">
     <button id="iTypeUp" data-i18n="setTypeThumb"></button>
     <button id="iTypeReset" data-i18n="resetTypeThumb"></button>
   </div>
+  <div class="draw-acts" style="margin:0 0 14px">
+    <button id="iIsoUp" data-i18n="setIsoArt"></button>
+    <button id="iIsoReset" data-i18n="resetIsoArt"></button>
+  </div>
+  <input id="iIsoFile" type="file" accept="image/*" hidden>
   <div class="err" id="ierr" style="color:var(--ok)"></div>
   <input id="iFile" type="file" accept="image/*" hidden>
   <input id="iTypeFile" type="file" accept="image/*" hidden>
@@ -443,7 +451,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -458,7 +466,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -492,10 +500,17 @@ const BLK={
    f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="70" y="70" width="${w-140}" height="${d-140}" fill="none" stroke-dasharray="${dash(w)}"/>`},
  tableos:{n:"طاولة برف علوي",e:"Table w/ overshelf",w:1200,d:700,iso:"table2",
    f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="70" y="70" width="${w-140}" height="${d-140}" fill="none" stroke-dasharray="${dash(w)}"/><rect x="0" y="0" width="${w}" height="${Math.min(300,d*.4)}" fill="none" stroke-dasharray="${dash(w)}"/>`},
- sink1:{n:"حوض مفرد",e:"Single bowl sink",w:800,d:700,iso:"sink",
-   f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="${w*.16}" y="${d*.2}" width="${w*.68}" height="${d*.58}" rx="45" fill="none"/><circle cx="${w/2}" cy="${d*.49}" r="${Math.min(w,d)*.07}" fill="none"/><circle cx="${w/2}" cy="105" r="52" fill="none"/>`},
- sink2:{n:"حوض مزدوج",e:"Double bowl sink",w:1220,d:700,iso:"sink",
-   f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="${w*.07}" y="${d*.2}" width="${w*.39}" height="${d*.58}" rx="45" fill="none"/><rect x="${w*.54}" y="${d*.2}" width="${w*.39}" height="${d*.58}" rx="45" fill="none"/><circle cx="${w/2}" cy="105" r="52" fill="none"/>`},
+ sinkT1:{n:"طاولة بحوض واحد ومصفّى",e:"Table with 1 bowl sink",w:1200,d:700,iso:"sinkT1",
+   f:(w,d)=>{let r="";for(let i=1;i<=7;i++){const x=w*.06+ (w*.40)*i/8; r+=`<line x1="${x}" y1="${d*.2}" x2="${x}" y2="${d*.8}" opacity=".6"/>`}
+     return `<rect width="${w}" height="${d}" fill="#fff"/>${r}<rect x="${w*.52}" y="${d*.18}" width="${w*.41}" height="${d*.64}" rx="50" fill="none"/><circle cx="${w*.725}" cy="${d*.5}" r="${d*.06}" fill="none"/><circle cx="${w*.725}" cy="95" r="50" fill="none"/>`}},
+ sink2:{n:"طاولة بحوضين",e:"Table with 2 bowl sink",w:1200,d:700,iso:"sinkT2",
+   f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="${w*.06}" y="${d*.18}" width="${w*.41}" height="${d*.64}" rx="50" fill="none"/><rect x="${w*.53}" y="${d*.18}" width="${w*.41}" height="${d*.64}" rx="50" fill="none"/><circle cx="${w*.265}" cy="${d*.5}" r="${d*.06}" fill="none"/><circle cx="${w*.735}" cy="${d*.5}" r="${d*.06}" fill="none"/><circle cx="${w/2}" cy="95" r="50" fill="none"/>`},
+ sinkT3:{n:"طاولة بثلاثة أحواض",e:"Table with 3 bowl sink",w:1800,d:700,iso:"sinkT3",
+   f:(w,d)=>{let o=`<rect width="${w}" height="${d}" fill="#fff"/>`;
+     for(let i=0;i<3;i++){const x=w*.04+i*(w*.92/3); o+=`<rect x="${x+20}" y="${d*.18}" width="${w*.92/3-40}" height="${d*.64}" rx="50" fill="none"/><circle cx="${x+w*.92/6}" cy="${d*.5}" r="${d*.06}" fill="none"/>`}
+     return o+`<circle cx="${w/2}" cy="95" r="50" fill="none"/>`}},
+ sink1:{n:"حوض مفرد كبير",e:"Single bowl sink",w:1000,d:700,iso:"sink1",
+   f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="${w*.08}" y="${d*.17}" width="${w*.84}" height="${d*.66}" rx="60" fill="none"/><circle cx="${w/2}" cy="${d*.5}" r="${d*.07}" fill="none"/><circle cx="${w/2}" cy="95" r="50" fill="none"/>`},
  cabinet:{n:"كابينة",e:"Cabinet",w:1000,d:700,iso:"cabinet",
    f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff"/><line x1="0" y1="${d-70}" x2="${w}" y2="${d-70}"/><line x1="${w/2}" y1="${d-70}" x2="${w/2}" y2="${d}"/><line x1="${w/2-190}" y1="${d-35}" x2="${w/2-70}" y2="${d-35}"/><line x1="${w/2+70}" y1="${d-35}" x2="${w/2+190}" y2="${d-35}"/>`},
  hood:{n:"هود",e:"Hood",w:2000,d:1200,iso:"hood",
@@ -562,116 +577,252 @@ const BLK={
    f:(w,d)=>`<circle cx="${w/2}" cy="${d/2}" r="${w*.32}" fill="#fff"/><line x1="${w/2}" y1="${d/2}" x2="${w/2}" y2="${d}"/>`}
 };
 
-/* ================= مصغّرات آيزومترك (رسم هندسي) ================= */
+/* ================= نماذج ثلاثية الأبعاد موحّدة: المصغّرات والمنظور ================= */
 const C=Math.cos(Math.PI/6), S=.5, SQ2=Math.SQRT2;
 const P=(x,y,z)=>[(x-y)*C,(x+y)*S-z];
 const f1=v=>(Math.round(v*10)/10);
-const PL=(pts,close)=>`<path d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}${close?" Z":""}"/>`;
-function bx(x,y,z,w,d,h){
-  const A=(a,b,c)=>P(x+a,y+b,z+c);
-  return PL([A(0,0,h),A(w,0,h),A(w,d,h),A(0,d,h)],1)
-       + PL([A(0,d,h),A(w,d,h),A(w,d,0),A(0,d,0)],1)
-       + PL([A(w,0,h),A(w,d,h),A(w,d,0),A(w,0,0)],1);
+const FL={top:"#F7F9FB",left:"#E3E9EF",right:"#CDD6DF",dark:"#B7C2CD",recess:"#E9EEF3"};
+const pth=(pts,fill,extra)=>`<path fill="${fill||"none"}" ${extra||""} d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
+const ln=(a,b)=>`<path d="M${f1(a[0])} ${f1(a[1])} L${f1(b[0])} ${f1(b[1])}"/>`;
+/* صندوق كامل بثلاثة أوجه ظاهرة */
+function bx3(x,y,z,w,d,h,fills){
+  const F=fills||FL, A=(a,b,c)=>P(x+a,y+b,z+c);
+  return pth([A(0,d,h),A(w,d,h),A(w,d,0),A(0,d,0)],F.left)
+       + pth([A(w,0,h),A(w,d,h),A(w,d,0),A(w,0,0)],F.right)
+       + pth([A(0,0,h),A(w,0,h),A(w,d,h),A(0,d,h)],F.top);
 }
-const ell=(cx,cy,z,r)=>{const p=P(cx,cy,z);
-  return `<ellipse cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
-const face=(pts,fill)=>`<path fill="${fill}" d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
-const topRect=(x,y,z,w,d,fill)=>face([P(x,y,z),P(x+w,y,z),P(x+w,y+d,z),P(x,y+d,z)],fill);
-function isoWrap(inner,W,D,H,Z0){
-  Z0=Z0||0;
-  const pad=Math.max(W,D,H)*.09, lw=Math.max(W,D,H)/150;
-  const x1=-D*C-pad, x2=W*C+pad, y1=-H-pad, y2=(W+D)*S-Z0+pad;
-  return `<svg viewBox="${f1(x1)} ${f1(y1)} ${f1(x2-x1)} ${f1(y2-y1)}" xmlns="${NS}">
-    <g fill="#fff" stroke="#12294D" stroke-width="${f1(lw*1.15)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
+/* قائم رأسي بلا خطوط أفقية في المقاطع الوسطى حتى لا تظهر فواصل */
+function post(x,y,z0,z1,s,cap){
+  const A=(a,b,c)=>P(x+a,y+b,c);
+  let o=pth([A(0,s,z1),A(s,s,z1),A(s,s,z0),A(0,s,z0)],FL.left,'stroke="none"')
+       +pth([A(s,0,z1),A(s,s,z1),A(s,s,z0),A(s,0,z0)],FL.right,'stroke="none"');
+  o+=ln(A(0,s,z0),A(0,s,z1))+ln(A(s,s,z0),A(s,s,z1))+ln(A(s,0,z0),A(s,0,z1));
+  if(cap) o+=pth([A(0,0,z1),A(s,0,z1),A(s,s,z1),A(0,s,z1)],FL.top);
+  return o;
 }
-function frame(w,d,levels,leg){
-  leg=leg||50; let o="", z0=0;
-  const cs=[[0,0],[w-leg,0],[0,d-leg],[w-leg,d-leg]];
-  cs.forEach(c=>{o+=bx(c[0]+8,c[1]+8,-28,leg-16,leg-16,28)});
-  levels.forEach(lv=>{
-    cs.forEach(c=>{o+=bx(c[0],c[1],z0,leg,leg,lv.z-z0)});
-    const m=lv.inset||0;
-    o+=bx(m,m,lv.z,w-2*m,d-2*m,lv.t);
-    if(lv.lip) o+=PL([P(m+40,m+40,lv.z+lv.t),P(w-m-40,m+40,lv.z+lv.t),
-                      P(w-m-40,d-m-40,lv.z+lv.t),P(m+40,d-m-40,lv.z+lv.t)],1);
+const ell=(cx,cy,z,r,fill)=>{const p=P(cx,cy,z);
+  return `<ellipse fill="${fill||"none"}" cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
+/* قاعدة ستانلس: أرجل مربّعة، أقدام، أرفف بمستويات، سطح بحافة */
+function stand(x,y,w,d,levels,opt){
+  opt=opt||{}; const s=opt.leg||40, feet=opt.feet!==false, ins=opt.inset!==undefined?opt.inset:30;
+  const corners=[[x+ins,y+ins],[x+w-s-ins,y+ins],[x+ins,y+d-s-ins],[x+w-s-ins,y+d-s-ins]]
+    .sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
+  let o="", z0=0;
+  if(feet) corners.forEach(c=>{o+=bx3(c[0]+6,c[1]+6,-28,s-12,s-12,28,{top:FL.dark,left:FL.dark,right:FL.dark})});
+  if(opt.rails){                                        /* عصب بين الأرجل: خلف + الجانبان */
+    const rz=opt.rails, m=ins+s, rf={top:FL.top,left:FL.right,right:FL.dark};
+    corners.forEach(c=>{o+=post(c[0],c[1],0,rz+s,s,false)});
+    o+=bx3(x+ins+s,y+ins,rz,w-2*m,s,s,rf);                                   /* الخلف */
+    o+=bx3(x+ins,y+ins+s,rz,s,d-2*m,s,rf);                                   /* اليسار */
+    o+=bx3(x+w-ins-s,y+ins+s,rz,s,d-2*m,s,rf);                               /* اليمين */
+    z0=rz+s;
+  }
+  levels.forEach((lv,i)=>{
+    const zTo = lv.top ? lv.z : lv.z+lv.t;              /* الرف بين الأرجل: القائم يمر بسماكته بلا انقطاع */
+    corners.forEach(c=>{o+=post(c[0],c[1],z0,zTo,s,false)});
+    if(lv.top){ o+=bx3(x,y,lv.z,w,d,lv.t,{top:FL.top,left:FL.right,right:FL.dark}); }      /* السطح بحافة مطوية */
+    else { const m=ins+s;                                                                    /* رف بين الأرجل */
+      o+=bx3(x+m,y+m,lv.z,w-2*m,d-2*m,lv.t,{top:FL.top,left:FL.right,right:FL.dark}); }
     z0=lv.z+lv.t;
   });
   return o;
 }
-const ISO={
- table:()=>{const w=1300,d=750,h=880;
-   return isoWrap(frame(w,d,[{z:180,t:22,inset:60},{z:480,t:22,inset:60},{z:h-45,t:45,lip:1}]),w,d,h,-28)},
- table2:()=>{const w=1300,d=750,h=880,H=1620,pz1=H-430,pz2=H-22;
-   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45,lip:1}]);
-   const px=[60,w-105];
-   px.forEach(x=>{o+=bx(x,210,h,45,45,pz1-h)});
-   o+=bx(0,0,pz1,w,320,22);
-   px.forEach(x=>{o+=bx(x,210,pz1+22,45,45,pz2-pz1-22)});
-   o+=bx(0,0,pz2,w,320,22);
-   return isoWrap(o,w,d,H,-28)},
- sink:()=>{const w=1300,d=750,h=880,ox=190,oy=150,ow=780,od=450,dep=200;
-   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
-   const zt=h, zb=h-dep;
-   o+=topRect(ox,oy,zb,ow,od,"#F1F5F9");
-   o+=PL([P(ox,oy,zt),P(ox,oy+od,zt),P(ox,oy+od,zb),P(ox,oy,zb)],1);
-   o+=PL([P(ox,oy,zt),P(ox+ow,oy,zt),P(ox+ow,oy,zb),P(ox,oy,zb)],1);
-   o+=PL([P(ox,oy,zt),P(ox+ow,oy,zt),P(ox+ow,oy+od,zt),P(ox,oy+od,zt)],1);
-   o+=ell(ox+ow/2,oy+od/2,zb,60);
-   const fx=w-260, fy=90;
-   o+=ell(fx,fy,zt,110)+bx(fx-45,fy-45,zt,90,90,320);
-   o+=bx(fx-35,fy-35,zt+320,70,330,65);
-   o+=bx(fx-28,fy+230,zt+250,56,56,75);
-   return isoWrap(o,w,d,zt+390,-28)},
- shelf:()=>{const w=1300,d=430,h=300;
-   let o="";
-   [110,w-190].forEach(x=>{ o+=bx(x,0,-h,70,90,h); o+=bx(x,90,-70,70,d-140,70); });
-   o+=bx(0,0,0,w,d,26)+bx(0,0,26,w,70,110);
-   return isoWrap(o,w,d,140,-h)},
- pshelf:()=>{const w=1300,d=420,h=60;
-   let o=bx(0,0,0,w,d,26);
-   for(let i=1;i<=7;i++)for(let j=1;j<=2;j++) o+=ell(w*i/8,d*j/3,26,34);
-   return isoWrap(o,w,d,h)},
- cabinet:()=>{const w=1100,dd=750,h=900;
-   let o=bx(60,60,0,w-120,dd-120,120)+bx(0,0,120,w,dd,h-120);
-   o+=PL([P(w/2,dd,120),P(w/2,dd,h)]);
-   o+=bx(w/2-260,dd,h*.55,120,32,45)+bx(w/2+140,dd,h*.55,120,32,45);
-   return isoWrap(o,w,dd,h)},
- hood:()=>{const w=1700,d=1050,h=520,coll=420,t=170;
-   const A=(x,y,z)=>P(x,y,z);
-   let o=PL([A(0,0,0),A(w,0,0),A(w,d,0),A(0,d,0)],1);
-   o+=PL([A(0,d,0),A(t,d-t,h),A(w-t,d-t,h),A(w,d,0)],1);
-   o+=PL([A(w,0,0),A(w,d,0),A(w-t,d-t,h),A(w-t,t,h)],1);
-   o+=PL([A(t,t,h),A(w-t,t,h),A(w-t,d-t,h),A(t,d-t,h)],1);
-   o+=bx(w/2-coll/2,d/2-coll/2,h,coll,coll,300);
-   o+=PL([A(160,150,0),A(w/2-40,150,0),A(w/2-40,d-150,0),A(160,d-150,0)],1);
-   o+=PL([A(w/2+40,150,0),A(w-160,150,0),A(w-160,d-150,0),A(w/2+40,d-150,0)],1);
-   return isoWrap(o,w,d,h+300)},
- burner:()=>{const w=1500,d=850,h=880;
-   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
-   for(let i=0;i<2;i++)for(let j=0;j<2;j++){
-     const cx=w*(i?.72:.28), cy=d*(j?.7:.3);
-     o+=ell(cx,cy,h,160)+ell(cx,cy,h,95)+ell(cx,cy,h,35);}
-   return isoWrap(o,w,d,h,-28)},
- grill:()=>{const w=1000,d=850,h=880;
-   let o=frame(w,d,[{z:180,t:22,inset:60},{z:h-45,t:45}]);
-   o+=topRect(90,90,h,w-180,d-180,"#F1F5F9")+PL([P(90,90,h),P(w-90,90,h),P(w-90,d-90,h),P(90,d-90,h)],1);
-   for(let i=1;i<9;i++){const y=90+(d-180)*i/9; o+=PL([P(110,y,h+18),P(w-110,y,h+18)])}
-   return isoWrap(o,w,d,h+40,-28)},
- faucet:()=>{const w=460,d=460,h=860;
-   const cx=w/2, cy=d/2;
-   let o=ell(cx,cy,0,150)+bx(cx-70,cy-70,0,140,140,60);
-   o+=bx(cx-45,cy-45,60,90,90,500);
-   o+=bx(cx-38,cy-38,560,76,330,70);
-   o+=bx(cx-30,cy+225,470,60,60,90);
-   o+=bx(cx-20,cy-170,530,40,130,40);
-   return isoWrap(o,w,d,h)}
+/* طاولة عمل: v1 ظهر فقط، v2 ظهر + رف سفلي، v3 ظهر + رف سفلي + رف وسطي */
+function worktable(x,y,w,d,v){
+  const lv=[]; if(v>=2) lv.push({z:150,t:30}); if(v>=3) lv.push({z:470,t:30}); lv.push({z:810,t:40,top:1});
+  let o=stand(x,y,w,d,lv,v===1?{rails:150}:{});
+  o+=bx3(x,y,850,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});                       /* الظهر */
+  return o;
+}
+/* مستطيل بزوايا دائرية على مستوى أفقي، نقاطه مرتبة: يبدأ من مقدمة الجانب الأيسر ويدور مع عقارب الساعة */
+function rrect(x,y,z,w,d,R,steps){
+  steps=steps||4; const pts=[], corner=(cx,cy,a0)=>{for(let i=0;i<=steps;i++){const a=a0+(i/steps)*Math.PI/2;
+    pts.push([cx+R*Math.cos(a),cy+R*Math.sin(a),z])}};
+  corner(x+R,   y+d-R, Math.PI/2);      /* أمام-يسار */
+  corner(x+R,   y+R,   Math.PI);        /* خلف-يسار */
+  corner(x+w-R, y+R,   Math.PI*1.5);    /* خلف-يمين */
+  corner(x+w-R, y+d-R, 0);              /* أمام-يمين */
+  return pts;
+}
+const proj=pts=>pts.map(p=>P(p[0],p[1],p[2]));
+const path=(pts,fill,extra)=>`<path fill="${fill||"none"}" ${extra||""} d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
+/* حوضية غاطسة بزوايا دائرية، جدران داخلية مقوّسة، وقاع متدرّج الظل */
+function bowl(x,y,zt,w,d,dep){
+  const id="bw"+(bowl.n=(bowl.n||0)+1), R=Math.min(80,w*.18,d*.18), n=5;
+  const rimO=rrect(x,y,zt,w,d,R,n), rimI=rrect(x+22,y+22,zt,w-44,d-44,Math.max(20,R-22),n);
+  const flr=rrect(x+70,y+70,zt-dep,w-140,d-140,Math.max(14,R-60),n);
+  const pO=proj(rimO), pI=proj(rimI), pF=proj(flr);
+  /* الجزء الظاهر من الجدار الداخلي: الجانب الأيسر ثم الخلف (من أول نقطة إلى نهاية الركن خلف-يمين) */
+  const end=(n+1)*3-1;
+  let walls="";
+  for(let i=0;i<end;i++) walls+=path([pI[i],pI[i+1],pF[i+1],pF[i]], i<(n+1)*1.5?FL.dark:FL.right,'stroke="none"');
+  const wallEdge=`<path fill="none" d="M${pF.slice(0,end+1).map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}"/>`;
+  return `<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="${FL.dark}"/><stop offset="1" stop-color="${FL.recess}"/></linearGradient>
+    <clipPath id="${id}"><path d="M${pI.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/></clipPath></defs>`
+    + `<g clip-path="url(#${id})">` + path(pF,`url(#g${id})`,'stroke="none"') + walls + wallEdge
+    + ell(x+w/2,y+d/2,zt-dep,40,FL.recess) + `</g>`
+    + path(pO,"none") + path(pI,"none");
+}
+/* مصفّى مضلّع: أضلاع بارزة بحافة فاتحة وظل */
+function drainboard(x,y,z,w,d){
+  let o=""; const n=7, len=d*.6, y0=y+d*.2;
+  for(let i=1;i<=n;i++){const xx=x+w*i/(n+1);
+    o+=path(proj([[xx-10,y0,z],[xx+10,y0,z],[xx+10,y0+len,z],[xx-10,y0+len,z]]),FL.right,'stroke="none"');
+    o+=ln(P(xx-10,y0,z),P(xx-10,y0+len,z));}
+  return o;
+}
+/* طاولة حوض: سطح بحافة مطوية يعلو جسمًا غائرًا، عصب بين الأرجل، ظهر، وأحواض غاطسة */
+function sinkModel(x,y,w,d,o){
+  const n=o.bowls||2, zt=850, ap=280, inset=25;
+  let out=stand(x,y,w,d,[{z:zt-40-ap,t:0,top:1}],{rails:200});
+  out+=bx3(x+inset,y+inset,zt-40-ap,w-2*inset,d-2*inset,ap,{top:FL.top,left:FL.right,right:FL.dark});
+  out+=bx3(x,y,810,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});
+  out+=bx3(x,y,zt,w,28,120,{top:FL.right,left:FL.left,right:FL.dark});           /* الظهر */
+  if(o.drain) out+=drainboard(x,y,zt,w*.46,d);
+  const x0 = o.drain ? w*.52 : (o.full? w*.07 : w*.06);
+  const areaW = o.drain ? w*.42 : (o.full? w*.86 : w*.88);
+  const gap=n>1?50:0, bw=(areaW-gap*(n-1))/n, by=o.full?d*.16:d*.18, bd=o.full?d*.68:d*.64;
+  for(let i=0;i<n;i++) out+=bowl(x+x0+i*(bw+gap),y+by,zt,bw,bd,260);
+  out+=faucet(x+w/2,y+58,zt);
+  return out;
+}
+/* خلاط تجاري: قاعدة دائرية، عمود أسطواني، عنق إوزة منحنٍ، وذراع تشغيل */
+function faucet(x,y,z){
+  const R=16, col=270, r=125, yc=y+r, zc=z+col;
+  let o=ell(x,y,z,48,FL.right)+ell(x,y,z+22,48,FL.top);
+  const cx=(a,b,c)=>P(x+a,y+b,c);
+  /* العمود */
+  o+=pth([cx(-R,0,z+22),cx(R,0,z+22),cx(R,0,zc),cx(-R,0,zc)],FL.left);
+  /* عنق الإوزة: شريط بين قوسين متحدي المركز في مستوى y-z */
+  const arc=(rr,rev)=>{const pts=[];for(let i=0;i<=14;i++){const a=Math.PI*(1-i/14);
+    pts.push(P(x,yc+rr*Math.cos(a),zc+rr*Math.sin(a)))} return rev?pts.reverse():pts};
+  const outer=arc(r+R), inner=arc(r-R,true);
+  o+=pth([...outer,...inner],FL.left);
+  o+=`<path fill="none" d="M${outer.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}"/>`;
+  /* الفوهة النازلة */
+  const ye=yc+r; o+=pth([cx(-R,ye-y,zc),cx(R,ye-y,zc),cx(R,ye-y,zc-70),cx(-R,ye-y,zc-70)],FL.right);
+  o+=ell(x,ye,zc-70,R,FL.dark);
+  /* ذراع التشغيل */
+  o+=bx3(x-9,y-120,zc-40,18,110,14,{top:FL.top,left:FL.right,right:FL.dark});
+  o+=ell(x,y-125,zc-33,20,FL.top);
+  return o;
+}
+function backsplash(x,y,z,w,h){ return bx3(x,y,z,w,40,h) }
+/* ---------- الأنواع ---------- */
+const M3={
+ table:(x,y,w,d,o)=>worktable(x,y,w,d,(o&&o.v)||2),
+ table2:(x,y,w,d)=>{let o=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
+   const px=[x+40,x+w-80];
+   px.forEach(p=>{o+=post(p,y+30,850,1200,40,false)});
+   o+=bx3(x,y,1200,w,330,22);
+   px.forEach(p=>{o+=post(p,y+30,1222,1560,40,false)});
+   o+=bx3(x,y,1560,w,330,22); return o},
+ sinkT1:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:1,drain:1}),
+ sinkT2:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:2}),
+ sinkT3:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:3}),
+ sink1:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:1,full:1}),
+ sink:(x,y,w,d,o)=>sinkModel(x,y,w,d,{bowls:(o&&o.bowls)||2}),
+ cabinet:(x,y,w,d,o)=>{const h=(o&&o.h)||900;
+   let s=bx3(x+50,y+50,0,w-100,d-100,110)+bx3(x,y,110,w,d,h-110);
+   const A=(a,b,c)=>P(x+a,y+b,c);
+   s+=ln(A(w/2,d,110),A(w/2,d,h));
+   s+=bx3(x+w/2-200,y+d,h*.55,110,26,36)+bx3(x+w/2+90,y+d,h*.55,110,26,36); return s},
+ fridge:(x,y,w,d)=>{let s=bx3(x+40,y+40,0,w-80,d-80,100)+bx3(x,y,100,w,d,1900);
+   const A=(a,b,c)=>P(x+a,y+b,c);
+   s+=bx3(x+w-120,y+d,700,30,26,600); s+=ln(A(0,d,1550),A(w,d,1550)); return s},
+ hood:(x,y,w,d)=>{const zb=1900,h=560,t=150,A=(a,b,c)=>P(x+a,y+b,c);
+   let s=pth([A(0,0,zb),A(w,0,zb),A(w,d,zb),A(0,d,zb)],FL.dark);
+   s+=pth([A(0,d,zb),A(t,d-t,zb+h),A(w-t,d-t,zb+h),A(w,d,zb)],FL.left);
+   s+=pth([A(w,0,zb),A(w,d,zb),A(w-t,d-t,zb+h),A(w-t,t,zb+h)],FL.right);
+   s+=pth([A(t,t,zb+h),A(w-t,t,zb+h),A(w-t,d-t,zb+h),A(t,d-t,zb+h)],FL.top);
+   s+=bx3(x+w/2-200,y+d/2-200,zb+h,400,400,260);
+   for(let i=1;i<Math.max(2,Math.round(w/500));i++){const xx=x+w*i/Math.max(2,Math.round(w/500));
+     s+=ln(A(xx-x,d*.15,zb),A(xx-x,d*.85,zb))}
+   return s},
+ /* رف جداري: صفيحة بحافة مطوية للأسفل، ظهر مرفوع، وكتيفتان مثلثتان في الطرفين */
+ wshelf:(x,y,w,d)=>{const z=1500,t=40,up=110,g=230,A=(a,b,c)=>P(x+a,y+b,c);
+   let s=pth([A(0,0,z-t),A(0,0,z-t-g),A(0,d-4,z-t)],FL.dark);
+   s+=pth([A(w,0,z-t),A(w,0,z-t-g),A(w,d-4,z-t)],FL.right);
+   s+=bx3(x,y,z-t,w,d,t,{top:FL.top,left:FL.dark,right:FL.right});
+   s+=bx3(x,y,z,w,28,up,{top:FL.right,left:FL.left,right:FL.right}); return s},
+ pshelf:(x,y,w,d)=>{const z=1500; let s=bx3(x,y,z,w,d,26);
+   for(let i=1;i<=Math.round(w/180);i++)for(let j=1;j<=2;j++) s+=ell(x+w*i/(Math.round(w/180)+1),y+d*j/3,z+26,26);
+   return s},
+ burner:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
+   const n=Math.max(2,Math.round(w/450)), cols=Math.ceil(n/2);
+   for(let i=0;i<n;i++){const cx=x+w*((i%cols)+.5)/cols, cy=y+d*(i<cols?.3:.7);
+     s+=ell(cx,cy,850,150,FL.dark)+ell(cx,cy,850,95,FL.top)+ell(cx,cy,850,32)}
+   for(let i=0;i<n;i++) s+=bx3(x+w*(i+.5)/n-25,y+d,730,50,30,50);
+   return s},
+ grill:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
+   const A=(a,b,c)=>P(x+a,y+b,c);
+   s+=pth([A(70,70,850),A(w-70,70,850),A(w-70,d-70,850),A(70,d-70,850)],FL.recess);
+   for(let i=1;i<10;i++){const yy=70+(d-140)*i/10; s+=ln(A(90,yy,864),A(w-90,yy,864))}
+   return s},
+ rack:(x,y,w,d)=>{let s=""; const zs=[150,600,1050,1500,1800];
+   const cs=[[x,y],[x+w-40,y],[x,y+d-40],[x+w-40,y+d-40]].sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
+   let z0=0; zs.forEach((z,i)=>{cs.forEach(c=>{s+=post(c[0],c[1],z0,z,40,i===zs.length-1)});
+     if(i<zs.length-1){s+=bx3(x,y,z,w,d,22); const A=(a,b,c)=>P(x+a,y+b,c);
+       for(let k=1;k<6;k++){const yy=d*k/6; s+=ln(A(20,yy,z+22),A(w-20,yy,z+22))}} z0=z+22});
+   return s},
+ /* مبخّرة غرفة تبريد: كاسيت معلّق، مروحة محورية كل ٥٠٠ مم على الوجه الأمامي، حوامل تعليق علوية، وصينية تصريف */
+ evap:(x,y,w,d)=>{const z=1800,h=560, n=Math.max(1,Math.round(w/500)), A=(a,b,c)=>P(x+a,y+b,c);
+   let s=bx3(x,y,z,w,d,h,{top:FL.top,left:FL.left,right:FL.dark});
+   /* حوامل التعليق على السطح */
+   for(let i=0;i<=n;i++){const px=x+30+(w-90)*i/n; s+=bx3(px,y+40,z+h,30,d-80,22,{top:FL.right,left:FL.dark,right:FL.dark})}
+   /* دائرة على مستوى رأسي (الوجه الأمامي y=d) */
+   const vc=(cx,cz,r,fill,extra)=>{const pts=[];for(let i=0;i<28;i++){const a=i/28*Math.PI*2;
+     pts.push(P(x+cx+r*Math.cos(a),y+d,z+cz+r*Math.sin(a)))} return path(pts,fill,extra)};
+   const r=Math.min(h*.44,(w/n)*.44), cz=h*.5;
+   const vp=(cx,cz2,rr,a)=>P(x+cx+rr*Math.cos(a),y+d,z+cz2+rr*Math.sin(a));
+   const arcPts=(cx,rr,a0,a1,k)=>{const pts=[];for(let i=0;i<=k;i++){pts.push(vp(cx,cz,rr,a0+(a1-a0)*i/k))}return pts};
+   for(let i=0;i<n;i++){const cx=w*(i+.5)/n;
+     s+=vc(cx,cz,r+18,"#8A96A4");                   /* إطار الشبك */
+     s+=vc(cx,cz,r,"#3E4A57");                      /* فتحة المروحة الداكنة */
+     for(let k=0;k<5;k++){                          /* خمس ريش عريضة منحنية */
+       const a=k/5*Math.PI*2, wA=.62, sw=.55;
+       const inner=arcPts(cx,r*.22,a,a+wA,4), outer=arcPts(cx,r*.9,a+wA+sw,a+sw,6);
+       s+=path([...inner,...outer],"#DDE4EB",'stroke="#2C3742" stroke-width="1"');
+     }
+     s+=vc(cx,cz,r*.2,"#B7C2CD");                   /* الصرّة */
+     s+=vc(cx,cz,r*.08,"#3E4A57");
+     [.38,.62,.85].forEach(f=>{s+=vc(cx,cz,r*f,"none",'stroke="#2C3742" stroke-opacity=".55"')});  /* أسلاك الشبك */
+     for(let k=0;k<8;k++){const a=k/8*Math.PI*2; s+=`<path stroke="#2C3742" stroke-opacity=".55" d="M${vp(cx,cz,r*.2,a).map(f1).join(" ")} L${vp(cx,cz,r,a).map(f1).join(" ")}"/>`}
+   }
+   s+=bx3(x,y+d-60,z-40,w,60,40,{top:FL.right,left:FL.dark,right:FL.dark});   /* صينية التصريف */
+   return s},
+ faucet:(x,y,w,d)=>faucet(x+w/2,y+d/2,0),
+ door:(x,y,w,d,o)=>{const h=2100,A=(a,b,c)=>P(x+a,y+b,c);
+   let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.left,right:FL.right});
+   s+=pth([A(60,d,60),A(w-60,d,60),A(w-60,d,h-60),A(60,d,h-60)],FL.top);
+   s+=bx3(x+w-160,y+d,950,26,26,180); return s},
 };
+const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:900,fridge:2000,hood:2500,wshelf:1650,pshelf:1550,
+  burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100};
+function model3(type,x,y,w,d,o){ return (M3[type]||M3.table)(x,y,w,d,o||{}) }
+function isoWrap(inner,W,D,H,Z0){
+  Z0=Z0||-28; const pad=Math.max(W,D,H)*.09, lw=Math.max(W,D,H)/210;
+  const x1=-D*C-pad, x2=W*C+pad, y1=-H-pad, y2=(W+D)*S-Z0+pad;
+  return `<svg viewBox="${f1(x1)} ${f1(y1)} ${f1(x2-x1)} ${f1(y2-y1)}" xmlns="${NS}">
+    <g stroke="#12294D" stroke-width="${f1(lw)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
+}
+const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[1200,700],sinkT2:[1200,700],sinkT3:[1800,700],sink1:[1000,700],cabinet:[1000,700],fridge:[700,800],
+  hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],rack:[1600,600],
+  evap:[1500,600],faucet:[400,400],door:[1000,100]};
+const ISO={};
+Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800}[t]||0;
+  /* المنسوب يُخفَض ليظهر كامل النموذج في المصغّرة */
+  const inner=model3(t,0,0,w,d,{v:v||2});
+  return isoWrap(`<g transform="translate(0 ${f1(zb)})">${inner}</g>`,w,d,H3[t]-zb,-28)} });
+
+ISO.shelf=ISO.wshelf; ISO.sink=ISO.sinkT2;
 const isoCache={};
-const drawing=t=>isoCache[t]||(isoCache[t]=(ISO[t]||ISO.table)());
+const drawing=(t,v)=>{const k=t+":"+(v||"");return isoCache[k]||(isoCache[k]=(ISO[t]||ISO.table)(v))};
 let typeThumbs={};                                   /* مكتبة مصغّرات الأنواع */
 const img=src=>`<img src="${src}" alt="">`;
-const sketch=t=>typeThumbs[t]?img(typeThumbs[t]):drawing(t);
-const thumbOf=it=>it.thumb?img(it.thumb):sketch(it.type);
+const sketch=(t,v)=>typeThumbs[t]?img(typeThumbs[t]):drawing(t,v);
+const thumbOf=it=>it.thumb?img(it.thumb):sketch(it.type,it.variant);
 
 /* ================= المشاريع ================= */
 
@@ -694,7 +845,7 @@ async function signIn(){
   $("gerr").textContent="";
   if(!CLOUD){
     me={id:"local",email:"",name:$("u").value.trim()||"local",role:"admin"};
-    $("gate").style.display="none"; loadLocal(); await loadTypeThumbs(); await loadBlockSVGs(); newDraft(); render(); saveStore(); return;
+    $("gate").style.display="none"; loadLocal(); await loadTypeThumbs(); await loadBlockSVGs(); await loadIsoArt(); newDraft(); render(); saveStore(); return;
   }
   const {data,error}=await sb.auth.signInWithPassword({email:$("u").value.trim(),password:$("p").value});
   if(error){$("gerr").textContent=T("badCred");return}
@@ -706,7 +857,7 @@ async function afterAuth(user){
   $("gate").style.display="none";
   $("openPanel").style.display=me.role==="admin"?"grid":"none";
   saveState(T("loadingV"));
-  await loadVisits(); await loadUsers(); await loadTypeThumbs(); await loadBlockSVGs();
+  await loadVisits(); await loadUsers(); await loadTypeThumbs(); await loadBlockSVGs(); await loadIsoArt();
   newDraft(); render(); saveState("");
 }
 $("login").onclick=signIn;
@@ -1081,6 +1232,31 @@ function wallBands3(){
   return wallGeom().map(g=>({cs:g.quad,mid:[(g.a[0]+g.b[0])/2,(g.a[1]+g.b[1])/2],
     kind:g.kind,L:g.L,ux:g.ux,uy:g.uy,a:g.a,b:g.b}));
 }
+/* يرسم صورة/فيكتور المنظور مع تمديد الجزء الأوسط فقط */
+function isoArtSVG(art,x1,yb,wpx,base){
+  const uid="a"+(isoArtSVG.n=(isoArtSVG.n||0)+1);
+  if(art.vec){
+    const W=art.w, H=art.h, capF=.22, cap=W*capF;
+    const midTarget=Math.max(1, wpx/base - 2*cap);   /* الطول المطلوب للوسط بوحدات الرسم */
+    const midScale=midTarget/Math.max(1,W-2*cap);
+    const g=(clipX,clipW,tx,sx)=>`<g transform="translate(${f1(tx)} 0) scale(${f1(sx)} 1)">
+        <g clip-path="url(#c${uid}${clipX})">${art.vec}</g></g>`;
+    const clips=`<defs>${art.defs||""}
+      <clipPath id="c${uid}0"><rect x="${f1(art.x)}" y="${f1(art.y-H)}" width="${f1(cap)}" height="${f1(H*3)}"/></clipPath>
+      <clipPath id="c${uid}1"><rect x="${f1(art.x+cap)}" y="${f1(art.y-H)}" width="${f1(W-2*cap)}" height="${f1(H*3)}"/></clipPath>
+      <clipPath id="c${uid}2"><rect x="${f1(art.x+W-cap)}" y="${f1(art.y-H)}" width="${f1(cap)}" height="${f1(H*3)}"/></clipPath></defs>`;
+    const X=art.x;
+    const inner = clips
+      + g(0,cap,0,1)                                   /* الطرف الأول كما هو */
+      + g(1,W-2*cap,(X+cap)*(1-midScale),midScale)     /* الوسط وحده يتمدد */
+      + g(2,cap,midTarget-(W-2*cap),1);                /* الطرف الثاني ينزاح */
+    return `<g transform="translate(${f1(x1-art.x*base)} ${f1(yb-(art.y+art.h)*base)}) scale(${f1(base)})"
+      fill="none" stroke="#12294D" stroke-width="${f1(Math.max(art.w,art.h)/260)}" stroke-linejoin="round">${inner}</g>`;
+  }
+  const hpx=wpx*art.ar;
+  return `<image href="${art.src}" x="${f1(x1)}" y="${f1(yb-hpx)}" width="${f1(wpx)}" height="${f1(hpx)}"
+    preserveAspectRatio="xMidYMax meet"/>`;
+}
 function iso3dSVG(){
   const d=cur.draw, WT=cur.wallT||100, RH=cur.roomH||2600;
   const walls=wallBands3(), blocks=cur.blocks.filter(b=>!(H3D[b.k]||{}).skip);
@@ -1092,7 +1268,15 @@ function iso3dSVG(){
   const cxr=pts.reduce((m,p)=>m+p[0],0)/pts.length, cyr=pts.reduce((m,p)=>m+p[1],0)/pts.length;
   let far="",near="",body="",tags="";
   /* الأرضية */
-  if(d.closed&&d.pts.length>2) far+=poly3(d.pts.map(p=>p3(p[0],p[1],0)),"#F4F7FA");
+  if(d.closed&&d.pts.length>2){
+    far+=poly3(d.pts.map(p=>p3(p[0],p[1],0)),"#F4F7FA");
+    const xs=d.pts.map(p=>p[0]), ys=d.pts.map(p=>p[1]);
+    const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+    let g="";
+    for(let gx=Math.ceil(x0/600)*600;gx<x1;gx+=600){const a=p3(gx,y0,0),b=p3(gx,y1,0);g+=`M${f1(a[0])} ${f1(a[1])} L${f1(b[0])} ${f1(b[1])} `}
+    for(let gy=Math.ceil(y0/600)*600;gy<y1;gy+=600){const a=p3(x0,gy,0),b=p3(x1,gy,0);g+=`M${f1(a[0])} ${f1(a[1])} L${f1(b[0])} ${f1(b[1])} `}
+    far+=`<path d="${g}" fill="none" stroke="#E1E8EF" stroke-width="12"/>`;
+  }
   /* الجدران: البعيدة بارتفاع كامل، القريبة كعتبة منخفضة حتى ينكشف الداخل */
   const sill=180;
   walls.forEach(w=>{
@@ -1110,8 +1294,9 @@ function iso3dSVG(){
   });
   /* فتحات الأبواب والشبابيك على وجه الجدار */
   cur.blocks.filter(b=>OPENING[b.k]).forEach(b=>{
-    const cs=corners(b), [z0,z1]=OPENING[b.k];
-    far+=prism(cs,z0,z1,"#DCE5EE");
+    const cs=corners(b), [z0,z1]=OPENING[b.k], r=aabb(b);
+    if(b.k==="window") far+=prism(cs,z0,z1,"#DCE5EE");
+    else far+=`<g class="unit">${model3("door",r.x1,r.y1,r.x2-r.x1,r.y2-r.y1)}</g>`;
   });
   /* الوحدات: من الخلف للأمام */
   blocks.map(b=>({b,cs:corners(b)}))
@@ -1119,15 +1304,34 @@ function iso3dSVG(){
     .sort((p,q)=>p.k-q.k)
     .forEach(o=>{
       const H=H3D[o.b.k]||{z:0,h:850};
-      body+=prism(o.cs,H.z,H.z+H.h,"#FFFFFF");
-      if(H.over){                                     /* رف علوي فوق الطاولة */
-        const shrink=o.cs;                            /* نفس البصمة */
-        body+=prism(shrink,H.over[0],H.over[0]+40,"#FFFFFF");
-        body+=prism(shrink,H.over[1],H.over[1]+40,"#FFFFFF");
+      const art=isoArt[BLK2TYPE[o.b.k]||"table"];
+      if(art){                              /* رسم المصنع بدل الشكل المولّد */
+        const pr=o.cs.map(c=>p3(c[0],c[1],0));
+        const x1=Math.min(...pr.map(q=>q[0])), x2=Math.max(...pr.map(q=>q[0]));
+        const yb=Math.max(...pr.map(q=>q[1]));
+        const wpx=x2-x1;
+        /* المقاس المرجعي مسقطًا، فالتكبير يبقى متناسبًا ولا يشوّه القطعة */
+        const rW=art.refW||o.b.w, rD=art.refD||o.b.d;
+        const refPx=(rW+rD)*C, base=refPx>0?wpx/refPx:1;
+        body+=isoArtSVG(art, x1, yb, wpx, base);
+        if(o.b.item){
+          const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
+          const q=p3(c[0],c[1],H.z+H.h);
+          tags+=`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="160" fill="#2B4FA8" stroke="#fff" stroke-width="40"/>
+            <text x="${f1(q[0])}" y="${f1(q[1])}" font-family="IBM Plex Sans Arabic" font-size="190" fill="#fff"
+              text-anchor="middle" dominant-baseline="central" stroke="none">${tagFor(o.b.item)}</text>`;
+        }
+        return;
       }
+      const r=aabb(o.b), K2M={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",
+        fridge:"fridge",hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",rack:"rack",
+        evap:"evap",faucet:"faucet"};
+      const mt=K2M[o.b.k]||"table";
+      const opts = o.b.k==="table"?{v:o.b.v||2}:{};
+      body+=`<g class="unit">${model3(mt,r.x1,r.y1,r.x2-r.x1,r.y2-r.y1,opts)}</g>`;
       if(o.b.item){
         const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
-        const q=p3(c[0],c[1],H.z+H.h);
+        const q=p3(c[0],c[1],(H3[mt]||900)+120);
         tags+=`<circle cx="${f1(q[0])}" cy="${f1(q[1])}" r="160" fill="#2B4FA8" stroke="#fff" stroke-width="40"/>
           <text x="${f1(q[0])}" y="${f1(q[1])}" text-anchor="middle" dominant-baseline="central"
             font-family="IBM Plex Sans Arabic" font-size="190" fill="#fff" stroke="none">${tagFor(o.b.item)}</text>`;
@@ -1164,8 +1368,8 @@ function iso3dSVG(){
             (Math.max(...X)-Math.min(...X))*1.28,(Math.max(...Y)-Math.min(...Y))+pad*.24];
   $("isoNote").textContent=T("isoNote",blocks.length);
   return `<svg viewBox="${vb.map(f1).join(" ")}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet">
-    <g stroke="#12294D" stroke-width="${f1(vb[2]/420)}" stroke-linejoin="round" fill="#fff">
-      ${far}${body}${near}${tags}
+    <g stroke="#12294D" stroke-width="${f1(vb[2]/520)}" stroke-linejoin="round" stroke-linecap="round" fill="#fff">
+      ${far}<g stroke-width="${f1(vb[2]/900)}">${body}</g>${near}${tags}
       <g class="thin" stroke-width="${f1(vb[2]/900)}" fill="none">${dim}</g>
     </g></svg>`;
 }
@@ -1275,14 +1479,18 @@ function addByPad(deg){
   d.pts.push([Math.round(px+Math.cos(r)*L),Math.round(py+Math.sin(r)*L)]);
   autoFit?fitView():growView(); renderPlan(); queueSave();
 }
-const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink",sink2:"sink",cabinet:"cabinet",fridge:"cabinet",
+const TABLE_V={1:["Work table with backsplash","طاولة عمل بظهر"],
+ 2:["Work table with backsplash & undershelf","طاولة عمل بظهر ورف سفلي"],
+ 3:["Work table with backsplash, undershelf & mid shelf","طاولة عمل بظهر ورف سفلي ووسطي"]};
+const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",fridge:"cabinet",
  hood:"hood",wshelf:"shelf",pshelf:"pshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"shelf",
  evap:"hood",door1:"cabinet",door2:"cabinet",window:"cabinet",coldH:"cabinet",coldS:"cabinet"};
 /* كل بلوك يُسجَّل في جدول البنود بمقاسه واسمه — البلوكات المتطابقة تزيد الكمية */
 function itemForBlock(b){                 /* لكل قطعة بند مستقل برقم جديد */
   const no=cur.items.reduce((m,i)=>Math.max(m,i.no),0)+1;
-  const it={no,tag:String(no),ar:BLK[b.k].n,en:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
-    qty:1,type:BLK2TYPE[b.k]||"table",auto:true,k:b.k};
+  const tv=b.k==="table"?TABLE_V[b.v||2]:null;
+  const it={no,tag:String(no),ar:tv?tv[1]:BLK[b.k].n,en:tv?tv[0]:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
+    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):undefined,auto:true,k:b.k};
   cur.items.push(it); return it;
 }
 function releaseItem(b){                 /* حذف البلوك يحذف بنده المولّد تلقائيًا */
@@ -1291,14 +1499,15 @@ function releaseItem(b){                 /* حذف البلوك يحذف بند�
   if(cur.blocks.filter(x=>x.item===it.no&&x.id!==b.id).length) return;
   cur.items=cur.items.filter(i=>i.no!==it.no);
 }
-function syncItemDim(b){                 /* المقاس الجديد ينعكس على بند القطعة */
+function syncItemDim(b){                 /* المقاس والخيار ينعكسان على بند القطعة */
   if(!b||!b.item) return;
   const it=cur.items.find(i=>i.no===b.item); if(!it||!it.auto) return;
   it.dim=`${b.w} × ${b.d}`;
+  if(b.k==="table"){const tv=TABLE_V[b.v||2]; it.variant=b.v||2; it.en=tv[0]; it.ar=tv[1];}
 }
 function placeBlock(x,y){
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
-  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null};
+  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:undefined};
   constrain(nb); cur.blocks.push(nb);
   nb.item=itemForBlock(nb).no; renderCards();
   selBlock=nb.id;
@@ -1306,7 +1515,7 @@ function placeBlock(x,y){
 }
 
 /* ===== توليد بلوك لكل بند من الجدول ===== */
-const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",shelf:"wshelf",pshelf:"pshelf",
+const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",shelf:"wshelf",pshelf:"pshelf",
   faucet:"faucet",cabinet:"cabinet",hood:"hood",burner:"burner",grill:"grill"};
 function dimsOf(it,k){
   const n=(it.dim.match(/\d+/g)||[]).map(Number);
@@ -1332,7 +1541,7 @@ function autoPlace(){
 
 /* ================= الأدوات ================= */
 function setTool(t){
-  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null;
+  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar"))$("tableVar").hidden=true;
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===(t==="place"?"block":t)));
   $("tabLine").hidden=t!=="line"; $("tabBlock").hidden=!(t==="block"||t==="place"); $("tabSel").hidden=t!=="sel";
   renderSelBar(); renderPlan();
@@ -1346,13 +1555,19 @@ document.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
 });
 $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan();queueSave()});
 $("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
+let tableV=2;
+function renderTableVar(){
+  $("tableVar").hidden=pending!=="table";
+  document.querySelectorAll("#tableVar button").forEach(x=>{x.textContent=lang==="ar"?TABLE_V[x.dataset.v][1]:TABLE_V[x.dataset.v][0];x.setAttribute("aria-pressed",+x.dataset.v===tableV)});
+}
+document.querySelectorAll("#tableVar button").forEach(x=>x.onclick=()=>{tableV=+x.dataset.v;renderTableVar()});
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
     const b=document.createElement("button");
     b.className="pal"; b.setAttribute("aria-pressed",pending===k);
     b.innerHTML=`<svg viewBox="${B.vb?B.vb(B.w,B.d):`-40 -40 ${B.w+80} ${B.d+80}`}" xmlns="${NS}"><g stroke="#0E2340" stroke-width="${B.w/28}" fill="none">${symbol(k,B.w,B.d)}</g></svg><span>${bn(k)}</span>`;
-    b.onclick=()=>{pending=k;$("bw").value=B.w;$("bd").value=B.d;setTool("place");
+    b.onclick=()=>{pending=k;$("bw").value=B.w;$("bd").value=B.d;setTool("place");renderTableVar();
       $("blockHint").textContent=T("blockReady",bn(k)); renderPalette()};
     $("palette").appendChild(b);
   });
@@ -1491,6 +1706,7 @@ function renderSelBar(){
   $("selBox").innerHTML=`<div class="sel-bar"><h4>${bn(b.k)}</h4>
     <div class="sizes"><div><label>${T("widthMM")}</label><input id="sw" type="number" step="10" value="${b.w}"></div>
     <div><label>${T("depthMM")}</label><input id="sd" type="number" step="10" value="${b.d}"></div></div>
+    ${b.k==="table"?`<select id="svar" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||2)===v?"selected":""}>${lang==="ar"?TABLE_V[v][1]:TABLE_V[v][0]}</option>`).join("")}</select>`:""}
     <div style="height:8px"></div>
     <select id="slink"><option value="">${T("notLinked")}</option>
       ${cur.items.map(i=>`<option value="${i.no}" ${b.item===i.no?"selected":""}>${T("itemOpt",tagOf(i),lang==="ar"?i.ar:i.en)}</option>`).join("")}</select>
@@ -1502,6 +1718,7 @@ function renderSelBar(){
   $("sw").onchange=()=>{b.w=Math.max(50,+$("sw").value||b.w);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
+  if($("svar")) $("svar").onchange=()=>{b.v=+$("svar").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
   $("dup").onclick=()=>{const c={...b,id:nextId(),x:b.x+b.w+100};cur.blocks.push(c);selBlock=c.id;renderSelBar();autoFit?fitView():growView();renderPlan()};
   $("del").onclick=()=>{cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan();queueSave()};
@@ -1791,9 +2008,9 @@ function select(no,from){
   if(editing)$("editHint").textContent=sel?T("tapMove",sel):T("pickItem");
 }
 /* ================= تحرير البند والمصغّرة ================= */
-let editItemNo=null, pendingThumb=null, pendingType=null;
+let editItemNo=null, pendingThumb=null, pendingType=null, pendingVar=2;
 function itemPreview(){
-  $("itemPreview").innerHTML = pendingThumb?img(pendingThumb):sketch(pendingType);
+  $("itemPreview").innerHTML = pendingThumb?img(pendingThumb):sketch(pendingType,pendingVar);
 }
 function renderIconGrid(){
   $("iconGrid").innerHTML="";
@@ -1808,7 +2025,7 @@ function renderIconGrid(){
 }
 function openItem(no){
   const it=cur.items.find(i=>i.no===no); if(!it) return;
-  editItemNo=no; pendingThumb=it.thumb||null; pendingType=it.type||"table";
+  editItemNo=no; pendingThumb=it.thumb||null; pendingType=it.type||"table"; pendingVar=it.variant||2;
   $("iTag").value=tagOf(it); $("iName").value=lang==="ar"?it.ar:it.en; $("iDesc").value=it.desc||""; $("iDim").value=it.dim||""; $("iQty").value=it.qty||1;
   itemPreview(); renderIconGrid();
   $("itemPanel").classList.add("show");
@@ -1832,6 +2049,28 @@ function shrink(file,cb){
     im.src=rd.result;
   };
   rd.readAsDataURL(file);
+}
+let isoArt={};                    /* نوع -> {src, ar} صورة آيزومترك من رسومات المصنع */
+async function loadIsoArt(){
+  let raw={};
+  if(CLOUD){ const {data}=await sb.from("type_thumbs").select("*");
+    (data||[]).forEach(r=>{if(r.type.startsWith("iso:")) raw[r.type.slice(4)]=r.image}); }
+  else { try{raw=JSON.parse(localStorage.getItem("svl.iso")||"{}")}catch(e){raw={}} }
+  isoArt={};
+  Object.entries(raw).forEach(([k,v])=>{ try{ isoArt[k]=JSON.parse(v) }catch(e){} });
+}
+async function setIsoArt(type,rec){
+  if(rec) isoArt[type]=rec; else delete isoArt[type];
+  if(CLOUD){
+    if(rec) await sb.from("type_thumbs").upsert({type:"iso:"+type,image:JSON.stringify(rec),
+      updated_by:me.id,updated_at:new Date().toISOString()});
+    else await sb.from("type_thumbs").delete().eq("type","iso:"+type);
+  }else{
+    const all={}; Object.entries(isoArt).forEach(([k,v])=>all[k]=JSON.stringify(v));
+    try{localStorage.setItem("svl.iso",JSON.stringify(all))}catch(e){}
+  }
+  renderPlan();
+  const e=$("ierr"); if(e){e.textContent=T("isoSaved"); setTimeout(()=>{const x=$("ierr");if(x)x.textContent=""},2500)}
 }
 async function loadTypeThumbs(){
   if(CLOUD){
@@ -1859,6 +2098,53 @@ $("iTypeFile").addEventListener("change",e=>{
   shrink(f,d=>setTypeThumb(pendingType,d)); e.target.value="";
 });
 $("iTypeReset").onclick=()=>setTypeThumb(pendingType,null);
+$("iIsoUp").onclick=()=>$("iIsoFile").click();
+$("iIsoReset").onclick=()=>setIsoArt(pendingType,null);
+$("iIsoFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const ref=isoRefSize();                     /* المقاس المرجعي = مقاس البلوك المحدد */
+  if(/\.(svg|dxf)$/i.test(f.name)){
+    const rd=new FileReader();
+    rd.onload=()=>{
+      let txt=rd.result;
+      if(/\.dxf$/i.test(f.name)){
+        const out=dxfToSVG(txt);
+        if(out.err){const b=$("ierr");if(b){b.style.color="";b.textContent=T("dxfEmpty")}return}
+        txt=out.svg;
+      }
+      const parsed=parseBlockSVG(txt);
+      if(!parsed){const b=$("ierr");if(b){b.style.color="";b.textContent=T("svgBad")}return}
+      setIsoArt(pendingType,{vec:parsed.frame+parsed.detail,defs:parsed.defs,
+        x:parsed.fx,y:parsed.fy,w:parsed.fw,h:parsed.fh,refW:ref[0],refD:ref[1]});
+    };
+    rd.readAsText(f);
+  }else{
+    shrink2(f,1400,rec=>setIsoArt(pendingType,{...rec,refW:ref[0],refD:ref[1]}));
+  }
+  e.target.value="";
+});
+function isoRefSize(){
+  const b=cur.blocks.find(x=>x.id===selBlock);
+  if(b) return [b.w,b.d];
+  const k=Object.keys(BLK2TYPE).find(k=>BLK2TYPE[k]===pendingType);
+  return k?[BLK[k].w,BLK[k].d]:[1200,700];
+}
+function shrink2(file,max,cb){          /* يحافظ على الشفافية ويقيس النسبة */
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const im=new Image();
+    im.onload=()=>{
+      const sc=Math.min(1,max/Math.max(im.width,im.height));
+      const cv=document.createElement("canvas");
+      cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
+      cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);
+      cb({src:cv.toDataURL("image/png"), ar:cv.height/cv.width});
+    };
+    im.onerror=()=>cb({src:rd.result,ar:1});
+    im.src=rd.result;
+  };
+  rd.readAsDataURL(file);
+}
 $("iPhoto").onclick=()=>$("iFile").click();
 $("iNoPhoto").onclick=()=>{pendingThumb=null;itemPreview();renderIconGrid()};
 $("iFile").addEventListener("change",e=>{
@@ -2015,7 +2301,8 @@ $("vSave").onclick=()=>{
 
 /* ===== إضافة بند إلى الجدول ===== */
 const ITEM_TYPES=[["table","Work table","طاولة عمل"],["table2","Table w/ overshelf","طاولة برف علوي"],
- ["sink","Sink","حوض"],["shelf","Wall shelf","رف جداري"],["pshelf","Perforated shelf","رف مثقّب"],
+ ["sinkT1","Table with 1 bowl sink","طاولة بحوض واحد ومصفّى"],["sinkT2","Table with 2 bowl sink","طاولة بحوضين"],
+ ["sinkT3","Table with 3 bowl sink","طاولة بثلاثة أحواض"],["sink1","Single bowl sink","حوض مفرد كبير"],["shelf","Wall shelf","رف جداري"],["pshelf","Perforated shelf","رف مثقّب"],
  ["cabinet","Cabinet","كابينة"],["hood","Hood","هود"],["burner","Burner","موقد"],["grill","Grill","شواية"],
  ["faucet","Faucet","خلاط"]];
 function fillTypes(){
