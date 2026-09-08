@@ -14,6 +14,7 @@
 :root{--steel:#E4E9ED;--steel-2:#D3DBE2;--paper:#FFF;--ink:#0E2340;--pen:#2B4FA8;--pen-soft:#8FA5D6;--mark:#E0A020;--line:#B9C5D0;--ok:#1E7A5A}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
+body.home main,body.home .actions,body.home #robar,body.home #metaBar{display:none!important}
 html,body{margin:0;padding:0}
 body{background:var(--steel);background-image:linear-gradient(var(--steel-2) 1px,transparent 1px),linear-gradient(90deg,var(--steel-2) 1px,transparent 1px);background-size:26px 26px;
  color:var(--ink);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
@@ -261,10 +262,9 @@ main{padding:0 0 96px}
   <button id="openVisits"></button>
   <input id="quickSearch" data-i18n-ph="searchPh">
 </div>
-<div class="visitbar"><button id="saveNow" class="prim" data-i18n="saveNow"></button><button id="openRevs"></button><span class="meta" id="visitMeta"></span><span id="whoami" class="save" style="color:#6B8199"></span><span id="saveState" class="save"></span><button id="editVisit" data-i18n="editVisit"></button></div>
+<div class="visitbar" id="metaBar"><button id="saveNow" class="prim" data-i18n="saveNow"></button><button id="openRevs"></button><span class="meta" id="visitMeta"></span><span id="whoami" class="save" style="color:#6B8199"></span><span id="saveState" class="save"></span><button id="editVisit" data-i18n="editVisit"></button></div>
 
 <div class="robar" id="robar" hidden><span id="roText"></span><button id="roBack" data-i18n="backToCurrent"></button><button id="roRestore" data-i18n="restoreRev"></button></div>
-<main><div class="printhead" id="printHead"></div>
 <section class="dash" id="dash" hidden>
   <div class="dash-head"><h2 data-i18n="dashH"></h2><button id="dashHide" data-i18n="hide"></button></div>
   <div class="kpis" id="kpis"></div>
@@ -273,6 +273,8 @@ main{padding:0 0 96px}
     <div><h3 data-i18n="topClientsH"></h3><ul class="dlist" id="clientList"></ul></div>
   </div>
 </section>
+<main><div class="printhead" id="printHead"></div>
+
 <div class="wrap">
  <section class="plan-wrap">
   <div class="plan-head"><h2 data-i18n="siteplan"></h2><span id="planScale"></span></div>
@@ -2539,10 +2541,7 @@ function renderDash(){
   const real=projects.filter(v=>v.site||v.client);
   const show=!dashHidden && me && isBlank(cur);          /* تظهر عند فتح التطبيق على زيارة فارغة */
   $("dash").hidden=!show;
-  /* اللوحة وحدها في الواجهة: المخطط والقائمة وشريط الإجراءات يظهرون بعد بدء الزيارة */
-  document.querySelector("main .wrap").hidden=show;
-  document.querySelector(".actions").hidden=show;
-  document.querySelectorAll(".visitbar")[1].hidden=show;
+  document.body.classList.toggle("home",!!show);      /* الواجهة الرئيسية = اللوحة فقط */
   if(!show) return;
   const ym=new Date().toISOString().slice(0,7);
   const month=real.filter(v=>(v.date||"").startsWith(ym)).length;
