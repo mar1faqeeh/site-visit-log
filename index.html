@@ -830,6 +830,24 @@ const M3={
    s+=bx3(x,y+d-60,z-40,w,60,40,{top:FL.right,left:FL.dark,right:FL.dark});
    return s},
  faucet:(x,y,w,d)=>faucet(x+w/2,y+d/2,0),
+ door2:(x,y,w,d)=>{const h=2100;
+   let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.left,right:FL.right});
+   s+=face3([[x+60,y+d,60],[x+w/2-15,y+d,60],[x+w/2-15,y+d,h-60],[x+60,y+d,h-60]],FL.top);
+   s+=face3([[x+w/2+15,y+d,60],[x+w-60,y+d,60],[x+w-60,y+d,h-60],[x+w/2+15,y+d,h-60]],FL.top);
+   s+=bx3(x+w/2-70,y+d,950,26,26,180)+bx3(x+w/2+44,y+d,950,26,26,180); return s},
+ /* باب تبريد سحاب: ضلفة معلّقة على سكة أمام الفتحة */
+ doorS:(x,y,w,d)=>{const h=2100;
+   let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.dark,right:FL.dark});                 /* الفتحة */
+   s+=bx3(x-w*.2,y+d+10,h+60,w*1.9,50,60,{top:FL.right,left:FL.dark,right:FL.dark}); /* السكة */
+   s+=bx3(x+40,y+d+30,h+10,60,20,50)+bx3(x+w-100,y+d+30,h+10,60,20,50);              /* العجلات */
+   s+=bx3(x,y+d+20,20,w,60,h-10,{top:FL.right,left:FL.left,right:FL.right});         /* الضلفة */
+   s+=face3([[x+70,y+d+80,90],[x+w-70,y+d+80,90],[x+w-70,y+d+80,h-90],[x+70,y+d+80,h-90]],FL.top);
+   s+=bx3(x+w-200,y+d+80,900,120,26,40); return s},
+ window:(x,y,w,d)=>{const z0=1000,z1=2000;
+   let s=bx3(x,y,z0,w,d,z1-z0,{top:FL.dark,left:FL.dark,right:FL.dark});
+   s+=face3([[x+40,y+d,z0+40],[x+w-40,y+d,z0+40],[x+w-40,y+d,z1-40],[x+40,y+d,z1-40]],"#DCE8F2");
+   s+=face3([[x+w-40,y,z0+40],[x+40,y,z0+40],[x+40,y,z1-40],[x+w-40,y,z1-40]],"#DCE8F2");
+   s+=edge3([x+w/2,y+d,z0+40],[x+w/2,y+d,z1-40]); return s},
  door:(x,y,w,d)=>{const h=2100;
    let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.left,right:FL.right});
    s+=face3([[x+60,y+d,60],[x+w-60,y+d,60],[x+w-60,y+d,h-60],[x+60,y+d,h-60]],FL.top);
@@ -837,7 +855,7 @@ const M3={
    s+=bx3(x+w-160,y+d,950,26,26,180); return s},
 };
 const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:900,fridge:2000,hood:2500,
-  wshelf:1650,pshelf:1550,burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100};
+  wshelf:1650,pshelf:1550,burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100,door2:2100,doorS:2200,window:2000};
 function model3(type,x,y,w,d,o){ return (M3[type]||M3.table)(x,y,w,d,o||{}) }
 /* يرسم وحدة بموضعها ودورانها في العالم */
 function unit3(type,b,o){
@@ -852,9 +870,9 @@ function isoWrap(inner,W,D,H,Z0){
 }
 const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[1200,700],sinkT2:[1200,700],sinkT3:[1800,700],sink1:[1000,700],
   cabinet:[1000,700],fridge:[700,800],hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],
-  rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100]};
+  rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100],door2:[1600,100],doorS:[1200,100],window:[1200,100]};
 const ISO={};
-Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800}[t]||0;
+Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800,window:1000}[t]||0;
   const inner=model3(t,0,0,w,d,{v:v||2,n:t==="burner"?v:undefined});
   return isoWrap(`<g transform="translate(0 ${f1(zb)})">${inner}</g>`,w,d,H3[t]-zb,-28)} });
 
@@ -1336,8 +1354,7 @@ function iso3dSVG(){
   /* فتحات الأبواب والشبابيك على وجه الجدار */
   cur.blocks.filter(b=>OPENING[b.k]).forEach(b=>{
     const cs=corners(b), [z0,z1]=OPENING[b.k], r=aabb(b);
-    if(b.k==="window") far+=prism(cs,z0,z1,"#DCE5EE");
-    else far+=`<g class="unit">${unit3("door",b)}</g>`;
+    far+=`<g class="unit">${unit3(BLK2TYPE[b.k]||"door",b)}</g>`;
   });
   /* الوحدات: من الخلف للأمام */
   const units=blocks.map(b=>{const cs=corners(b), r=aabb(b); return {b,cs,r,k:r.x1+r.y1}});
@@ -1530,11 +1547,13 @@ const burnerName=n=>[`${n}-burner gas range`,`موقد غاز ${n} عيون`];
 const TABLE_V={1:["Work table with backsplash","طاولة عمل بظهر"],
  2:["Work table with backsplash & undershelf","طاولة عمل بظهر ورف سفلي"],
  3:["Work table with backsplash, undershelf & mid shelf","طاولة عمل بظهر ورف سفلي ووسطي"]};
-const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",fridge:"cabinet",
- hood:"hood",wshelf:"shelf",pshelf:"pshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"shelf",
- evap:"hood",door1:"cabinet",door2:"cabinet",window:"cabinet",coldH:"cabinet",coldS:"cabinet"};
+const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",fridge:"fridge",
+ hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"rack",
+ evap:"evap",door1:"door",door2:"door2",window:"window",coldH:"door",coldS:"doorS"};
 /* كل بلوك يُسجَّل في جدول البنود بمقاسه واسمه — البلوكات المتطابقة تزيد الكمية */
+const NO_ITEM=["door1","door2","window"];   /* عناصر معمارية تُرسم فقط، لا تدخل جدول البنود */
 function itemForBlock(b){                 /* لكل قطعة بند مستقل برقم جديد */
+  if(NO_ITEM.includes(b.k)) return null;
   const no=cur.items.reduce((m,i)=>Math.max(m,i.no),0)+1;
   const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):null;
   const it={no,tag:String(no),ar:tv?tv[1]:BLK[b.k].n,en:tv?tv[0]:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
@@ -1558,13 +1577,13 @@ function placeBlock(x,y){
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
   const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
   constrain(nb); cur.blocks.push(nb);
-  nb.item=itemForBlock(nb).no; renderCards();
+  const it0=itemForBlock(nb); nb.item=it0?it0.no:null; renderCards();
   selBlock=nb.id;
   setTool("sel"); autoFit?fitView():growView(); renderPlan(); queueSave();
 }
 
 /* ===== توليد بلوك لكل بند من الجدول ===== */
-const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",shelf:"wshelf",pshelf:"pshelf",
+const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",rack:"rack",fridge:"fridge",evap:"evap",door:"coldH",doorS:"coldS",wshelf:"wshelf",shelf:"wshelf",pshelf:"pshelf",
   faucet:"faucet",cabinet:"cabinet",hood:"hood",burner:"burner",grill:"grill"};
 function dimsOf(it,k){
   const n=(it.dim.match(/\d+/g)||[]).map(Number);
@@ -1747,7 +1766,7 @@ $("bRot").onclick=()=>{const b=bbarBlock();if(!b)return;
   b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
 $("bDup").onclick=()=>{const b=bbarBlock();if(!b)return;
   const c={...b,id:nextId(),x:b.x+b.w+100};constrain(c);cur.blocks.push(c);
-  c.item=itemForBlock(c).no;
+  const it1=itemForBlock(c); c.item=it1?it1.no:null;
   renderCards();selBlock=c.id;
   renderSelBar();autoFit?fitView():growView();renderPlan();queueSave()};
 $("bDel").onclick=()=>{const b=bbarBlock();if(!b)return;
@@ -1761,8 +1780,8 @@ function renderSelBar(){
     ${b.k==="burner"?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("burnersL")}</label><select id="sburn">${[0,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${(b.n||0)===n?"selected":""}>${n?n:T("autoN")}</option>`).join("")}</select>`:""}
     ${b.k==="table"?`<select id="svar" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||2)===v?"selected":""}>${lang==="ar"?TABLE_V[v][1]:TABLE_V[v][0]}</option>`).join("")}</select>`:""}
     <div style="height:8px"></div>
-    <select id="slink"><option value="">${T("notLinked")}</option>
-      ${cur.items.map(i=>`<option value="${i.no}" ${b.item===i.no?"selected":""}>${T("itemOpt",tagOf(i),lang==="ar"?i.ar:i.en)}</option>`).join("")}</select>
+    ${NO_ITEM.includes(b.k)?"":`<select id="slink"><option value="">${T("notLinked")}</option>
+      ${cur.items.map(i=>`<option value="${i.no}" ${b.item===i.no?"selected":""}>${T("itemOpt",tagOf(i),lang==="ar"?i.ar:i.en)}</option>`).join("")}</select>`}
     <div class="draw-acts" style="margin:0">
       <button id="rot">${T("rotate")}</button><button id="dup">${T("dup")}</button><button id="del">${T("del")}</button></div>
     <div class="draw-acts" style="margin:8px 0 0">
@@ -1770,7 +1789,7 @@ function renderSelBar(){
     <div class="err" id="selErr" style="color:var(--ok)"></div></div>`;
   $("sw").onchange=()=>{b.w=Math.max(50,+$("sw").value||b.w);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
-  $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
+  if($("slink")) $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
   if($("svar")) $("svar").onchange=()=>{b.v=+$("svar").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("sburn")) $("sburn").onchange=()=>{b.n=+$("sburn").value||undefined;syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
@@ -2277,11 +2296,12 @@ function pruneEmpty(){
 }
 const isBlank=v=>!v.client&&!v.site&&!v.items.length&&!v.blocks.length&&!v.draw.pts.length;
 const needsInfo=v=>!v.client&&!v.site;
+function fixItems(items){ items=(items||[]).filter(it=>!(it.auto&&NO_ITEM.includes(it.k))); items.forEach(it=>{ if(it.k&&BLK2TYPE[it.k]) it.type=BLK2TYPE[it.k]; }); return items; }
 function rowToVisit(r){const d=r.data||{};
   return {id:r.id,client:r.client||"",site:r.site||"",city:r.city||"",date:r.visit_date||"",loc:r.loc||"",
     notes:r.notes||"",owner:r.owner,author:r.author_name||"",wallT:r.wall_t||100,scale:"",
     mode:d.mode||"draw",img:d.img||null,view:d.view||null,roomH:d.roomH||2600,
-    draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:d.blocks||[],items:d.items||[]}}
+    draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:(d.blocks||[]).map(b=>NO_ITEM.includes(b.k)?{...b,item:null}:b),items:fixItems(d.items||[])}}
 const visitToRow=v=>({id:v.id,owner:v.owner||me.id,author_name:v.author||me.name,
   client:v.client,site:v.site,city:v.city,visit_date:v.date||null,loc:v.loc,notes:v.notes,wall_t:v.wallT||100,
   data:{mode:v.mode,img:v.img,view:v.view,roomH:v.roomH||2600,draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
@@ -2296,6 +2316,7 @@ function loadLocal(){
   try{const d=JSON.parse(localStorage.getItem(KEY)||"null");
     if(d&&Array.isArray(d.projects)){projects=d.projects.map(v=>({wallT:100,mode:"draw",img:null,view:null,
       items:[],blocks:[],draw:{pts:[],closed:false,kinds:[]},...v}));
+      projects.forEach(v=>{v.items=fixItems(v.items);v.blocks.forEach(b=>{if(NO_ITEM.includes(b.k))b.item=null})});
       bid=projects.reduce((m,v)=>Math.max(m,...v.blocks.map(b=>b.id),0),0)+1}
   }catch(e){}
 }
@@ -2358,7 +2379,9 @@ const ITEM_TYPES=[["table","Work table","طاولة عمل"],["table2","Table w/
  ["sinkT1","Table with 1 bowl sink","طاولة بحوض واحد ومصفّى"],["sinkT2","Table with 2 bowl sink","طاولة بحوضين"],
  ["sinkT3","Table with 3 bowl sink","طاولة بثلاثة أحواض"],["sink1","Single bowl sink","حوض مفرد كبير"],["shelf","Wall shelf","رف جداري"],["pshelf","Perforated shelf","رف مثقّب"],
  ["cabinet","Cabinet","كابينة"],["hood","Hood","هود"],["burner","Burner","موقد"],["grill","Grill","شواية"],
- ["faucet","Faucet","خلاط"]];
+ ["faucet","Faucet","خلاط"],["rack","Storage rack","رفوف تخزين"],["fridge","Fridge / chiller","ثلاجة / مبرد"],
+ ["evap","Evaporator (unit cooler)","مبخّرة (وحدة داخلية)"],["door","Cold room door — hinged","باب تبريد مفصلي"],
+ ["doorS","Cold room door — sliding","باب تبريد سحاب"]];
 function fillTypes(){
   $("fType").innerHTML=ITEM_TYPES.map(t=>`<option value="${t[0]}">${lang==="ar"?t[2]:t[1]}</option>`).join("");
 }
