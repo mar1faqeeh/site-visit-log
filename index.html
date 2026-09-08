@@ -321,6 +321,10 @@ main{padding:0 0 96px}
       <div id="tableVar" class="sortrow" style="margin-top:10px" hidden>
         <button data-v="1"></button><button data-v="2" aria-pressed="true"></button><button data-v="3"></button>
       </div>
+      <div id="burnerVar" class="sortrow" style="margin-top:10px" hidden>
+        <button data-n="0" aria-pressed="true" data-i18n="autoN"></button>
+        <button data-n="2">2</button><button data-n="3">3</button><button data-n="4">4</button><button data-n="5">5</button><button data-n="6">6</button>
+      </div>
       <div class="draw-acts" style="margin-top:10px"><button id="autoBlocks" data-i18n="autoBlocks"></button></div>
       <div class="hintbox" id="blockHint" data-i18n="blockHint"></div>
     </div>
@@ -451,7 +455,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -466,7 +470,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -521,7 +525,7 @@ const BLK={
    f:(w,d)=>{let o="";for(let i=1;i<=6;i++)o+=`<circle cx="${w*i/7}" cy="${d/2}" r="${d*.09}" fill="none"/>`;
      return `<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/>${o}`}},
  burner:{n:"موقد / برنر",e:"Burner / range",w:1800,d:900,iso:"burner",
-   f:(w,d)=>{const n=Math.max(2,Math.round(w/450));let o="";
+   f:(w,d,op)=>{const n=Math.max(1,(op&&op.n)||Math.round(w/450));let o="";
      for(let i=0;i<n;i++)o+=`<circle cx="${w*(i+.5)/n}" cy="${d/2}" r="${Math.min(d*.3,w/n*.36)}" fill="none"/>`;
      return `<rect width="${w}" height="${d}" fill="#fff"/>${o}`}},
  grill:{n:"شواية",e:"Grill",w:900,d:800,iso:"grill",
@@ -766,11 +770,33 @@ const M3={
  pshelf:(x,y,w,d)=>{const z=1500; let s=bx3(x,y,z,w,d,26);
    const k=Math.round(w/180); for(let i=1;i<=k;i++)for(let j=1;j<=2;j++) s+=ell(x+w*i/(k+1),y+d*j/3,z+26,26);
    return s},
- burner:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
-   const n=Math.max(2,Math.round(w/450)), cols=Math.ceil(n/2);
-   for(let i=0;i<n;i++){const cx=x+w*((i%cols)+.5)/cols, cy=y+d*(i<cols?.3:.7);
-     s+=ell(cx,cy,850,150,FL.dark)+ell(cx,cy,850,95,FL.top)+ell(cx,cy,850,32)}
-   for(let i=0;i<n;i++) s+=bx3(x+w*(i+.5)/n-25,y+d,730,50,30,50);
+ /* موقد غاز مفتوح: عيون بشبكة حديد زهر في صف واحد، لوحة تحكم أمامية بمفاتيح، ظهر، ورف سفلي */
+ burner:(x,y,w,d,o)=>{const zt=850, ap=190, n=Math.max(1,(o&&o.n)||Math.round(w/450));
+   let s=stand(x,y,w,d,[{z:150,t:30},{z:zt-40-ap,t:0,top:1}]);
+   s+=bx3(x,y,zt-40-ap,w,d,ap,{top:FL.top,left:FL.right,right:FL.dark});            /* جسم الموقد */
+   s+=bx3(x,y,810,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});                 /* السطح */
+   s+=bx3(x,y,zt,w,28,150,{top:FL.right,left:FL.left,right:FL.dark});               /* الظهر */
+   /* لوحة التحكم على الوجه الأمامي: شريط + مفتاحان لكل عين */
+   const zk=zt-40-ap/2;
+   const frontOK=!!face3([[x,y+d,zt-40],[x+w,y+d,zt-40],[x+w,y+d,zt-40-ap],[x,y+d,zt-40-ap]],"none",'stroke="none"');
+   if(frontOK){
+     s+=face3([[x+20,y+d,zt-60],[x+w-20,y+d,zt-60],[x+w-20,y+d,zt-40-ap+25],[x+20,y+d,zt-40-ap+25]],FL.left,'',true);
+     const vc=(cx,cz,r,fill,extra)=>{const pts=[];for(let i=0;i<20;i++){const a=i/20*Math.PI*2;
+       pts.push([x+cx+r*Math.cos(a),y+d,cz+r*Math.sin(a)])} return face3(pts,fill,extra,true)};
+     for(let i=0;i<n;i++){const cx=w*(i+.5)/n;
+       [cx-70,cx+70].forEach(kx=>{s+=vc(kx,zk,34,"#3E4A57")+vc(kx,zk,22,"#B7C2CD")+vc(kx,zk,8,"#3E4A57")});
+     }
+   }
+   /* العيون: بئر فاتح، حلقة زهر داكنة، ستة أذرع، وغطاء مركزي */
+   const r=Math.min(d*.34,(w/n)*.36), cy=y+d*.5;
+   for(let i=0;i<n;i++){const cx=x+w*(i+.5)/n;
+     s+=ell(cx,cy,zt,r*1.08,FL.recess);
+     s+=ell(cx,cy,zt+6,r,"none",'stroke="#3E4A57" stroke-width="10"');
+     for(let k=0;k<6;k++){const a=k/6*Math.PI*2+Math.PI/6, ux=Math.cos(a), uy=Math.sin(a), px=-uy*16, py=ux*16;
+       s+=face3([[cx+ux*r*.22+px,cy+uy*r*.22+py,zt+8],[cx+ux*r*.22-px,cy+uy*r*.22-py,zt+8],
+                 [cx+ux*r-px*.6,cy+uy*r-py*.6,zt+8],[cx+ux*r+px*.6,cy+uy*r+py*.6,zt+8]],"#3E4A57",'stroke="none"',true)}
+     s+=ell(cx,cy,zt+10,r*.24,"#3E4A57")+ell(cx,cy,zt+22,r*.16,"#6B7684");
+   }
    return s},
  grill:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
    s+=face3([[x+70,y+70,850],[x+w-70,y+70,850],[x+w-70,y+d-70,850],[x+70,y+d-70,850]],FL.recess,'',true);
@@ -829,7 +855,7 @@ const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[120
   rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100]};
 const ISO={};
 Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800}[t]||0;
-  const inner=model3(t,0,0,w,d,{v:v||2});
+  const inner=model3(t,0,0,w,d,{v:v||2,n:t==="burner"?v:undefined});
   return isoWrap(`<g transform="translate(0 ${f1(zb)})">${inner}</g>`,w,d,H3[t]-zb,-28)} });
 
 const isoCache={};
@@ -1184,7 +1210,7 @@ function customSymbol(kind,w,d){
   }
   return `<g vector-effect="non-scaling-stroke">${o}</g>`;
 }
-const symbol=(kind,w,d)=>customSymbol(kind,w,d)||BLK[kind].f(w,d);
+const symbol=(kind,w,d,o)=>customSymbol(kind,w,d)||BLK[kind].f(w,d,o||{});
 async function loadBlockSVGs(){
   let raw={};
   if(CLOUD){ const {data}=await sb.from("block_svgs").select("*"); (data||[]).forEach(r=>raw[r.kind]=r.svg); }
@@ -1212,7 +1238,7 @@ function blocksSVG(){
     const B=BLK[b.k], on=selBlock===b.id||(b.item&&b.item===sel);
     const g=`<g data-block="${b.id}" transform="translate(${b.x},${b.y}) rotate(${b.rot})"
       stroke="${on?"#E0A020":"#0E2340"}" stroke-width="${on?3:2}" vector-effect="non-scaling-stroke" fill="none">
-      ${symbol(b.k,b.w,b.d)}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
+      ${symbol(b.k,b.w,b.d,{n:b.n})}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
     const r=b.rot*Math.PI/180, cx=b.x+(b.w/2)*Math.cos(r)-(b.d/2)*Math.sin(r), cy=b.y+(b.w/2)*Math.sin(r)+(b.d/2)*Math.cos(r);
     const tr=Math.max(70,Math.min(Math.min(b.w,b.d)*.2,220));    /* حجم الرقم يتبع البلوك */
     const lbl=tagFor(b.item);
@@ -1314,10 +1340,16 @@ function iso3dSVG(){
     else far+=`<g class="unit">${unit3("door",b)}</g>`;
   });
   /* الوحدات: من الخلف للأمام */
-  blocks.map(b=>({b,cs:corners(b)}))
-    .map(o=>({...o,k:Math.min(...o.cs.map(c=>c[0]+c[1]))}))
-    .sort((p,q)=>p.k-q.k)
-    .forEach(o=>{
+  const units=blocks.map(b=>{const cs=corners(b), r=aabb(b); return {b,cs,r,k:r.x1+r.y1}});
+  /* A قبل B إذا كانت A بكاملها خلف B على أحد المحورين */
+  const behind=(A,B)=> (A.r.x2<=B.r.x1+1) || (A.r.y2<=B.r.y1+1);
+  const ordered=[]; const left=units.slice();
+  while(left.length){
+    let pick=left.find(u=>!left.some(v=>v!==u && behind(v,u) && !behind(u,v)));
+    if(!pick) pick=left.reduce((m,u)=>u.k<m.k?u:m,left[0]);      /* دورة: أبعد ركن أولًا */
+    ordered.push(pick); left.splice(left.indexOf(pick),1);
+  }
+  ordered.forEach(o=>{
       const H=H3D[o.b.k]||{z:0,h:850};
       const art=isoArt[BLK2TYPE[o.b.k]||"table"];
       if(art){                              /* رسم المصنع بدل الشكل المولّد */
@@ -1342,7 +1374,7 @@ function iso3dSVG(){
         fridge:"fridge",hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",rack:"rack",
         evap:"evap",faucet:"faucet"};
       const mt=K2M[o.b.k]||"table";
-      const opts = o.b.k==="table"?{v:o.b.v||2}:{};
+      const opts = o.b.k==="table"?{v:o.b.v||2}:o.b.k==="burner"?{n:o.b.n||0}:{};
       body+=`<g class="unit">${unit3(mt,o.b,opts)}</g>`;
       if(o.b.item){
         const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
@@ -1494,6 +1526,7 @@ function addByPad(deg){
   d.pts.push([Math.round(px+Math.cos(r)*L),Math.round(py+Math.sin(r)*L)]);
   autoFit?fitView():growView(); renderPlan(); queueSave();
 }
+const burnerName=n=>[`${n}-burner gas range`,`موقد غاز ${n} عيون`];
 const TABLE_V={1:["Work table with backsplash","طاولة عمل بظهر"],
  2:["Work table with backsplash & undershelf","طاولة عمل بظهر ورف سفلي"],
  3:["Work table with backsplash, undershelf & mid shelf","طاولة عمل بظهر ورف سفلي ووسطي"]};
@@ -1503,9 +1536,9 @@ const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sink
 /* كل بلوك يُسجَّل في جدول البنود بمقاسه واسمه — البلوكات المتطابقة تزيد الكمية */
 function itemForBlock(b){                 /* لكل قطعة بند مستقل برقم جديد */
   const no=cur.items.reduce((m,i)=>Math.max(m,i.no),0)+1;
-  const tv=b.k==="table"?TABLE_V[b.v||2]:null;
+  const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):null;
   const it={no,tag:String(no),ar:tv?tv[1]:BLK[b.k].n,en:tv?tv[0]:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
-    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):undefined,auto:true,k:b.k};
+    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):b.k==="burner"?(b.n||Math.round(b.w/450)):undefined,auto:true,k:b.k};
   cur.items.push(it); return it;
 }
 function releaseItem(b){                 /* حذف البلوك يحذف بنده المولّد تلقائيًا */
@@ -1519,10 +1552,11 @@ function syncItemDim(b){                 /* المقاس والخيار ينعك
   const it=cur.items.find(i=>i.no===b.item); if(!it||!it.auto) return;
   it.dim=`${b.w} × ${b.d}`;
   if(b.k==="table"){const tv=TABLE_V[b.v||2]; it.variant=b.v||2; it.en=tv[0]; it.ar=tv[1];}
+  if(b.k==="burner"){const n=b.n||Math.round(b.w/450); const bn2=burnerName(n); it.variant=n; it.en=bn2[0]; it.ar=bn2[1];}
 }
 function placeBlock(x,y){
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
-  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:undefined};
+  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
   constrain(nb); cur.blocks.push(nb);
   nb.item=itemForBlock(nb).no; renderCards();
   selBlock=nb.id;
@@ -1556,7 +1590,7 @@ function autoPlace(){
 
 /* ================= الأدوات ================= */
 function setTool(t){
-  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar"))$("tableVar").hidden=true;
+  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar")){$("tableVar").hidden=true;$("burnerVar").hidden=true}
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===(t==="place"?"block":t)));
   $("tabLine").hidden=t!=="line"; $("tabBlock").hidden=!(t==="block"||t==="place"); $("tabSel").hidden=t!=="sel";
   renderSelBar(); renderPlan();
@@ -1570,12 +1604,15 @@ document.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
 });
 $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan();queueSave()});
 $("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
-let tableV=2;
+let tableV=2, burnerN=0;
 function renderTableVar(){
+  $("burnerVar").hidden=pending!=="burner";
+  document.querySelectorAll("#burnerVar button").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.n===burnerN));
   $("tableVar").hidden=pending!=="table";
   document.querySelectorAll("#tableVar button").forEach(x=>{x.textContent=lang==="ar"?TABLE_V[x.dataset.v][1]:TABLE_V[x.dataset.v][0];x.setAttribute("aria-pressed",+x.dataset.v===tableV)});
 }
 document.querySelectorAll("#tableVar button").forEach(x=>x.onclick=()=>{tableV=+x.dataset.v;renderTableVar()});
+document.querySelectorAll("#burnerVar button").forEach(x=>x.onclick=()=>{burnerN=+x.dataset.n;renderTableVar()});
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
@@ -1721,6 +1758,7 @@ function renderSelBar(){
   $("selBox").innerHTML=`<div class="sel-bar"><h4>${bn(b.k)}</h4>
     <div class="sizes"><div><label>${T("widthMM")}</label><input id="sw" type="number" step="10" value="${b.w}"></div>
     <div><label>${T("depthMM")}</label><input id="sd" type="number" step="10" value="${b.d}"></div></div>
+    ${b.k==="burner"?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("burnersL")}</label><select id="sburn">${[0,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${(b.n||0)===n?"selected":""}>${n?n:T("autoN")}</option>`).join("")}</select>`:""}
     ${b.k==="table"?`<select id="svar" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||2)===v?"selected":""}>${lang==="ar"?TABLE_V[v][1]:TABLE_V[v][0]}</option>`).join("")}</select>`:""}
     <div style="height:8px"></div>
     <select id="slink"><option value="">${T("notLinked")}</option>
@@ -1734,6 +1772,7 @@ function renderSelBar(){
   $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
   if($("svar")) $("svar").onchange=()=>{b.v=+$("svar").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
+  if($("sburn")) $("sburn").onchange=()=>{b.n=+$("sburn").value||undefined;syncItemDim(b);renderCards();renderPlan();queueSave()};
   $("rot").onclick=()=>{b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
   $("dup").onclick=()=>{const c={...b,id:nextId(),x:b.x+b.w+100};cur.blocks.push(c);selBlock=c.id;renderSelBar();autoFit?fitView():growView();renderPlan()};
   $("del").onclick=()=>{cur.blocks=cur.blocks.filter(x=>x.id!==b.id);selBlock=null;renderSelBar();renderPlan();queueSave()};
@@ -1984,7 +2023,7 @@ function renderPlan(){
   box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`
                 : cur.mode==="iso"?iso3dSVG():drawSVG();
   box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar); box.appendChild(sbar);
-  if(cur.mode!=="draw"||editing) cur.items.forEach(it=>{
+  if(cur.mode==="img"||editing) cur.items.forEach(it=>{
     const pin=document.createElement("button");
     pin.className="pin"+(sel===it.no?" on":"");pin.textContent=tagOf(it);
     pin.style.right=(it.x==null?50:it.x)+"%";pin.style.top=(it.y==null?50:it.y)+"%";
