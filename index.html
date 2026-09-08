@@ -2165,6 +2165,7 @@ function renderPlan(){
   box.classList.toggle("tool-sel",cur.mode==="draw"&&tool==="sel");
   box.classList.toggle("editing",editing);
   $("drawPanel").hidden=cur.mode!=="draw"||!!cur._ro;
+  $("resetPins").hidden=cur.mode!=="img"; $("editPins").parentElement.hidden=cur.mode!=="img";
   bbarUpdate(); sbarUpdate();
   $("isoPanel").hidden=cur.mode!=="iso";
   $("perspPanel").hidden=cur.mode!=="persp";
