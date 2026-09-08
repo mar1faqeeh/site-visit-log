@@ -577,144 +577,163 @@ const BLK={
    f:(w,d)=>`<circle cx="${w/2}" cy="${d/2}" r="${w*.32}" fill="#fff"/><line x1="${w/2}" y1="${d/2}" x2="${w/2}" y2="${d}"/>`}
 };
 
-/* ================= نماذج ثلاثية الأبعاد موحّدة: المصغّرات والمنظور ================= */
+/* ================= نماذج ثلاثية الأبعاد: تُبنى بإحداثيات 3D وتُدوَّر وتُقصّ الأوجه المخفية تلقائيًا ================= */
 const C=Math.cos(Math.PI/6), S=.5, SQ2=Math.SQRT2;
-const P=(x,y,z)=>[(x-y)*C,(x+y)*S-z];
 const f1=v=>(Math.round(v*10)/10);
-const FL={top:"#F7F9FB",left:"#E3E9EF",right:"#CDD6DF",dark:"#B7C2CD",recess:"#E9EEF3"};
-const pth=(pts,fill,extra)=>`<path fill="${fill||"none"}" ${extra||""} d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
-const ln=(a,b)=>`<path d="M${f1(a[0])} ${f1(a[1])} L${f1(b[0])} ${f1(b[1])}"/>`;
-/* صندوق كامل بثلاثة أوجه ظاهرة */
-function bx3(x,y,z,w,d,h,fills){
-  const F=fills||FL, A=(a,b,c)=>P(x+a,y+b,z+c);
-  return pth([A(0,d,h),A(w,d,h),A(w,d,0),A(0,d,0)],F.left)
-       + pth([A(w,0,h),A(w,d,h),A(w,d,0),A(w,0,0)],F.right)
-       + pth([A(0,0,h),A(w,0,h),A(w,d,h),A(0,d,h)],F.top);
+let XF=null;                                   /* تحويل الوحدة الحالية: {x,y,rot} */
+function W3(x,y,z){                            /* من إحداثيات الوحدة إلى إحداثيات العالم */
+  if(!XF) return [x,y,z];
+  const r=XF.rot*Math.PI/180, c=Math.cos(r), s=Math.sin(r);
+  return [XF.x+x*c-y*s, XF.y+x*s+y*c, z];
 }
-/* قائم رأسي بلا خطوط أفقية في المقاطع الوسطى حتى لا تظهر فواصل */
-function post(x,y,z0,z1,s,cap){
-  const A=(a,b,c)=>P(x+a,y+b,c);
-  let o=pth([A(0,s,z1),A(s,s,z1),A(s,s,z0),A(0,s,z0)],FL.left,'stroke="none"')
-       +pth([A(s,0,z1),A(s,s,z1),A(s,s,z0),A(s,0,z0)],FL.right,'stroke="none"');
-  o+=ln(A(0,s,z0),A(0,s,z1))+ln(A(s,s,z0),A(s,s,z1))+ln(A(s,0,z0),A(s,0,z1));
-  if(cap) o+=pth([A(0,0,z1),A(s,0,z1),A(s,s,z1),A(0,s,z1)],FL.top);
+const P=(x,y,z)=>{const w=W3(x,y,z);return [(w[0]-w[1])*C,(w[0]+w[1])*S-w[2]]};
+const dep=(x,y)=>{const w=W3(x,y,0);return w[0]+w[1]};
+const FL={top:"#F7F9FB",left:"#E3E9EF",right:"#CDD6DF",dark:"#B7C2CD",recess:"#E9EEF3"};
+const VIEW=[1,1,.9];
+/* وجه ثلاثي الأبعاد: يُرسم فقط إذا كان مواجهًا للناظر */
+function face3(pts,fill,extra,force){
+  const w=pts.map(p=>W3(p[0],p[1],p[2]));
+  const ax=w[1][0]-w[0][0],ay=w[1][1]-w[0][1],az=w[1][2]-w[0][2];
+  const bx=w[2][0]-w[0][0],by=w[2][1]-w[0][1],bz=w[2][2]-w[0][2];
+  const n=[ay*bz-az*by, az*bx-ax*bz, ax*by-ay*bx];
+  const dot=n[0]*VIEW[0]+n[1]*VIEW[1]+n[2]*VIEW[2];
+  if(!force && dot<=0) return "";
+  const pr=w.map(q=>[(q[0]-q[1])*C,(q[0]+q[1])*S-q[2]]);
+  return `<path fill="${fill||"none"}" ${extra||""} d="M${pr.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
+}
+const edge3=(a,b)=>{const p=P(a[0],a[1],a[2]),q=P(b[0],b[1],b[2]);return `<path d="M${f1(p[0])} ${f1(p[1])} L${f1(q[0])} ${f1(q[1])}"/>`};
+const line3=(pts,extra)=>`<path fill="none" ${extra||""} d="M${pts.map(p=>{const q=P(p[0],p[1],p[2]);return f1(q[0])+" "+f1(q[1])}).join(" L")}"/>`;
+const ring3=(pts,extra)=>line3(pts.concat([pts[0]]),extra);
+/* لون الوجه الجانبي بحسب اتجاهه في العالم */
+function sideFill(pts,fills){
+  const w=pts.map(p=>W3(p[0],p[1],p[2]));
+  const ax=w[1][0]-w[0][0],ay=w[1][1]-w[0][1],bx=w[2][0]-w[0][0],by=w[2][1]-w[0][1];
+  const az=w[1][2]-w[0][2], bz=w[2][2]-w[0][2];
+  const nx=ay*bz-az*by, ny=az*bx-ax*bz;
+  return nx>ny ? (fills.right||FL.right) : (fills.left||FL.left);
+}
+/* صندوق: كل الأوجه مع القصّ التلقائي */
+function bx3(x,y,z,w,d,h,fills){
+  const F=fills||FL, V=(a,b,c)=>[x+a,y+b,z+c];
+  const sides=[
+    [V(0,d,h),V(w,d,h),V(w,d,0),V(0,d,0)],   /* +y */
+    [V(w,0,h),V(w,d,h),V(w,d,0),V(w,0,0)],   /* +x */
+    [V(w,0,h),V(0,0,h),V(0,0,0),V(w,0,0)],   /* -y */
+    [V(0,d,h),V(0,0,h),V(0,0,0),V(0,d,0)]    /* -x */
+  ];
+  let o=""; sides.forEach(f=>{o+=face3(f,sideFill(f,F))});
+  o+=face3([V(0,0,h),V(w,0,h),V(w,d,h),V(0,d,h)],F.top||FL.top);
   return o;
 }
-const ell=(cx,cy,z,r,fill)=>{const p=P(cx,cy,z);
-  return `<ellipse fill="${fill||"none"}" cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
-/* قاعدة ستانلس: أرجل مربّعة، أقدام، أرفف بمستويات، سطح بحافة */
+/* قائم بلا خطوط أفقية في الوسط */
+function post(x,y,z0,z1,s,cap){
+  const V=(a,b,c)=>[x+a,y+b,c];
+  const sides=[[V(0,s,z1),V(s,s,z1),V(s,s,z0),V(0,s,z0)],[V(s,0,z1),V(s,s,z1),V(s,s,z0),V(s,0,z0)],
+               [V(s,0,z1),V(0,0,z1),V(0,0,z0),V(s,0,z0)],[V(0,s,z1),V(0,0,z1),V(0,0,z0),V(0,s,z0)]];
+  let o="";
+  sides.forEach(f=>{const q=face3(f,sideFill(f,FL),'stroke="none"'); if(q){o+=q; o+=edge3(f[0],f[3])+edge3(f[1],f[2])}});
+  if(cap) o+=face3([V(0,0,z1),V(s,0,z1),V(s,s,z1),V(0,s,z1)],FL.top);
+  return o;
+}
+const ell=(cx,cy,z,r,fill,extra)=>{const p=P(cx,cy,z);
+  return `<ellipse fill="${fill||"none"}" ${extra||""} cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
+/* قاعدة ستانلس */
 function stand(x,y,w,d,levels,opt){
   opt=opt||{}; const s=opt.leg||40, feet=opt.feet!==false, ins=opt.inset!==undefined?opt.inset:30;
   const corners=[[x+ins,y+ins],[x+w-s-ins,y+ins],[x+ins,y+d-s-ins],[x+w-s-ins,y+d-s-ins]]
-    .sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
+    .sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]));
   let o="", z0=0;
   if(feet) corners.forEach(c=>{o+=bx3(c[0]+6,c[1]+6,-28,s-12,s-12,28,{top:FL.dark,left:FL.dark,right:FL.dark})});
-  if(opt.rails){                                        /* عصب بين الأرجل: خلف + الجانبان */
+  if(opt.rails){
     const rz=opt.rails, m=ins+s, rf={top:FL.top,left:FL.right,right:FL.dark};
     corners.forEach(c=>{o+=post(c[0],c[1],0,rz+s,s,false)});
-    o+=bx3(x+ins+s,y+ins,rz,w-2*m,s,s,rf);                                   /* الخلف */
-    o+=bx3(x+ins,y+ins+s,rz,s,d-2*m,s,rf);                                   /* اليسار */
-    o+=bx3(x+w-ins-s,y+ins+s,rz,s,d-2*m,s,rf);                               /* اليمين */
+    const rails=[[x+ins+s,y+ins,w-2*m,s],[x+ins,y+ins+s,s,d-2*m],[x+w-ins-s,y+ins+s,s,d-2*m]]
+      .sort((a,b)=>dep(a[0]+a[2]/2,a[1]+a[3]/2)-dep(b[0]+b[2]/2,b[1]+b[3]/2));
+    rails.forEach(r=>{o+=bx3(r[0],r[1],rz,r[2],r[3],s,rf)});
     z0=rz+s;
   }
-  levels.forEach((lv,i)=>{
-    const zTo = lv.top ? lv.z : lv.z+lv.t;              /* الرف بين الأرجل: القائم يمر بسماكته بلا انقطاع */
+  levels.forEach(lv=>{
+    const zTo=lv.top?lv.z:lv.z+lv.t;
     corners.forEach(c=>{o+=post(c[0],c[1],z0,zTo,s,false)});
-    if(lv.top){ o+=bx3(x,y,lv.z,w,d,lv.t,{top:FL.top,left:FL.right,right:FL.dark}); }      /* السطح بحافة مطوية */
-    else { const m=ins+s;                                                                    /* رف بين الأرجل */
-      o+=bx3(x+m,y+m,lv.z,w-2*m,d-2*m,lv.t,{top:FL.top,left:FL.right,right:FL.dark}); }
+    if(lv.top) o+=bx3(x,y,lv.z,w,d,lv.t,{top:FL.top,left:FL.right,right:FL.dark});
+    else { const m=ins+s; o+=bx3(x+m,y+m,lv.z,w-2*m,d-2*m,lv.t,{top:FL.top,left:FL.right,right:FL.dark}); }
     z0=lv.z+lv.t;
   });
   return o;
 }
-/* طاولة عمل: v1 ظهر فقط، v2 ظهر + رف سفلي، v3 ظهر + رف سفلي + رف وسطي */
 function worktable(x,y,w,d,v){
   const lv=[]; if(v>=2) lv.push({z:150,t:30}); if(v>=3) lv.push({z:470,t:30}); lv.push({z:810,t:40,top:1});
   let o=stand(x,y,w,d,lv,v===1?{rails:150}:{});
-  o+=bx3(x,y,850,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});                       /* الظهر */
+  o+=bx3(x,y,850,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});
   return o;
 }
-/* مستطيل بزوايا دائرية على مستوى أفقي، نقاطه مرتبة: يبدأ من مقدمة الجانب الأيسر ويدور مع عقارب الساعة */
 function rrect(x,y,z,w,d,R,steps){
   steps=steps||4; const pts=[], corner=(cx,cy,a0)=>{for(let i=0;i<=steps;i++){const a=a0+(i/steps)*Math.PI/2;
     pts.push([cx+R*Math.cos(a),cy+R*Math.sin(a),z])}};
-  corner(x+R,   y+d-R, Math.PI/2);      /* أمام-يسار */
-  corner(x+R,   y+R,   Math.PI);        /* خلف-يسار */
-  corner(x+w-R, y+R,   Math.PI*1.5);    /* خلف-يمين */
-  corner(x+w-R, y+d-R, 0);              /* أمام-يمين */
+  corner(x+R,y+d-R,Math.PI/2); corner(x+R,y+R,Math.PI); corner(x+w-R,y+R,Math.PI*1.5); corner(x+w-R,y+d-R,0);
   return pts;
 }
-const proj=pts=>pts.map(p=>P(p[0],p[1],p[2]));
-const path=(pts,fill,extra)=>`<path fill="${fill||"none"}" ${extra||""} d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
-/* حوضية غاطسة بزوايا دائرية، جدران داخلية مقوّسة، وقاع متدرّج الظل */
-function bowl(x,y,zt,w,d,dep){
+function bowl(x,y,zt,w,d,dep_){
   const id="bw"+(bowl.n=(bowl.n||0)+1), R=Math.min(80,w*.18,d*.18), n=5;
   const rimO=rrect(x,y,zt,w,d,R,n), rimI=rrect(x+22,y+22,zt,w-44,d-44,Math.max(20,R-22),n);
-  const flr=rrect(x+70,y+70,zt-dep,w-140,d-140,Math.max(14,R-60),n);
-  const pO=proj(rimO), pI=proj(rimI), pF=proj(flr);
-  /* الجزء الظاهر من الجدار الداخلي: الجانب الأيسر ثم الخلف (من أول نقطة إلى نهاية الركن خلف-يمين) */
-  const end=(n+1)*3-1;
-  let walls="";
-  for(let i=0;i<end;i++) walls+=path([pI[i],pI[i+1],pF[i+1],pF[i]], i<(n+1)*1.5?FL.dark:FL.right,'stroke="none"');
-  const wallEdge=`<path fill="none" d="M${pF.slice(0,end+1).map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}"/>`;
+  const flr=rrect(x+70,y+70,zt-dep_,w-140,d-140,Math.max(14,R-60),n);
+  const N=rimI.length; let walls="";
+  for(let i=0;i<N;i++){const j=(i+1)%N;
+    const q=[rimI[i],rimI[j],flr[j],flr[i]];
+    /* الجدار الداخلي مواجه للناظر إذا كان الجدار الخارجي المقابل غير مواجه */
+    const w3=q.map(p=>W3(p[0],p[1],p[2]));
+    const ax=w3[1][0]-w3[0][0],ay=w3[1][1]-w3[0][1],az=w3[1][2]-w3[0][2],bx=w3[2][0]-w3[0][0],by=w3[2][1]-w3[0][1],bz=w3[2][2]-w3[0][2];
+    const nx=ay*bz-az*by, ny=az*bx-ax*bz;
+    if(nx+ny<0) continue;                             /* الجدران الأمامية مخفية */
+    walls+=face3(q,(nx>ny?FL.right:FL.dark),'stroke="none"',true);
+  }
+  const pI=rimI.map(p=>P(p[0],p[1],p[2]));
   return `<defs><linearGradient id="g${id}" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="${FL.dark}"/><stop offset="1" stop-color="${FL.recess}"/></linearGradient>
     <clipPath id="${id}"><path d="M${pI.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/></clipPath></defs>`
-    + `<g clip-path="url(#${id})">` + path(pF,`url(#g${id})`,'stroke="none"') + walls + wallEdge
-    + ell(x+w/2,y+d/2,zt-dep,40,FL.recess) + `</g>`
-    + path(pO,"none") + path(pI,"none");
+    + `<g clip-path="url(#${id})">` + face3(flr,`url(#g${id})`,'stroke="none"',true) + walls
+    + line3(flr) + ell(x+w/2,y+d/2,zt-dep_,40,FL.recess) + `</g>` + ring3(rimO) + ring3(rimI);
 }
-/* مصفّى مضلّع: أضلاع بارزة بحافة فاتحة وظل */
 function drainboard(x,y,z,w,d){
   let o=""; const n=7, len=d*.6, y0=y+d*.2;
   for(let i=1;i<=n;i++){const xx=x+w*i/(n+1);
-    o+=path(proj([[xx-10,y0,z],[xx+10,y0,z],[xx+10,y0+len,z],[xx-10,y0+len,z]]),FL.right,'stroke="none"');
-    o+=ln(P(xx-10,y0,z),P(xx-10,y0+len,z));}
+    o+=face3([[xx-10,y0,z],[xx+10,y0,z],[xx+10,y0+len,z],[xx-10,y0+len,z]],FL.right,'stroke="none"',true);
+    o+=edge3([xx-10,y0,z],[xx-10,y0+len,z]);}
   return o;
 }
-/* طاولة حوض: سطح بحافة مطوية يعلو جسمًا غائرًا، عصب بين الأرجل، ظهر، وأحواض غاطسة */
+function faucet(x,y,z){
+  const R=16, col=270, r=125, yc=y+r, zc=z+col;
+  let o=ell(x,y,z,48,FL.right)+ell(x,y,z+22,48,FL.top);
+  o+=face3([[x-R,y,z+22],[x+R,y,z+22],[x+R,y,zc],[x-R,y,zc]],FL.left,'',true);
+  const arc=(rr,rev)=>{const pts=[];for(let i=0;i<=14;i++){const a=Math.PI*(1-i/14);
+    pts.push([x,yc+rr*Math.cos(a),zc+rr*Math.sin(a)])} return rev?pts.reverse():pts};
+  const outer=arc(r+R), inner=arc(r-R,true);
+  o+=face3([...outer,...inner],FL.left,'',true)+line3(outer);
+  const ye=yc+r; o+=face3([[x-R,ye,zc],[x+R,ye,zc],[x+R,ye,zc-70],[x-R,ye,zc-70]],FL.right,'',true);
+  o+=ell(x,ye,zc-70,R,FL.dark);
+  o+=bx3(x-9,y-120,zc-40,18,110,14,{top:FL.top,left:FL.right,right:FL.dark});
+  o+=ell(x,y-125,zc-33,20,FL.top);
+  return o;
+}
 function sinkModel(x,y,w,d,o){
   const n=o.bowls||2, zt=850, ap=280, inset=25;
   let out=stand(x,y,w,d,[{z:zt-40-ap,t:0,top:1}],{rails:200});
   out+=bx3(x+inset,y+inset,zt-40-ap,w-2*inset,d-2*inset,ap,{top:FL.top,left:FL.right,right:FL.dark});
   out+=bx3(x,y,810,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});
-  out+=bx3(x,y,zt,w,28,120,{top:FL.right,left:FL.left,right:FL.dark});           /* الظهر */
+  out+=bx3(x,y,zt,w,28,120,{top:FL.right,left:FL.left,right:FL.dark});
   if(o.drain) out+=drainboard(x,y,zt,w*.46,d);
-  const x0 = o.drain ? w*.52 : (o.full? w*.07 : w*.06);
-  const areaW = o.drain ? w*.42 : (o.full? w*.86 : w*.88);
+  const x0=o.drain?w*.52:(o.full?w*.07:w*.06), areaW=o.drain?w*.42:(o.full?w*.86:w*.88);
   const gap=n>1?50:0, bw=(areaW-gap*(n-1))/n, by=o.full?d*.16:d*.18, bd=o.full?d*.68:d*.64;
   for(let i=0;i<n;i++) out+=bowl(x+x0+i*(bw+gap),y+by,zt,bw,bd,260);
   out+=faucet(x+w/2,y+58,zt);
   return out;
 }
-/* خلاط تجاري: قاعدة دائرية، عمود أسطواني، عنق إوزة منحنٍ، وذراع تشغيل */
-function faucet(x,y,z){
-  const R=16, col=270, r=125, yc=y+r, zc=z+col;
-  let o=ell(x,y,z,48,FL.right)+ell(x,y,z+22,48,FL.top);
-  const cx=(a,b,c)=>P(x+a,y+b,c);
-  /* العمود */
-  o+=pth([cx(-R,0,z+22),cx(R,0,z+22),cx(R,0,zc),cx(-R,0,zc)],FL.left);
-  /* عنق الإوزة: شريط بين قوسين متحدي المركز في مستوى y-z */
-  const arc=(rr,rev)=>{const pts=[];for(let i=0;i<=14;i++){const a=Math.PI*(1-i/14);
-    pts.push(P(x,yc+rr*Math.cos(a),zc+rr*Math.sin(a)))} return rev?pts.reverse():pts};
-  const outer=arc(r+R), inner=arc(r-R,true);
-  o+=pth([...outer,...inner],FL.left);
-  o+=`<path fill="none" d="M${outer.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")}"/>`;
-  /* الفوهة النازلة */
-  const ye=yc+r; o+=pth([cx(-R,ye-y,zc),cx(R,ye-y,zc),cx(R,ye-y,zc-70),cx(-R,ye-y,zc-70)],FL.right);
-  o+=ell(x,ye,zc-70,R,FL.dark);
-  /* ذراع التشغيل */
-  o+=bx3(x-9,y-120,zc-40,18,110,14,{top:FL.top,left:FL.right,right:FL.dark});
-  o+=ell(x,y-125,zc-33,20,FL.top);
-  return o;
-}
-function backsplash(x,y,z,w,h){ return bx3(x,y,z,w,40,h) }
-/* ---------- الأنواع ---------- */
 const M3={
  table:(x,y,w,d,o)=>worktable(x,y,w,d,(o&&o.v)||2),
  table2:(x,y,w,d)=>{let o=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
+   o+=bx3(x,y,850,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});
    const px=[x+40,x+w-80];
-   px.forEach(p=>{o+=post(p,y+30,850,1200,40,false)});
+   px.forEach(p=>{o+=post(p,y+30,1000,1200,40,false)});
    o+=bx3(x,y,1200,w,330,22);
    px.forEach(p=>{o+=post(p,y+30,1222,1560,40,false)});
    o+=bx3(x,y,1560,w,330,22); return o},
@@ -725,29 +744,27 @@ const M3={
  sink:(x,y,w,d,o)=>sinkModel(x,y,w,d,{bowls:(o&&o.bowls)||2}),
  cabinet:(x,y,w,d,o)=>{const h=(o&&o.h)||900;
    let s=bx3(x+50,y+50,0,w-100,d-100,110)+bx3(x,y,110,w,d,h-110);
-   const A=(a,b,c)=>P(x+a,y+b,c);
-   s+=ln(A(w/2,d,110),A(w/2,d,h));
+   s+=edge3([x+w/2,y+d,110],[x+w/2,y+d,h]);
    s+=bx3(x+w/2-200,y+d,h*.55,110,26,36)+bx3(x+w/2+90,y+d,h*.55,110,26,36); return s},
  fridge:(x,y,w,d)=>{let s=bx3(x+40,y+40,0,w-80,d-80,100)+bx3(x,y,100,w,d,1900);
-   const A=(a,b,c)=>P(x+a,y+b,c);
-   s+=bx3(x+w-120,y+d,700,30,26,600); s+=ln(A(0,d,1550),A(w,d,1550)); return s},
- hood:(x,y,w,d)=>{const zb=1900,h=560,t=150,A=(a,b,c)=>P(x+a,y+b,c);
-   let s=pth([A(0,0,zb),A(w,0,zb),A(w,d,zb),A(0,d,zb)],FL.dark);
-   s+=pth([A(0,d,zb),A(t,d-t,zb+h),A(w-t,d-t,zb+h),A(w,d,zb)],FL.left);
-   s+=pth([A(w,0,zb),A(w,d,zb),A(w-t,d-t,zb+h),A(w-t,t,zb+h)],FL.right);
-   s+=pth([A(t,t,zb+h),A(w-t,t,zb+h),A(w-t,d-t,zb+h),A(t,d-t,zb+h)],FL.top);
+   s+=bx3(x+w-120,y+d,700,30,26,600); s+=edge3([x,y+d,1550],[x+w,y+d,1550]); return s},
+ hood:(x,y,w,d)=>{const zb=1900,h=560,t=150;
+   let s=face3([[x,y,zb],[x+w,y,zb],[x+w,y+d,zb],[x,y+d,zb]],FL.dark,'',true);
+   s+=face3([[x,y+d,zb],[x+t,y+d-t,zb+h],[x+w-t,y+d-t,zb+h],[x+w,y+d,zb]],FL.left);
+   s+=face3([[x+w,y,zb],[x+w,y+d,zb],[x+w-t,y+d-t,zb+h],[x+w-t,y+t,zb+h]],FL.right);
+   s+=face3([[x+w,y,zb],[x,y,zb],[x+t,y+t,zb+h],[x+w-t,y+t,zb+h]],FL.left);
+   s+=face3([[x,y+d,zb],[x,y,zb],[x+t,y+t,zb+h],[x+t,y+d-t,zb+h]],FL.right);
+   s+=face3([[x+t,y+t,zb+h],[x+w-t,y+t,zb+h],[x+w-t,y+d-t,zb+h],[x+t,y+d-t,zb+h]],FL.top);
    s+=bx3(x+w/2-200,y+d/2-200,zb+h,400,400,260);
-   for(let i=1;i<Math.max(2,Math.round(w/500));i++){const xx=x+w*i/Math.max(2,Math.round(w/500));
-     s+=ln(A(xx-x,d*.15,zb),A(xx-x,d*.85,zb))}
+   const k=Math.max(2,Math.round(w/500)); for(let i=1;i<k;i++) s+=edge3([x+w*i/k,y+d*.15,zb],[x+w*i/k,y+d*.85,zb]);
    return s},
- /* رف جداري: صفيحة بحافة مطوية للأسفل، ظهر مرفوع، وكتيفتان مثلثتان في الطرفين */
- wshelf:(x,y,w,d)=>{const z=1500,t=40,up=110,g=230,A=(a,b,c)=>P(x+a,y+b,c);
-   let s=pth([A(0,0,z-t),A(0,0,z-t-g),A(0,d-4,z-t)],FL.dark);
-   s+=pth([A(w,0,z-t),A(w,0,z-t-g),A(w,d-4,z-t)],FL.right);
+ wshelf:(x,y,w,d)=>{const z=1500,t=40,up=110,g=230;
+   let s=face3([[x,y,z-t],[x,y,z-t-g],[x,y+d-4,z-t]],FL.dark,'',true);
+   s+=face3([[x+w,y,z-t],[x+w,y,z-t-g],[x+w,y+d-4,z-t]],FL.right,'',true);
    s+=bx3(x,y,z-t,w,d,t,{top:FL.top,left:FL.dark,right:FL.right});
    s+=bx3(x,y,z,w,28,up,{top:FL.right,left:FL.left,right:FL.right}); return s},
  pshelf:(x,y,w,d)=>{const z=1500; let s=bx3(x,y,z,w,d,26);
-   for(let i=1;i<=Math.round(w/180);i++)for(let j=1;j<=2;j++) s+=ell(x+w*i/(Math.round(w/180)+1),y+d*j/3,z+26,26);
+   const k=Math.round(w/180); for(let i=1;i<=k;i++)for(let j=1;j<=2;j++) s+=ell(x+w*i/(k+1),y+d*j/3,z+26,26);
    return s},
  burner:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
    const n=Math.max(2,Math.round(w/450)), cols=Math.ceil(n/2);
@@ -756,67 +773,65 @@ const M3={
    for(let i=0;i<n;i++) s+=bx3(x+w*(i+.5)/n-25,y+d,730,50,30,50);
    return s},
  grill:(x,y,w,d)=>{let s=stand(x,y,w,d,[{z:150,t:30},{z:810,t:40,top:1}]);
-   const A=(a,b,c)=>P(x+a,y+b,c);
-   s+=pth([A(70,70,850),A(w-70,70,850),A(w-70,d-70,850),A(70,d-70,850)],FL.recess);
-   for(let i=1;i<10;i++){const yy=70+(d-140)*i/10; s+=ln(A(90,yy,864),A(w-90,yy,864))}
+   s+=face3([[x+70,y+70,850],[x+w-70,y+70,850],[x+w-70,y+d-70,850],[x+70,y+d-70,850]],FL.recess,'',true);
+   for(let i=1;i<10;i++){const yy=y+70+(d-140)*i/10; s+=edge3([x+90,yy,864],[x+w-90,yy,864])}
    return s},
  rack:(x,y,w,d)=>{let s=""; const zs=[150,600,1050,1500,1800];
-   const cs=[[x,y],[x+w-40,y],[x,y+d-40],[x+w-40,y+d-40]].sort((a,b)=>(a[0]+a[1])-(b[0]+b[1]));
+   const cs=[[x,y],[x+w-40,y],[x,y+d-40],[x+w-40,y+d-40]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]));
    let z0=0; zs.forEach((z,i)=>{cs.forEach(c=>{s+=post(c[0],c[1],z0,z,40,i===zs.length-1)});
-     if(i<zs.length-1){s+=bx3(x,y,z,w,d,22); const A=(a,b,c)=>P(x+a,y+b,c);
-       for(let k=1;k<6;k++){const yy=d*k/6; s+=ln(A(20,yy,z+22),A(w-20,yy,z+22))}} z0=z+22});
+     if(i<zs.length-1){s+=bx3(x,y,z,w,d,22); for(let k=1;k<6;k++){const yy=y+d*k/6; s+=edge3([x+20,yy,z+22],[x+w-20,yy,z+22])}} z0=z+22});
    return s},
- /* مبخّرة غرفة تبريد: كاسيت معلّق، مروحة محورية كل ٥٠٠ مم على الوجه الأمامي، حوامل تعليق علوية، وصينية تصريف */
- evap:(x,y,w,d)=>{const z=1800,h=560, n=Math.max(1,Math.round(w/500)), A=(a,b,c)=>P(x+a,y+b,c);
+ evap:(x,y,w,d)=>{const z=1800,h=560, n=Math.max(1,Math.round(w/500));
    let s=bx3(x,y,z,w,d,h,{top:FL.top,left:FL.left,right:FL.dark});
-   /* حوامل التعليق على السطح */
    for(let i=0;i<=n;i++){const px=x+30+(w-90)*i/n; s+=bx3(px,y+40,z+h,30,d-80,22,{top:FL.right,left:FL.dark,right:FL.dark})}
-   /* دائرة على مستوى رأسي (الوجه الأمامي y=d) */
-   const vc=(cx,cz,r,fill,extra)=>{const pts=[];for(let i=0;i<28;i++){const a=i/28*Math.PI*2;
-     pts.push(P(x+cx+r*Math.cos(a),y+d,z+cz+r*Math.sin(a)))} return path(pts,fill,extra)};
-   const r=Math.min(h*.44,(w/n)*.44), cz=h*.5;
-   const vp=(cx,cz2,rr,a)=>P(x+cx+rr*Math.cos(a),y+d,z+cz2+rr*Math.sin(a));
-   const arcPts=(cx,rr,a0,a1,k)=>{const pts=[];for(let i=0;i<=k;i++){pts.push(vp(cx,cz,rr,a0+(a1-a0)*i/k))}return pts};
-   for(let i=0;i<n;i++){const cx=w*(i+.5)/n;
-     s+=vc(cx,cz,r+18,"#8A96A4");                   /* إطار الشبك */
-     s+=vc(cx,cz,r,"#3E4A57");                      /* فتحة المروحة الداكنة */
-     for(let k=0;k<5;k++){                          /* خمس ريش عريضة منحنية */
-       const a=k/5*Math.PI*2, wA=.62, sw=.55;
-       const inner=arcPts(cx,r*.22,a,a+wA,4), outer=arcPts(cx,r*.9,a+wA+sw,a+sw,6);
-       s+=path([...inner,...outer],"#DDE4EB",'stroke="#2C3742" stroke-width="1"');
+   /* المراوح على الوجه الأمامي (y=d) — تُرسم فقط إذا كان الوجه مواجهًا للناظر */
+   const front=face3([[x,y+d,z+h],[x+w,y+d,z+h],[x+w,y+d,z],[x,y+d,z]],"none",'stroke="none"');
+   if(front){
+     const vc=(cx,cz,r,fill,extra)=>{const pts=[];for(let i=0;i<28;i++){const a=i/28*Math.PI*2;
+       pts.push([x+cx+r*Math.cos(a),y+d,z+cz+r*Math.sin(a)])} return face3(pts,fill,extra,true)};
+     const vp=(cx,cz,rr,a)=>[x+cx+rr*Math.cos(a),y+d,z+cz+rr*Math.sin(a)];
+     const arcPts=(cx,cz,rr,a0,a1,k)=>{const pts=[];for(let i=0;i<=k;i++){pts.push(vp(cx,cz,rr,a0+(a1-a0)*i/k))}return pts};
+     const r=Math.min(h*.44,(w/n)*.44), cz=h*.5;
+     for(let i=0;i<n;i++){const cx=w*(i+.5)/n;
+       s+=vc(cx,cz,r+18,"#8A96A4")+vc(cx,cz,r,"#3E4A57");
+       for(let k=0;k<5;k++){const a=k/5*Math.PI*2, wA=.62, sw=.55;
+         s+=face3([...arcPts(cx,cz,r*.22,a,a+wA,4),...arcPts(cx,cz,r*.9,a+wA+sw,a+sw,6)],"#DDE4EB",'stroke="#2C3742" stroke-width="1"',true)}
+       s+=vc(cx,cz,r*.2,"#B7C2CD")+vc(cx,cz,r*.08,"#3E4A57");
+       [.38,.62,.85].forEach(f=>{s+=vc(cx,cz,r*f,"none",'stroke="#2C3742" stroke-opacity=".55"')});
+       for(let k=0;k<8;k++){const a=k/8*Math.PI*2; s+=`<g stroke="#2C3742" stroke-opacity=".55">${edge3(vp(cx,cz,r*.2,a),vp(cx,cz,r,a))}</g>`}
      }
-     s+=vc(cx,cz,r*.2,"#B7C2CD");                   /* الصرّة */
-     s+=vc(cx,cz,r*.08,"#3E4A57");
-     [.38,.62,.85].forEach(f=>{s+=vc(cx,cz,r*f,"none",'stroke="#2C3742" stroke-opacity=".55"')});  /* أسلاك الشبك */
-     for(let k=0;k<8;k++){const a=k/8*Math.PI*2; s+=`<path stroke="#2C3742" stroke-opacity=".55" d="M${vp(cx,cz,r*.2,a).map(f1).join(" ")} L${vp(cx,cz,r,a).map(f1).join(" ")}"/>`}
    }
-   s+=bx3(x,y+d-60,z-40,w,60,40,{top:FL.right,left:FL.dark,right:FL.dark});   /* صينية التصريف */
+   s+=bx3(x,y+d-60,z-40,w,60,40,{top:FL.right,left:FL.dark,right:FL.dark});
    return s},
  faucet:(x,y,w,d)=>faucet(x+w/2,y+d/2,0),
- door:(x,y,w,d,o)=>{const h=2100,A=(a,b,c)=>P(x+a,y+b,c);
+ door:(x,y,w,d)=>{const h=2100;
    let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.left,right:FL.right});
-   s+=pth([A(60,d,60),A(w-60,d,60),A(w-60,d,h-60),A(60,d,h-60)],FL.top);
+   s+=face3([[x+60,y+d,60],[x+w-60,y+d,60],[x+w-60,y+d,h-60],[x+60,y+d,h-60]],FL.top);
+   s+=face3([[x+w-60,y,60],[x+60,y,60],[x+60,y,h-60],[x+w-60,y,h-60]],FL.top);
    s+=bx3(x+w-160,y+d,950,26,26,180); return s},
 };
-const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:900,fridge:2000,hood:2500,wshelf:1650,pshelf:1550,
-  burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100};
+const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:900,fridge:2000,hood:2500,
+  wshelf:1650,pshelf:1550,burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100};
 function model3(type,x,y,w,d,o){ return (M3[type]||M3.table)(x,y,w,d,o||{}) }
+/* يرسم وحدة بموضعها ودورانها في العالم */
+function unit3(type,b,o){
+  XF={x:b.x,y:b.y,rot:b.rot||0};
+  try{ return model3(type,0,0,b.w,b.d,o) } finally { XF=null }
+}
 function isoWrap(inner,W,D,H,Z0){
   Z0=Z0||-28; const pad=Math.max(W,D,H)*.09, lw=Math.max(W,D,H)/210;
   const x1=-D*C-pad, x2=W*C+pad, y1=-H-pad, y2=(W+D)*S-Z0+pad;
   return `<svg viewBox="${f1(x1)} ${f1(y1)} ${f1(x2-x1)} ${f1(y2-y1)}" xmlns="${NS}">
     <g stroke="#12294D" stroke-width="${f1(lw)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 }
-const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[1200,700],sinkT2:[1200,700],sinkT3:[1800,700],sink1:[1000,700],cabinet:[1000,700],fridge:[700,800],
-  hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],rack:[1600,600],
-  evap:[1500,600],faucet:[400,400],door:[1000,100]};
+const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[1200,700],sinkT2:[1200,700],sinkT3:[1800,700],sink1:[1000,700],
+  cabinet:[1000,700],fridge:[700,800],hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],
+  rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100]};
 const ISO={};
 Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800}[t]||0;
-  /* المنسوب يُخفَض ليظهر كامل النموذج في المصغّرة */
   const inner=model3(t,0,0,w,d,{v:v||2});
   return isoWrap(`<g transform="translate(0 ${f1(zb)})">${inner}</g>`,w,d,H3[t]-zb,-28)} });
 
-ISO.shelf=ISO.wshelf; ISO.sink=ISO.sinkT2;
 const isoCache={};
 const drawing=(t,v)=>{const k=t+":"+(v||"");return isoCache[k]||(isoCache[k]=(ISO[t]||ISO.table)(v))};
 let typeThumbs={};                                   /* مكتبة مصغّرات الأنواع */
@@ -1296,7 +1311,7 @@ function iso3dSVG(){
   cur.blocks.filter(b=>OPENING[b.k]).forEach(b=>{
     const cs=corners(b), [z0,z1]=OPENING[b.k], r=aabb(b);
     if(b.k==="window") far+=prism(cs,z0,z1,"#DCE5EE");
-    else far+=`<g class="unit">${model3("door",r.x1,r.y1,r.x2-r.x1,r.y2-r.y1)}</g>`;
+    else far+=`<g class="unit">${unit3("door",b)}</g>`;
   });
   /* الوحدات: من الخلف للأمام */
   blocks.map(b=>({b,cs:corners(b)}))
@@ -1323,12 +1338,12 @@ function iso3dSVG(){
         }
         return;
       }
-      const r=aabb(o.b), K2M={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",
+      const K2M={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",
         fridge:"fridge",hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",rack:"rack",
         evap:"evap",faucet:"faucet"};
       const mt=K2M[o.b.k]||"table";
       const opts = o.b.k==="table"?{v:o.b.v||2}:{};
-      body+=`<g class="unit">${model3(mt,r.x1,r.y1,r.x2-r.x1,r.y2-r.y1,opts)}</g>`;
+      body+=`<g class="unit">${unit3(mt,o.b,opts)}</g>`;
       if(o.b.item){
         const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
         const q=p3(c[0],c[1],(H3[mt]||900)+120);
