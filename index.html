@@ -2711,7 +2711,9 @@ $("fSave").onclick=()=>{
 function visitLine(p){return [p.client,p.city,p.date].filter(Boolean).join("  ·  ")}
 function render(){$("whoami").textContent=me?me.name:"";
   renderDash(); renderRevBtn();
-  $("pname").firstChild.textContent=pn(cur);$("psub").textContent=visitLine(cur);
+  const home=document.body.classList.contains("home");
+  $("pname").firstChild.textContent=home?"Site Visit Log":pn(cur);
+  $("psub").textContent=home?(me?me.name:""):visitLine(cur);
   const mu=mapURL(cur);
   $("visitMeta").innerHTML=`<b>${cur.client||"—"}</b>  ·  ${cur.city||"—"}  ·  ${cur.date||"—"}`
     +(mu?`  ·  <a href="${mu}" target="_blank" rel="noopener" style="color:var(--pen)">${T("openMap")}</a>`:"")
