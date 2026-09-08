@@ -52,6 +52,26 @@ header.top .sub{display:block;font-size:11px;color:var(--pen-soft);font-weight:4
 .sortrow button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .geo{display:flex;gap:8px}.geo input{flex:1}
 .geo button{flex:none;padding:0 12px;border:1px solid var(--line);border-radius:2px;background:#fff;font-size:12.5px}
+.robar{display:flex;gap:8px;align-items:center;padding:8px 14px;background:#FFF4D6;border-bottom:1px solid #E8C97A;font-size:13px;color:#5A4308}
+.robar span{flex:1}
+.robar button{padding:5px 10px;border:1px solid #C9A85C;border-radius:2px;background:#fff;font-size:12px}
+.dash{background:var(--paper);border-bottom:1px solid var(--line);padding:14px 14px 16px}
+.dash-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dash-head h2{font-size:14px;margin:0}
+.dash-head button{font-size:12px;color:#6B8199;border:1px solid var(--line);border-radius:2px;padding:4px 9px;background:#fff}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.kpi{border:1px solid var(--line);border-radius:2px;padding:9px 10px;background:#F7F9FB}
+.kpi b{display:block;font-family:"IBM Plex Mono",monospace;font-size:20px;color:var(--ink);line-height:1.2}
+.kpi span{font-size:11px;color:#6B8199}
+.dash-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dash-cols h3{font-size:12px;color:#6B8199;margin:0 0 4px;font-weight:600}
+.dlist{list-style:none;margin:0;padding:0}
+.dlist li{border-bottom:1px solid var(--line)}
+.dlist button{width:100%;text-align:start;padding:8px 2px;display:flex;justify-content:space-between;gap:8px;font-size:13px}
+.dlist .c{color:#6B8199;font-size:12px}
+.dlist .n{font-family:"IBM Plex Mono",monospace;color:var(--pen);flex:none}
+@media(max-width:520px){.kpis{grid-template-columns:repeat(2,1fr)}.dash-cols{grid-template-columns:1fr}}
+@media print{.dash{display:none!important}}
 .visitbar{display:flex;align-items:center;gap:10px;padding:9px 14px;background:#F7F9FB;border-bottom:1px solid var(--line);font-size:12.5px;color:#4A6180}
 .visitbar b{color:var(--ink);font-weight:600}
 .visitbar .meta{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -181,8 +201,8 @@ main{padding:0 0 96px}
 #lightbox .frame{background:#fff;padding:16px;max-width:420px;width:100%}
 #lightbox .frame svg{width:100%;height:auto}
 #lightbox p{color:#fff;margin:0;text-align:center;font-size:14px}
-#panel,#visitPanel,#visitsPanel,#itemPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
-#panel.show,#visitPanel.show,#visitsPanel.show,#itemPanel.show{display:block}
+#panel,#visitPanel,#visitsPanel,#itemPanel,#revsPanel{position:fixed;inset:0;z-index:65;background:rgba(9,20,38,.5);display:none}
+#panel.show,#visitPanel.show,#visitsPanel.show,#itemPanel.show,#revsPanel.show{display:block}
 .sheet{position:absolute;inset-inline:0;bottom:0;background:var(--paper);border-top:3px solid var(--ink);padding:18px 16px 28px;max-height:86vh;overflow:auto}
 .sheet h2{margin:0 0 2px;font-size:17px}
 .sheet .lede{margin:0 0 18px;font-size:13px;color:#6B8199}
@@ -237,15 +257,26 @@ main{padding:0 0 96px}
   <button id="openVisits"></button>
   <input id="quickSearch" data-i18n-ph="searchPh">
 </div>
-<div class="visitbar"><span class="meta" id="visitMeta"></span><span id="whoami" class="save" style="color:#6B8199"></span><span id="saveState" class="save"></span><button id="editVisit" data-i18n="editVisit"></button></div>
+<div class="visitbar"><button id="saveNow" class="prim" data-i18n="saveNow"></button><button id="openRevs"></button><span class="meta" id="visitMeta"></span><span id="whoami" class="save" style="color:#6B8199"></span><span id="saveState" class="save"></span><button id="editVisit" data-i18n="editVisit"></button></div>
 
-<main><div class="printhead" id="printHead"></div><div class="wrap">
+<div class="robar" id="robar" hidden><span id="roText"></span><button id="roBack" data-i18n="backToCurrent"></button><button id="roRestore" data-i18n="restoreRev"></button></div>
+<main><div class="printhead" id="printHead"></div>
+<section class="dash" id="dash" hidden>
+  <div class="dash-head"><h2 data-i18n="dashH"></h2><button id="dashHide" data-i18n="hide"></button></div>
+  <div class="kpis" id="kpis"></div>
+  <div class="dash-cols">
+    <div><h3 data-i18n="recentH"></h3><ul class="dlist" id="recentList"></ul></div>
+    <div><h3 data-i18n="topClientsH"></h3><ul class="dlist" id="clientList"></ul></div>
+  </div>
+</section>
+<div class="wrap">
  <section class="plan-wrap">
   <div class="plan-head"><h2 data-i18n="siteplan"></h2><span id="planScale"></span></div>
   <div class="modes">
     <button data-mode="draw" aria-pressed="true" data-i18n="mDraw"></button>
     <button data-mode="img" data-i18n="mUpload"></button>
     <button data-mode="iso" data-i18n="mIso"></button>
+    <button data-mode="persp" data-i18n="mPersp"></button>
   </div>
   <input id="upl" type="file" accept="image/*" hidden>
   <input id="svgFile" type="file" accept=".svg,.dxf,image/svg+xml" hidden>
@@ -271,6 +302,16 @@ main{padding:0 0 96px}
       <button id="cfree" data-i18n-title="unlock">✕</button></div>
   </div>
 
+  <div class="draw-panel" id="perspPanel" hidden>
+    <div class="sortrow">
+      <button data-corner="0" aria-pressed="true" data-i18n="cFR"></button><button data-corner="1" data-i18n="cFL"></button>
+      <button data-corner="2" data-i18n="cBL"></button><button data-corner="3" data-i18n="cBR"></button>
+    </div>
+    <div class="sortrow" style="margin-top:6px">
+      <button data-elev="0" data-i18n="eLow"></button><button data-elev="1" aria-pressed="true" data-i18n="eEye"></button><button data-elev="2" data-i18n="eHigh"></button>
+    </div>
+    <div class="readout" id="perspNote"></div>
+  </div>
   <div class="draw-panel" id="isoPanel" hidden>
     <div class="draw-row">
       <label for="roomH" data-i18n="roomH"></label>
@@ -403,6 +444,12 @@ main{padding:0 0 96px}
   <button class="btn-primary" style="background:var(--ink);color:#fff" id="iSave" data-i18n="saveItem"></button>
   <button class="btn-primary" style="background:#fff;color:#9B2C2C;border:1px solid var(--line)" id="iDel" data-i18n="deleteItem"></button>
 </div></div>
+<div id="revsPanel"><div class="sheet">
+  <button class="close-x" id="closeRevs">✕</button>
+  <h2 data-i18n="revsH"></h2><p class="lede" data-i18n="revsLede"></p>
+  <button class="btn-primary" style="background:var(--ink);color:#fff;margin:0 0 6px" id="newRev" data-i18n="newRev"></button>
+  <ul class="vlist" id="revList"></ul>
+</div></div>
 <div id="visitsPanel"><div class="sheet">
   <button class="close-x" id="closeVisits">✕</button>
   <h2 data-i18n="visitsH"></h2>
@@ -455,7 +502,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Hide",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -470,7 +517,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"إخفاء",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -590,8 +637,20 @@ function W3(x,y,z){                            /* من إحداثيات الوح
   const r=XF.rot*Math.PI/180, c=Math.cos(r), s=Math.sin(r);
   return [XF.x+x*c-y*s, XF.y+x*s+y*c, z];
 }
-const P=(x,y,z)=>{const w=W3(x,y,z);return [(w[0]-w[1])*C,(w[0]+w[1])*S-w[2]]};
-const dep=(x,y)=>{const w=W3(x,y,0);return w[0]+w[1]};
+let PERSP=false;                               /* true أثناء رسم المنظور فقط */
+const CAM={pos:[9000,10000,3900],tgt:[3500,2250,700],f:13000};
+function persp(x,y,z){
+  const c=CAM.pos,t=CAM.tgt;
+  let fx=t[0]-c[0],fy=t[1]-c[1],fz=t[2]-c[2]; const fl=Math.hypot(fx,fy,fz)||1; fx/=fl;fy/=fl;fz/=fl;
+  let rx=fy, ry=-fx; const rl=Math.hypot(rx,ry)||1; rx/=rl; ry/=rl;      /* يمين = f × up */
+  const ux=ry*fz, uy=-rx*fz, uz=rx*fy-ry*fx;                               /* أعلى = r × f */
+  const vx=x-c[0],vy=y-c[1],vz=z-c[2];
+  const d=Math.max(1,vx*fx+vy*fy+vz*fz);
+  return [-(vx*rx+vy*ry)/d*CAM.f, -(vx*ux+vy*uy+vz*uz)/d*CAM.f];
+}
+const projW=(w)=>PERSP?persp(w[0],w[1],w[2]):[(w[0]-w[1])*C,(w[0]+w[1])*S-w[2]];
+const P=(x,y,z)=>projW(W3(x,y,z));
+const dep=(x,y)=>{const w=W3(x,y,0);return PERSP?-Math.hypot(w[0]-CAM.pos[0],w[1]-CAM.pos[1]):w[0]+w[1]};
 const FL={top:"#F9FAFC",left:"#D6DEE6",right:"#BBC6D1",dark:"#A3B0BE",recess:"#E4EAF0"};
 const VIEW=[1,1,.9];
 /* وجه ثلاثي الأبعاد: يُرسم فقط إذا كان مواجهًا للناظر */
@@ -600,9 +659,10 @@ function face3(pts,fill,extra,force){
   const ax=w[1][0]-w[0][0],ay=w[1][1]-w[0][1],az=w[1][2]-w[0][2];
   const bx=w[2][0]-w[0][0],by=w[2][1]-w[0][1],bz=w[2][2]-w[0][2];
   const n=[ay*bz-az*by, az*bx-ax*bz, ax*by-ay*bx];
-  const dot=n[0]*VIEW[0]+n[1]*VIEW[1]+n[2]*VIEW[2];
+  const dot = PERSP ? n[0]*(CAM.pos[0]-w[0][0])+n[1]*(CAM.pos[1]-w[0][1])+n[2]*(CAM.pos[2]-w[0][2])
+                    : n[0]*VIEW[0]+n[1]*VIEW[1]+n[2]*VIEW[2];
   if(!force && dot<=0) return "";
-  const pr=w.map(q=>[(q[0]-q[1])*C,(q[0]+q[1])*S-q[2]]);
+  const pr=w.map(projW);
   return `<path fill="${fill||"none"}" ${extra||""} d="M${pr.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
 }
 const edge3=(a,b)=>{const p=P(a[0],a[1],a[2]),q=P(b[0],b[1],b[2]);return `<path d="M${f1(p[0])} ${f1(p[1])} L${f1(q[0])} ${f1(q[1])}"/>`};
@@ -639,8 +699,11 @@ function post(x,y,z0,z1,s,cap){
   if(cap) o+=face3([V(0,0,z1),V(s,0,z1),V(s,s,z1),V(0,s,z1)],FL.top);
   return o;
 }
-const ell=(cx,cy,z,r,fill,extra)=>{const p=P(cx,cy,z);
-  return `<ellipse fill="${fill||"none"}" ${extra||""} cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`};
+const ell=(cx,cy,z,r,fill,extra)=>{
+  if(!PERSP){const p=P(cx,cy,z);
+    return `<ellipse fill="${fill||"none"}" ${extra||""} cx="${f1(p[0])}" cy="${f1(p[1])}" rx="${f1(r*SQ2*C)}" ry="${f1(r*SQ2*S)}"/>`}
+  const pts=[];for(let i=0;i<24;i++){const a=i/24*Math.PI*2;const q=P(cx+r*Math.cos(a),cy+r*Math.sin(a),z);pts.push(f1(q[0])+" "+f1(q[1]))}
+  return `<path fill="${fill||"none"}" ${extra||""} d="M${pts.join(" L")} Z"/>`};
 /* قاعدة ستانلس */
 function stand(x,y,w,d,levels,opt){
   opt=opt||{}; const s=opt.leg||40, feet=opt.feet!==false, ins=opt.inset!==undefined?opt.inset:30;
@@ -1273,7 +1336,7 @@ const H3D={table:{z:0,h:850},tableos:{z:0,h:850,over:[1400,1750]},sink1:{z:0,h:8
  wshelf:{z:1500,h:40},pshelf:{z:1500,h:40},hood:{z:1900,h:600},evap:{z:1800,h:600},faucet:{z:850,h:300},
  door1:{skip:1},door2:{skip:1},window:{skip:1},coldH:{skip:1},coldS:{skip:1}};
 const OPENING={door1:[0,2100],door2:[0,2100],coldH:[0,2100],coldS:[0,2100],window:[1000,2000]};
-const p3=(x,y,z)=>[(x-y)*C,(x+y)*S-z];
+const p3=(x,y,z)=>PERSP?persp(x,y,z):[(x-y)*C,(x+y)*S-z];
 const poly3=(pts,fill,cls)=>`<path fill="${fill}" class="${cls||""}" d="M${pts.map(p=>f1(p[0])+" "+f1(p[1])).join(" L")} Z"/>`;
 function prism(cs,z0,z1,fill){
   const edges=[];
@@ -1316,8 +1379,23 @@ function isoArtSVG(art,x1,yb,wpx,base){
   return `<image href="${art.src}" x="${f1(x1)}" y="${f1(yb-hpx)}" width="${f1(wpx)}" height="${f1(hpx)}"
     preserveAspectRatio="xMidYMax meet"/>`;
 }
-function iso3dSVG(){
+function setCamera(pts,RH){
+  const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const cx=(x0+x1)/2, cy=(y0+y1)/2, size=Math.max(x1-x0,y1-y0,3000);
+  const cam=cur.cam||{corner:0,elev:1};
+  const dir=[[1,1],[-1,1],[-1,-1],[1,-1]][cam.corner%4];               /* أمام-يمين، أمام-يسار، خلف-يسار، خلف-يمين */
+  const dist=size*[1.05,1.35,1.75][cam.elev]||size*1.35;
+  const hz=[1600,3200,5200][cam.elev]||3200;
+  CAM.pos=[cx+dir[0]*dist*.72, cy+dir[1]*dist, hz];
+  CAM.tgt=[cx,cy,RH*.3]; CAM.f=size*1.9;
+}
+function iso3dSVG(perspMode){
   const d=cur.draw, WT=cur.wallT||100, RH=cur.roomH||2600;
+  PERSP=!!perspMode;
+  try{ return iso3dBody(d,WT,RH) } finally { PERSP=false }
+}
+function iso3dBody(d,WT,RH){
   const walls=wallBands3(), blocks=cur.blocks.filter(b=>!(H3D[b.k]||{}).skip);
   if(!d.pts.length&&!cur.blocks.length)
     return `<svg viewBox="0 0 600 380" xmlns="${NS}"><text x="300" y="190" text-anchor="middle"
@@ -1325,6 +1403,7 @@ function iso3dSVG(){
   /* مركز الغرفة لتحديد الجدران البعيدة */
   const pts=d.pts.length?d.pts:cur.blocks.flatMap(b=>corners(b));
   const cxr=pts.reduce((m,p)=>m+p[0],0)/pts.length, cyr=pts.reduce((m,p)=>m+p[1],0)/pts.length;
+  if(PERSP) setCamera(pts,RH);
   let far="",near="",body="",tags="";
   /* الأرضية */
   if(d.closed&&d.pts.length>2){
@@ -1339,7 +1418,9 @@ function iso3dSVG(){
   /* الجدران: البعيدة بارتفاع كامل، القريبة كعتبة منخفضة حتى ينكشف الداخل */
   const sill=180;
   walls.forEach(w=>{
-    const isFar = Math.abs(w.ux)>Math.abs(w.uy) ? w.mid[1]<cyr : w.mid[0]<cxr;
+    let isFar = Math.abs(w.ux)>Math.abs(w.uy) ? w.mid[1]<cyr : w.mid[0]<cxr;
+    if(PERSP){ const inx=cxr-w.mid[0], iny=cyr-w.mid[1];
+      isFar=(CAM.pos[0]-w.mid[0])*inx+(CAM.pos[1]-w.mid[1])*iny > 0; }
     const fill = w.kind==="panel" ? "#EDF2F7" : "#FFFFFF";
     const g = prism(w.cs,0,isFar?RH:sill,fill);
     if(isFar) far+=g; else near+=g;
@@ -1360,7 +1441,10 @@ function iso3dSVG(){
   const units=blocks.map(b=>{const cs=corners(b), r=aabb(b); return {b,cs,r,k:r.x1+r.y1}});
   /* A قبل B إذا كانت A بكاملها خلف B على أحد المحورين */
   const behind=(A,B)=> (A.r.x2<=B.r.x1+1) || (A.r.y2<=B.r.y1+1);
-  const ordered=[]; const left=units.slice();
+  let ordered=[]; const left=units.slice();
+  if(PERSP){ ordered=units.slice().sort((a,b)=>{
+      const da=Math.hypot((a.r.x1+a.r.x2)/2-CAM.pos[0],(a.r.y1+a.r.y2)/2-CAM.pos[1]);
+      const db=Math.hypot((b.r.x1+b.r.x2)/2-CAM.pos[0],(b.r.y1+b.r.y2)/2-CAM.pos[1]); return db-da;}); left.length=0; }
   while(left.length){
     let pick=left.find(u=>!left.some(v=>v!==u && behind(v,u) && !behind(u,v)));
     if(!pick) pick=left.reduce((m,u)=>u.k<m.k?u:m,left[0]);      /* دورة: أبعد ركن أولًا */
@@ -1403,7 +1487,7 @@ function iso3dSVG(){
     });
   /* الأبعاد الخارجية */
   let dim="";
-  if(d.pts.length>1){
+  if(d.pts.length>1&&!PERSP){
     const xs=pts.map(p=>p[0]), ys=pts.map(p=>p[1]);
     const x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys), y1=Math.max(...ys);
     const off=Math.max(x1-x0,y1-y0)*.13;
@@ -1427,9 +1511,9 @@ function iso3dSVG(){
   pts.forEach(p=>{push(p[0],p[1],0);push(p[0],p[1],RH)});
   cur.blocks.forEach(b=>corners(b).forEach(c=>{push(c[0],c[1],0);push(c[0],c[1],2200)}));
   const X=all.map(q=>q[0]), Y=all.map(q=>q[1]);
-  const pad=Math.max(...X)-Math.min(...X);
-  const vb=[Math.min(...X)-pad*.14,Math.min(...Y)-pad*.12,
-            (Math.max(...X)-Math.min(...X))*1.28,(Math.max(...Y)-Math.min(...Y))+pad*.24];
+  const pad=Math.max(...X)-Math.min(...X), padL=PERSP?.04:.14, padT=PERSP?.06:.12;
+  const vb=[Math.min(...X)-pad*padL,Math.min(...Y)-pad*padT,
+            (Math.max(...X)-Math.min(...X))*(1+2*padL),(Math.max(...Y)-Math.min(...Y))+pad*2*padT];
   $("isoNote").textContent=T("isoNote",blocks.length);
   return `<svg viewBox="${vb.map(f1).join(" ")}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet">
     <g stroke="#12294D" stroke-width="${f1(vb[2]/520)}" stroke-linejoin="round" stroke-linecap="round" fill="#fff">
@@ -1524,6 +1608,7 @@ function ghost(sn){
 }
 function clearGhost(){const g=$("planBox").querySelector("#ghost");if(g)g.innerHTML="";$("hud").className="hud mono"}
 function commit(sn){
+  if(cur._ro) return;
   const d=cur.draw; d.kinds=d.kinds||[];
   if(d.closed) return;                    /* الشكل مقفل — استخدم التحديد لتعديل الجدران */
   const first=!d.pts.length;
@@ -1534,7 +1619,7 @@ function commit(sn){
   if(first&&!coarse) setTimeout(()=>{$("clen").focus();$("clen").select()},0);  /* الكيبورد جاهز للمقاس */
 }
 function addByPad(deg){
-  const d=cur.draw; if(d.closed)return;
+  const d=cur.draw; if(d.closed||cur._ro)return;
   const L=Math.max(MINL, (+$("clen").value||0) || (+$("len").value||0));
   d.kinds=d.kinds||[];
   if(!d.pts.length)d.pts.push([0,0]);
@@ -1574,6 +1659,7 @@ function syncItemDim(b){                 /* المقاس والخيار ينعك
   if(b.k==="burner"){const n=b.n||Math.round(b.w/450); const bn2=burnerName(n); it.variant=n; it.en=bn2[0]; it.ar=bn2[1];}
 }
 function placeBlock(x,y){
+  if(cur._ro) return;
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
   const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
   constrain(nb); cur.blocks.push(nb);
@@ -1622,6 +1708,8 @@ document.querySelectorAll("[data-kind]").forEach(b=>b.onclick=()=>{
   if(lineKind==="panel"){cur.wallT=100;$("wallT").value=100;renderPlan()}
 });
 $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").value||100);renderPlan();queueSave()});
+document.querySelectorAll("[data-corner]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),corner:+b.dataset.corner};renderPlan();queueSave()});
+document.querySelectorAll("[data-elev]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),elev:+b.dataset.elev};renderPlan();queueSave()});
 $("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
 let tableV=2, burnerN=0;
 function renderTableVar(){
@@ -1663,7 +1751,7 @@ function segLen(i){const l=segList();if(!l[i+1])return 0;
 function sbarUpdate(){
   const bar=$("sbar"), d=cur.draw;
   if(selSeg!==null&&!segList()[selSeg+1]) selSeg=null;
-  const on = selSeg!==null && cur.mode==="draw" && (tool==="sel"||tool==="line") && !editing && !panMode && segList()[selSeg+1];
+  const on = selSeg!==null && !cur._ro && cur.mode==="draw" && (tool==="sel"||tool==="line") && !editing && !panMode && segList()[selSeg+1];
   bar.classList.toggle("show",!!on);
   if(!on){selSeg=on?selSeg:selSeg;return}
   if(document.activeElement!==$("segLen")) $("segLen").value=segLen(selSeg);
@@ -1719,7 +1807,7 @@ $("segDel").onclick=()=>{
 /* ===== شريط سريع فوق البلوك المحدد ===== */
 function bbarUpdate(){
   const bar=$("bbar"), b=cur.blocks.find(x=>x.id===selBlock);
-  const on = b && cur.mode==="draw" && !editing && !panMode && (tool==="sel"||tool==="place");
+  const on = b && !cur._ro && cur.mode==="draw" && !editing && !panMode && (tool==="sel"||tool==="place");
   bar.classList.toggle("show",!!on);
   if(!on) return;
   if(document.activeElement!==$("bw2")) $("bw2").value=b.w;
@@ -1884,7 +1972,7 @@ const box=$("planBox");
 function pos(e){const svg=box.querySelector("svg");if(!svg)return null;
   const q=toMM(svg,e.clientX,e.clientY);return {x:q.x,y:q.y,svg}}
 function act(e){
-  if(cur.mode!=="draw"||editing||panMode) return;
+  if(cur._ro||cur.mode!=="draw"||editing||panMode) return;
   const q=pos(e)||lastPos; if(!q) return;
   if(tool==="place"&&pending){placeBlock(q.x,q.y);lastAct=Date.now();return}
   if(tool==="line"){
@@ -1926,7 +2014,7 @@ box.addEventListener("pointerdown",e=>{
   const q=pos(e); if(!q) return;
   if(panMode){panStart=[q.x,q.y,cur.view.x,cur.view.y];return}
   const t=e.target.closest?e.target.closest("[data-block]"):null;
-  if(tool==="sel"&&t){const b=cur.blocks.find(x=>x.id===+t.dataset.block);
+  if(tool==="sel"&&t&&!cur._ro){const b=cur.blocks.find(x=>x.id===+t.dataset.block);
     if(b){selBlock=b.id;selSeg=null;drag={b,dx:q.x-b.x,dy:q.y-b.y,moved:false,x0:q.x,y0:q.y};
       renderSelBar();renderPlan();sbarUpdate()}}
 });
@@ -2012,7 +2100,7 @@ function renderVisits(){
     const li=document.createElement("li");
     li.setAttribute("aria-current",v.id===cur.id);
     li.innerHTML=`<button><span class="s">${v.site||T("untitled")}<span class="c">${[v.client,v.city].filter(Boolean).join("  ·  ")}</span></span><span class="d">${v.date||""}</span></button>`;
-    li.querySelector("button").onclick=()=>{saveStore();cur=v;sel=null;selBlock=null;$("visitsPanel").classList.remove("show");render()};
+    li.querySelector("button").onclick=()=>{saveStore();if(liveVisit){liveVisit=null;$("robar").hidden=true}cur=v;sel=null;selBlock=null;$("visitsPanel").classList.remove("show");render()};
     ul.appendChild(li);
   });
 }
@@ -2027,6 +2115,9 @@ document.querySelectorAll("[data-sort]").forEach(b=>b.onclick=()=>{
 });
 $("newVisitBtn").onclick=()=>{$("visitsPanel").classList.remove("show");startNewVisit()};
 $("newVisitTop").onclick=()=>startNewVisit();
+$("saveNow").onclick=async()=>{ if(!me) return; await saveStore(); const t=$("saveState").textContent;
+  if(t) $("saveState").textContent="✓ "+t; };
+document.addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="s"){e.preventDefault();$("saveNow").click()} });
 function startNewVisit(){ saveStore(); newDraft(); render(); openVisit("draft"); }
 $("quickSearch").addEventListener("focus",()=>{vQuery=$("quickSearch").value;$("vSearch").value=vQuery;renderVisits();$("visitsPanel").classList.add("show")});
 $("quickSearch").addEventListener("input",()=>{vQuery=$("quickSearch").value;$("vSearch").value=vQuery;renderVisits();$("visitsPanel").classList.add("show")});
@@ -2040,7 +2131,7 @@ function renderPlan(){
   const hud=$("hud"), dyn=$("dyn"), bbar=$("bbar"), sbar=$("sbar");
   if(cur.mode==="img"&&!cur.img) cur.mode="draw";
   box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`
-                : cur.mode==="iso"?iso3dSVG():drawSVG();
+                : cur.mode==="iso"?iso3dSVG(false):cur.mode==="persp"?iso3dSVG(true):drawSVG();
   box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar); box.appendChild(sbar);
   if(cur.mode==="img"||editing) cur.items.forEach(it=>{
     const pin=document.createElement("button");
@@ -2053,9 +2144,14 @@ function renderPlan(){
   box.classList.toggle("tool-place",cur.mode==="draw"&&tool==="place");
   box.classList.toggle("tool-sel",cur.mode==="draw"&&tool==="sel");
   box.classList.toggle("editing",editing);
-  $("drawPanel").hidden=cur.mode!=="draw";
+  $("drawPanel").hidden=cur.mode!=="draw"||!!cur._ro;
   bbarUpdate(); sbarUpdate();
   $("isoPanel").hidden=cur.mode!=="iso";
+  $("perspPanel").hidden=cur.mode!=="persp";
+  if(cur.mode==="persp"){ const cam=cur.cam||{corner:0,elev:1};
+    document.querySelectorAll("[data-corner]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.corner===cam.corner));
+    document.querySelectorAll("[data-elev]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.elev===cam.elev));
+    $("perspNote").textContent=T("perspNote"); }
   if(document.activeElement!==$("wallT")) $("wallT").value=cur.wallT||100;
   if(document.activeElement!==$("roomH")) $("roomH").value=cur.roomH||2600;
   document.querySelectorAll(".modes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.mode===cur.mode));
@@ -2253,6 +2349,88 @@ $("editPins").onclick=()=>{editing=!editing;$("editPins").setAttribute("aria-pre
   $("editHint").textContent=editing?(sel?T("tapMove",sel):T("pickItem")):"";renderPlan()};
 $("resetPins").onclick=()=>{cur.items.forEach(i=>{const h=home[cur.id+i.no];if(h){i.x=h[0];i.y=h[1]}});renderPlan()};
 $("exportPdf").onclick=()=>window.print();
+/* ===== الإصدارات: يوم زيارة = إصدار ===== */
+let liveVisit=null;                                   /* الزيارة الحية أثناء عرض إصدار قديم */
+const today=()=>new Date().toISOString().slice(0,10);
+const snapOf=v=>JSON.parse(JSON.stringify({draw:v.draw,blocks:v.blocks,items:v.items,view:v.view,roomH:v.roomH,wallT:v.wallT,cam:v.cam||null}));
+function freezeRevision(v){                            /* يجمّد الحالة الحالية كإصدار ويبدأ إصدارًا جديدًا بتاريخ اليوم */
+  v.revs=v.revs||[];
+  v.revs.push({no:v.revNo||1,date:v.revDate||v.date||today(),author:v.author||(me?me.name:""),savedAt:new Date().toISOString(),data:snapOf(v)});
+  v.revNo=(v.revNo||1)+1; v.revDate=today();
+}
+let preSnap=null;                                     /* حالة الزيارة قبل أول تعديل في يوم جديد */
+function armRevision(v){                              /* يُستدعى قبل أي تعديل */
+  if(!v||v._ro||isBlank(v)||preSnap) return;
+  if(v.revDate && v.revDate!==today()) preSnap={id:v.id,no:v.revNo||1,date:v.revDate,author:v.author,data:snapOf(v)};
+}
+function rollRevisionIfNewDay(v){                     /* يُستدعى عند الحفظ بعد تعديل فعلي */
+  if(!preSnap||!v||v._ro||preSnap.id!==v.id){preSnap=null;return}
+  v.revs=v.revs||[];
+  v.revs.push({no:preSnap.no,date:preSnap.date,author:preSnap.author||(me?me.name:""),savedAt:new Date().toISOString(),data:preSnap.data});
+  v.revNo=preSnap.no+1; v.revDate=today(); preSnap=null; renderRevBtn();
+}
+function renderRevBtn(){
+  const v=liveVisit||cur; $("openRevs").textContent=T("revsN",v.revNo||1);
+}
+function renderRevs(){
+  const v=liveVisit||cur, ul=$("revList"); ul.innerHTML="";
+  const rows=[...(v.revs||[]).map((r,i)=>({no:r.no,date:r.date,author:r.author,idx:i})),{no:v.revNo||1,date:v.revDate||v.date,author:v.author,idx:-1}];
+  rows.sort((a,b)=>b.no-a.no).forEach(r=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<button><span class="s">${T("revsN",r.no)}${r.idx<0?` — ${T("current")}`:""}<span class="c">${r.author||""}</span></span><span class="d">${r.date||""}</span></button>`;
+    li.querySelector("button").onclick=()=>{$("revsPanel").classList.remove("show"); r.idx<0?closeRevision():openRevision(r.idx)};
+    ul.appendChild(li);
+  });
+}
+function openRevision(i){
+  const v=liveVisit||cur, r=v.revs[i]; if(!r) return;
+  if(!liveVisit) liveVisit=v;
+  cur={...v,...JSON.parse(JSON.stringify(r.data)),_ro:true,_rev:r};
+  sel=null;selBlock=null;selSeg=null;editing=false;setTool("sel");
+  $("robar").hidden=false; $("roText").textContent=T("viewingRev",r.no,r.date);
+  render();
+}
+function closeRevision(){
+  if(!liveVisit) return;
+  cur=liveVisit; liveVisit=null; $("robar").hidden=true; render();
+}
+function restoreRevision(){
+  if(!liveVisit||!cur._rev) return;
+  const r=cur._rev, v=liveVisit;
+  freezeRevision(v);                                  /* الحالي يُحفظ كإصدار قبل الاسترجاع */
+  Object.assign(v,JSON.parse(JSON.stringify(r.data)));
+  closeRevision(); saveStore();
+}
+$("openRevs").onclick=()=>{renderRevs();$("revsPanel").classList.add("show")};
+$("closeRevs").onclick=()=>$("revsPanel").classList.remove("show");
+$("revsPanel").onclick=e=>{if(e.target.id==="revsPanel")$("revsPanel").classList.remove("show")};
+$("newRev").onclick=()=>{const v=liveVisit||cur; if(v._ro) return; freezeRevision(v); $("revsPanel").classList.remove("show"); render(); saveStore()};
+$("roBack").onclick=closeRevision;
+$("roRestore").onclick=restoreRevision;
+
+/* ===== لوحة المتابعة ===== */
+let dashHidden=false;
+function renderDash(){
+  const real=projects.filter(v=>v.site||v.client);
+  const show=!dashHidden && me && isBlank(cur);          /* تظهر عند فتح التطبيق على زيارة فارغة */
+  $("dash").hidden=!show; if(!show) return;
+  const ym=new Date().toISOString().slice(0,7);
+  const month=real.filter(v=>(v.date||"").startsWith(ym)).length;
+  const clients=new Map(); real.forEach(v=>{const k=(v.client||"—").trim();clients.set(k,(clients.get(k)||0)+1)});
+  const items=real.reduce((m,v)=>m+(v.items||[]).length,0);
+  $("kpis").innerHTML=[[month,"kVisits"],[real.length,"kTotal"],[clients.size,"kClients"],[items,"kItems"]]
+    .map(([n,k])=>`<div class="kpi"><b>${n}</b><span>${T(k)}</span></div>`).join("");
+  const recent=real.slice().sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,5);
+  $("recentList").innerHTML=recent.map(v=>`<li><button data-v="${v.id}"><span>${v.site||T("untitled")}<br><span class="c">${v.client||""}</span></span><span class="n">${v.date||""}</span></button></li>`).join("")
+    ||`<li><div class="hintbox">—</div></li>`;
+  const top=[...clients.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  $("clientList").innerHTML=top.map(([c,n])=>`<li><button data-c="${c.replace(/"/g,"&quot;")}"><span>${c}</span><span class="n">${T("visitsOf",n)}</span></button></li>`).join("")
+    ||`<li><div class="hintbox">—</div></li>`;
+  $("recentList").querySelectorAll("button").forEach(b=>b.onclick=()=>{const v=projects.find(x=>x.id===b.dataset.v);
+    if(v){saveStore();cur=v;sel=null;selBlock=null;render()}});
+  $("clientList").querySelectorAll("button").forEach(b=>b.onclick=()=>{vQuery=b.dataset.c;$("vSearch").value=vQuery;$("quickSearch").value=vQuery;renderVisits();$("visitsPanel").classList.add("show")});
+}
+$("dashHide").onclick=()=>{dashHidden=true;renderDash()};
 $("openPanel").onclick=()=>$("panel").classList.add("show");
 $("closePanel").onclick=()=>$("panel").classList.remove("show");
 $("panel").onclick=e=>{if(e.target.id==="panel")$("panel").classList.remove("show")};
@@ -2281,11 +2459,12 @@ $("addUser").onclick=async()=>{
 };
 /* ================= الحفظ: Supabase أو الجهاز ================= */
 const KEY="svl.v1"; let savingNow=false, dirty=false;
-const touch=()=>{dirty=true};
+const touch=()=>{dirty=true; if(cur) armRevision(cur)};
 const saveState=t=>{$("saveState").textContent=t};
 let saveTimer=null;
 function queueSave(){                       /* حفظ بعد أي تعديل على الرسم */
-  if(!me) return;
+  if(!me||cur._ro) return;
+  rollRevisionIfNewDay(cur);
   clearTimeout(saveTimer);
   saveTimer=setTimeout(()=>saveStore(),1200);
 }
@@ -2300,11 +2479,12 @@ function fixItems(items){ items=(items||[]).filter(it=>!(it.auto&&NO_ITEM.includ
 function rowToVisit(r){const d=r.data||{};
   return {id:r.id,client:r.client||"",site:r.site||"",city:r.city||"",date:r.visit_date||"",loc:r.loc||"",
     notes:r.notes||"",owner:r.owner,author:r.author_name||"",wallT:r.wall_t||100,scale:"",
-    mode:d.mode||"draw",img:d.img||null,view:d.view||null,roomH:d.roomH||2600,
+    mode:d.mode||"draw",img:d.img||null,view:d.view||null,roomH:d.roomH||2600,cam:d.cam||null,
+    revs:d.revs||[],revNo:d.revNo||1,revDate:d.revDate||r.visit_date||"",
     draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:(d.blocks||[]).map(b=>NO_ITEM.includes(b.k)?{...b,item:null}:b),items:fixItems(d.items||[])}}
 const visitToRow=v=>({id:v.id,owner:v.owner||me.id,author_name:v.author||me.name,
   client:v.client,site:v.site,city:v.city,visit_date:v.date||null,loc:v.loc,notes:v.notes,wall_t:v.wallT||100,
-  data:{mode:v.mode,img:v.img,view:v.view,roomH:v.roomH||2600,draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
+  data:{mode:v.mode,img:v.img,view:v.view,roomH:v.roomH||2600,cam:v.cam||null,revs:v.revs||[],revNo:v.revNo||1,revDate:v.revDate||v.date||"",draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
 async function loadVisits(){
   const {data,error}=await sb.from("visits").select("*").order("visit_date",{ascending:false});
   if(error){saveState(T("offline"));return}
@@ -2321,7 +2501,8 @@ function loadLocal(){
   }catch(e){}
 }
 async function saveStore(){
-  if(!me||!cur) return;
+  if(!me||!cur||cur._ro) return;
+  if(dirty) rollRevisionIfNewDay(cur);
   pruneEmpty();
   if(isBlank(cur)) return;
   if(needsInfo(cur)){ saveState(T("needSite")); return; }   /* زيارة بلا عميل وموقع لا تُحفظ */
@@ -2340,8 +2521,10 @@ async function saveStore(){
   renderVisits();
 }
 function newDraft(){
+  if(liveVisit){cur=liveVisit;liveVisit=null;$("robar").hidden=true}
   const v={id:uuid(),client:"",site:"",city:"",date:new Date().toISOString().slice(0,10),loc:"",notes:"",
     owner:me?me.id:null,author:me?me.name:"",scale:"",mode:"draw",img:null,wallT:100,roomH:2600,
+    revs:[],revNo:1,revDate:new Date().toISOString().slice(0,10),
     draw:{pts:[],closed:false,kinds:[]},blocks:[],view:null,items:[]};
   projects.push(v); cur=v; sel=null; selBlock=null; return v;
 }
@@ -2397,13 +2580,14 @@ $("fSave").onclick=()=>{
 
 function visitLine(p){return [p.client,p.city,p.date].filter(Boolean).join("  ·  ")}
 function render(){$("whoami").textContent=me?me.name:"";
+  renderDash(); renderRevBtn();
   $("pname").firstChild.textContent=pn(cur);$("psub").textContent=visitLine(cur);
   const mu=mapURL(cur);
   $("visitMeta").innerHTML=`<b>${cur.client||"—"}</b>  ·  ${cur.city||"—"}  ·  ${cur.date||"—"}`
     +(mu?`  ·  <a href="${mu}" target="_blank" rel="noopener" style="color:var(--pen)">${T("openMap")}</a>`:"")
     +(cur.notes?"  ·  "+cur.notes:"");
   renderVisits();
-  $("printHead").innerHTML=`<h1>${pn(cur)}</h1><p>${T("clientL")}: ${cur.client||"—"} — ${T("cityL")}: ${cur.city||"—"} — ${T("dateL")}: ${cur.date||"—"}${cur.loc?" — "+T("locL")+": "+cur.loc:""}${cur.notes?" — "+cur.notes:""}<br>${T("surveyedBy")}: ${cur.author||(me?me.name:"—")}</p>`;
+  $("printHead").innerHTML=`<h1>${pn(cur)}</h1><p>${T("clientL")}: ${cur.client||"—"} — ${T("cityL")}: ${cur.city||"—"} — ${T("dateL")}: ${cur.date||"—"}${cur.loc?" — "+T("locL")+": "+cur.loc:""}${cur.notes?" — "+cur.notes:""}<br>${T("surveyedBy")}: ${cur.author||(me?me.name:"—")} — ${T("revLine",cur._rev?cur._rev.no:(cur.revNo||1),cur._rev?cur._rev.date:(cur.revDate||cur.date||""))}</p>`;
   renderPalette();renderSelBar();renderPlan();renderCards();renderUsers()}
 $("clen").value=$("len").value;
 $("langBtn").onclick=()=>{lang=lang==="ar"?"en":"ar";applyLang()};
