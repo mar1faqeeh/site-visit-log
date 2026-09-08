@@ -217,6 +217,10 @@ main{padding:0 0 96px}
 .users{list-style:none;margin:16px 0 0;padding:0;border-top:1px solid var(--line)}
 .users li{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
 .users .role{color:#6B8199;font-size:12px}
+.users li{align-items:center}
+.uacts{display:flex;gap:4px}
+.uacts button{font-size:11px;padding:4px 7px;border:1px solid var(--line);border-radius:2px;background:#fff}
+.uacts button.warn{color:#9B2C2C}
 .close-x{position:absolute;top:12px;inset-inline-start:14px;font-size:20px;color:#6B8199}
 .actions{position:fixed;bottom:0;inset-inline:0;z-index:40;background:var(--paper);border-top:1px solid var(--line);
  padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px}
@@ -523,7 +527,7 @@ const L={
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
   cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete this visit permanently?",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",sketchBtn:"Sketch the isometric by hand",sketchH:"Isometric sketch",sketchLede:"Draw the unit freehand on the isometric grid. Beautify straightens every stroke onto the 30°/90° axes, joins corners and turns round strokes into true iso circles.",beautify:"Beautify",showRaw:"Show sketch",skSaveType:"Use for this type",skSaveItem:"Use for this item only",skSaveIso:"Use in 3D view",skSaved:"Saved.",skEmpty:"Draw something first.",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Start a visit",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
-  urole:"Role",addUser:"Add user",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
+  urole:"Role",addUser:"Add user",uEdit:"Edit",uPass:"Password",uDel:"Delete",askName:"Full name:",askRole:"Role (tech / admin):",askPass:"New password for {0} (min 6 characters):",askDel:"Delete user {0}? Their visits stay in the database.",updated:"Updated.",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
   userExists:"That username already exists.",tapMove:"Tap the plan to move tag {0}",pickItem:"Select an item first",
@@ -538,7 +542,7 @@ const L={
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
   cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة نهائيًا؟",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",sketchBtn:"ارسم الآيزومترك بيدك",sketchH:"سكيتش آيزومترك",sketchLede:"ارسم القطعة بإصبعك على شبكة الآيزومترك. زر «تحسين» يقوّم كل خطة على محاور ٣٠° و٩٠°، يصل الأركان، ويحوّل الخطوط المستديرة إلى دوائر آيزومترك صحيحة.",beautify:"تحسين",showRaw:"عرض السكيتش",skSaveType:"اعتمده لهذا النوع",skSaveItem:"لهذا البند فقط",skSaveIso:"استخدمه في المنظور ٣D",skSaved:"تم الحفظ.",skEmpty:"ارسم شيئًا أولًا.",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"بدء زيارة",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
-  urole:"الدور",addUser:"إضافة المستخدم",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
+  urole:"الدور",addUser:"إضافة المستخدم",uEdit:"تعديل",uPass:"كلمة المرور",uDel:"حذف",askName:"الاسم الكامل:",askRole:"الدور (tech / admin):",askPass:"كلمة مرور جديدة لـ {0} (٦ أحرف على الأقل):",askDel:"حذف المستخدم {0}؟ زياراته تبقى في قاعدة البيانات.",updated:"تم التحديث.",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
   userExists:"هذا الاسم مستخدم بالفعل.",tapMove:"اضغط على المخطط لنقل الرقم {0}",pickItem:"اختر بندًا أولًا",
@@ -2564,10 +2568,39 @@ $("dashHide").onclick=()=>{dashHidden=true;renderDash();openVisit("draft")};
 $("openPanel").onclick=()=>$("panel").classList.add("show");
 $("closePanel").onclick=()=>$("panel").classList.remove("show");
 $("panel").onclick=e=>{if(e.target.id==="panel")$("panel").classList.remove("show")};
+async function usersApi(body){
+  const {data:{session}}=await sb.auth.getSession();
+  const res=await fetch("/api/users",{method:"POST",
+    headers:{"Content-Type":"application/json",Authorization:"Bearer "+(session&&session.access_token)},
+    body:JSON.stringify(body)});
+  const out=await res.json().catch(()=>({}));
+  if(!res.ok) throw new Error(out.error||"failed");
+  return out;
+}
+function userMsg(t,ok){$("uerr").style.color=ok?"var(--ok)":"";$("uerr").textContent=t}
 function renderUsers(){
   $("users").innerHTML="";
+  const isAdmin=me&&me.role==="admin"&&CLOUD;
   users.forEach(u=>{const li=document.createElement("li");
-    li.innerHTML=`<span>${u.full_name||u.email||""}</span><span class="role">${L[lang][u.role]||u.role||""}</span>`;
+    li.innerHTML=`<span>${u.full_name||u.email||""}<span class="role" style="display:block">${L[lang][u.role]||u.role||""}</span></span>
+      ${isAdmin?`<span class="uacts"><button data-a="update">${T("uEdit")}</button><button data-a="password">${T("uPass")}</button><button data-a="delete" class="warn">${T("uDel")}</button></span>`:""}`;
+    li.querySelectorAll("button").forEach(b=>b.onclick=async()=>{
+      const a=b.dataset.a, name=u.full_name||u.email||"";
+      try{
+        if(a==="update"){
+          const full_name=prompt(T("askName"),u.full_name||""); if(full_name===null) return;
+          const role=prompt(T("askRole"),u.role||"tech"); if(role===null) return;
+          await usersApi({action:"update",id:u.id,full_name:full_name.trim(),role:role.trim()});
+        }else if(a==="password"){
+          const password=prompt(T("askPass",name)); if(!password) return;
+          await usersApi({action:"password",id:u.id,password});
+        }else if(a==="delete"){
+          if(!confirm(T("askDel",name))) return;
+          await usersApi({action:"delete",id:u.id});
+        }
+        userMsg(T("updated"),true); await loadUsers(); renderUsers();
+      }catch(e){userMsg(e.message,false)}
+    });
     $("users").appendChild(li)});
 }
 $("addUser").onclick=async()=>{
@@ -2576,12 +2609,7 @@ $("addUser").onclick=async()=>{
   if(!email||!password){$("uerr").textContent=T("needUserPass");return}
   $("uerr").textContent="";
   try{
-    const {data:{session}}=await sb.auth.getSession();
-    const res=await fetch("/api/create-user",{method:"POST",
-      headers:{"Content-Type":"application/json",Authorization:"Bearer "+(session&&session.access_token)},
-      body:JSON.stringify({email,password,full_name,role})});
-    const out=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(out.error||"failed");
+    await usersApi({action:"create",email,password,full_name,role});
     $("nn").value="";$("nu").value="";$("np").value="";
     $("uerr").style.color="var(--ok)";$("uerr").textContent=T("userAdded");
     await loadUsers(); renderUsers();
