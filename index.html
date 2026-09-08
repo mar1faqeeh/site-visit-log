@@ -592,7 +592,7 @@ function W3(x,y,z){                            /* من إحداثيات الوح
 }
 const P=(x,y,z)=>{const w=W3(x,y,z);return [(w[0]-w[1])*C,(w[0]+w[1])*S-w[2]]};
 const dep=(x,y)=>{const w=W3(x,y,0);return w[0]+w[1]};
-const FL={top:"#F7F9FB",left:"#E3E9EF",right:"#CDD6DF",dark:"#B7C2CD",recess:"#E9EEF3"};
+const FL={top:"#F9FAFC",left:"#D6DEE6",right:"#BBC6D1",dark:"#A3B0BE",recess:"#E4EAF0"};
 const VIEW=[1,1,.9];
 /* وجه ثلاثي الأبعاد: يُرسم فقط إذا كان مواجهًا للناظر */
 function face3(pts,fill,extra,force){
@@ -621,9 +621,9 @@ function bx3(x,y,z,w,d,h,fills){
   const F=fills||FL, V=(a,b,c)=>[x+a,y+b,z+c];
   const sides=[
     [V(0,d,h),V(w,d,h),V(w,d,0),V(0,d,0)],   /* +y */
-    [V(w,0,h),V(w,d,h),V(w,d,0),V(w,0,0)],   /* +x */
+    [V(w,d,h),V(w,0,h),V(w,0,0),V(w,d,0)],   /* +x */
     [V(w,0,h),V(0,0,h),V(0,0,0),V(w,0,0)],   /* -y */
-    [V(0,d,h),V(0,0,h),V(0,0,0),V(0,d,0)]    /* -x */
+    [V(0,0,h),V(0,d,h),V(0,d,0),V(0,0,0)]    /* -x */
   ];
   let o=""; sides.forEach(f=>{o+=face3(f,sideFill(f,F))});
   o+=face3([V(0,0,h),V(w,0,h),V(w,d,h),V(0,d,h)],F.top||FL.top);
@@ -632,8 +632,8 @@ function bx3(x,y,z,w,d,h,fills){
 /* قائم بلا خطوط أفقية في الوسط */
 function post(x,y,z0,z1,s,cap){
   const V=(a,b,c)=>[x+a,y+b,c];
-  const sides=[[V(0,s,z1),V(s,s,z1),V(s,s,z0),V(0,s,z0)],[V(s,0,z1),V(s,s,z1),V(s,s,z0),V(s,0,z0)],
-               [V(s,0,z1),V(0,0,z1),V(0,0,z0),V(s,0,z0)],[V(0,s,z1),V(0,0,z1),V(0,0,z0),V(0,s,z0)]];
+  const sides=[[V(0,s,z1),V(s,s,z1),V(s,s,z0),V(0,s,z0)],[V(s,s,z1),V(s,0,z1),V(s,0,z0),V(s,s,z0)],
+               [V(s,0,z1),V(0,0,z1),V(0,0,z0),V(s,0,z0)],[V(0,0,z1),V(0,s,z1),V(0,s,z0),V(0,0,z0)]];
   let o="";
   sides.forEach(f=>{const q=face3(f,sideFill(f,FL),'stroke="none"'); if(q){o+=q; o+=edge3(f[0],f[3])+edge3(f[1],f[2])}});
   if(cap) o+=face3([V(0,0,z1),V(s,0,z1),V(s,s,z1),V(0,s,z1)],FL.top);
@@ -833,7 +833,7 @@ const M3={
  door:(x,y,w,d)=>{const h=2100;
    let s=bx3(x,y,0,w,d,h,{top:FL.dark,left:FL.left,right:FL.right});
    s+=face3([[x+60,y+d,60],[x+w-60,y+d,60],[x+w-60,y+d,h-60],[x+60,y+d,h-60]],FL.top);
-   s+=face3([[x+w-60,y,60],[x+60,y,60],[x+60,y,h-60],[x+w-60,y,h-60]],FL.top);
+   s+=face3([[x+60,y,60],[x+w-60,y,60],[x+w-60,y,h-60],[x+60,y,h-60]],FL.top);
    s+=bx3(x+w-160,y+d,950,26,26,180); return s},
 };
 const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:900,fridge:2000,hood:2500,
