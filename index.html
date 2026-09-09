@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0E2340">
+<meta name="color-scheme" content="light only">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="Site Visit Log">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Site Visit Log</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
@@ -11,8 +19,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--steel:#E4E9ED;--steel-2:#D3DBE2;--paper:#FFF;--ink:#0E2340;--pen:#2B4FA8;--pen-soft:#8FA5D6;--mark:#E0A020;--line:#B9C5D0;--ok:#1E7A5A}
+:root{color-scheme:light only;--steel:#E4E9ED;--steel-2:#D3DBE2;--paper:#FFF;--ink:#0E2340;--pen:#2B4FA8;--pen-soft:#8FA5D6;--mark:#E0A020;--line:#B9C5D0;--ok:#1E7A5A}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#E4E9ED;color:#0E2340}
+input,select,button,textarea{color-scheme:light}
 [hidden]{display:none!important}
 body.home main,body.home .actions,body.home #robar,body.home #metaBar{display:none!important}
 html,body{margin:0;padding:0}
@@ -227,9 +237,27 @@ main{padding:0 0 96px}
 .actions button{flex:1;padding:12px;border-radius:2px;font-weight:600;font-size:14px}
 .act-main{background:var(--ink);color:#fff}
 .act-ghost{border:1px solid var(--line);color:var(--ink)}
-@media(min-width:760px){
+@media(min-width:900px){
  .wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;align-items:start}
  .plan-wrap{position:sticky;top:56px;border-inline-start:1px solid var(--line)}
+}
+/* أهداف لمس أكبر ومناطق آمنة للشاشات الحديثة */
+@media(pointer:coarse){
+  .modes button,.tabs button,.draw-acts button,.tool,.sortrow button,.visitbar button,.actions button,.iconadd,.icon-btn{min-height:44px}
+  .pad button{min-height:52px}
+  .len-input,.sizes input,.field input,.field select,.searchrow input,.visitbar input{min-height:44px;font-size:16px}
+  button,select{touch-action:manipulation}
+}
+header.top{padding-top:calc(10px + env(safe-area-inset-top))}
+/* الجوال: تبويب بين المخطط والبنود بدل التمرير الطويل */
+.mtabs{display:none;position:sticky;top:0;z-index:29;background:var(--paper);border-bottom:1px solid var(--line);gap:0}
+.mtabs button{flex:1;padding:11px;font-size:13.5px;color:#6B8199;border-bottom:3px solid transparent}
+.mtabs button[aria-pressed="true"]{color:var(--ink);font-weight:600;border-bottom-color:var(--pen)}
+@media(max-width:899px){
+  .mtabs{display:flex}
+  body.mboq .plan-wrap{display:none!important}
+  body:not(.mboq) .boq{display:none!important}
+  body.home .mtabs{display:none!important}
 }
 @media print{
  body{background:#fff}
@@ -268,6 +296,7 @@ main{padding:0 0 96px}
 </div>
 <div class="visitbar" id="metaBar"><button id="saveNow" class="prim" data-i18n="saveNow"></button><button id="openRevs"></button><span class="meta" id="visitMeta"></span><span id="whoami" class="save" style="color:#6B8199"></span><span id="saveState" class="save"></span><button id="editVisit" data-i18n="editVisit"></button></div>
 
+<div class="mtabs" id="mtabs"><button data-mt="plan" aria-pressed="true" data-i18n="siteplan"></button><button data-mt="boq" data-i18n="boq"></button><span id="mtCount" style="display:none"></span></div>
 <div class="robar" id="robar" hidden><span id="roText"></span><button id="roBack" data-i18n="backToCurrent"></button><button id="roRestore" data-i18n="restoreRev"></button></div>
 <section class="dash" id="dash" hidden>
   <div class="dash-head"><h2 data-i18n="dashH"></h2><button id="dashHide" data-i18n="hide"></button></div>
@@ -403,7 +432,7 @@ main{padding:0 0 96px}
   </div>
  </section>
 
- <section>
+ <section class="boq">
   <div class="list-head"><h2 data-i18n="boq"></h2><span style="display:flex;gap:10px;align-items:center"><em id="count"></em><button class="iconadd" id="addItemBtn">+</button></span></div>
   <div class="itemform" id="itemForm" hidden>
     <label data-i18n="itemName"></label><input id="fName">
@@ -2336,7 +2365,7 @@ function renderCards(){
 function select(no,from){
   sel=sel===no?null:no; renderPlan(); renderCards();
   if(sel&&from==="pin"){const el=$("card-"+sel);if(el)el.scrollIntoView({behavior:"smooth",block:"center"})}
-  if(sel&&from==="card")box.scrollIntoView({behavior:"smooth",block:"nearest"});
+  if(sel&&from==="card"){box.scrollIntoView({behavior:"smooth",block:"nearest"})}
   if(editing)$("editHint").textContent=sel?T("tapMove",sel):T("pickItem");
 }
 /* ================= تحرير البند والمصغّرة ================= */
@@ -2703,6 +2732,11 @@ function renderDash(){
   $("clientList").querySelectorAll("button").forEach(b=>b.onclick=()=>{vQuery=b.dataset.c;$("vSearch").value=vQuery;$("quickSearch").value=vQuery;renderVisits();$("visitsPanel").classList.add("show")});
 }
 $("dashHide").onclick=()=>{dashHidden=true;renderDash();openVisit("draft")};
+document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
+  document.body.classList.toggle("mboq",b.dataset.mt==="boq");
+  document.querySelectorAll("#mtabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+  if(b.dataset.mt==="plan") renderPlan();      /* المخطط يعيد حساب مقاسه بعد الإظهار */
+});
 $("openPanel").onclick=()=>$("panel").classList.add("show");
 $("closePanel").onclick=()=>$("panel").classList.remove("show");
 $("panel").onclick=e=>{if(e.target.id==="panel")$("panel").classList.remove("show")};
