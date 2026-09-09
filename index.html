@@ -2159,6 +2159,7 @@ document.addEventListener("keyup",e=>{if(e.code==="Space")spacePan=false});
 const touches=new Map();
 box.addEventListener("pointerdown",e=>{
   if(cur.mode!=="draw"||editing) return;
+  if(e.pointerType==="touch"){ try{box.setPointerCapture(e.pointerId)}catch(err){} }
   if(e.button===1||spacePan){                 /* زر الماوس الأوسط أو مسافة = كف */
     const q=pos(e); if(q){panStart=[q.x,q.y,cur.view.x,cur.view.y];handPan=true;
       box.classList.add("panning");e.preventDefault();return}
@@ -2174,7 +2175,9 @@ box.addEventListener("pointerdown",e=>{
   if(panMode){panStart=[q.x,q.y,cur.view.x,cur.view.y];return}
   const t=e.target.closest?e.target.closest("[data-block]"):null;
   if(tool==="sel"&&t&&!cur._ro){const b=cur.blocks.find(x=>x.id===+t.dataset.block);
-    if(b){selBlock=b.id;selSeg=null;drag={b,dx:q.x-b.x,dy:q.y-b.y,moved:false,x0:q.x,y0:q.y};
+    if(b){
+      try{box.setPointerCapture(e.pointerId)}catch(err){}      /* اللمس: تبقى الحركة مع الإطار حتى لو أُعيد رسم البلوك */
+      selBlock=b.id;selSeg=null;drag={b,dx:q.x-b.x,dy:q.y-b.y,moved:false,x0:q.x,y0:q.y};
       renderSelBar();renderPlan();sbarUpdate()}}
 });
 box.addEventListener("pointermove",e=>{
