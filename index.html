@@ -403,8 +403,14 @@ header.top{padding-top:calc(10px + env(safe-area-inset-top))}
       <div id="tableVar" class="sortrow" style="margin-top:10px" hidden>
         <button data-v="1"></button><button data-v="2" aria-pressed="true"></button><button data-v="3"></button>
       </div>
+      <div id="wsVar" class="sortrow" style="margin-top:10px" hidden>
+        <button data-s="1" aria-pressed="true"></button><button data-s="2"></button>
+      </div>
+      <div id="rackVar" class="sortrow" style="margin-top:10px" hidden>
+        <button data-r="1" aria-pressed="true"></button><button data-r="2"></button>
+      </div>
       <div id="cabVar" class="sortrow" style="margin-top:10px" hidden>
-        <button data-c="1" aria-pressed="true"></button><button data-c="2"></button><button data-c="3"></button>
+        <button data-c="1" aria-pressed="true"></button><button data-c="2"></button>
       </div>
       <div id="wcabVar" class="sortrow" style="margin-top:10px" hidden>
         <button data-w="1" aria-pressed="true"></button><button data-w="2"></button><button data-w="3"></button>
@@ -645,11 +651,10 @@ const BLK={
    f:(w,d,o)=>`<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/>${planDoors((o&&o.v)||1,w,d,d-30)}`},
  hood:{n:"هود",e:"Hood",w:2000,d:1200,iso:"hood",
    f:(w,d)=>`<rect width="${w}" height="${d}" fill="none" stroke-dasharray="${dash(w)}"/><rect x="90" y="90" width="${w-180}" height="${d-180}" fill="none" stroke-dasharray="${dash(w)}"/><circle cx="${w/2}" cy="${d/2}" r="${Math.min(w,d)*.16}" fill="none"/><line x1="${w/2-Math.min(w,d)*.16}" y1="${d/2}" x2="${w/2+Math.min(w,d)*.16}" y2="${d/2}"/>`},
- wshelf:{n:"رف جداري",e:"Wall shelf",w:1200,d:400,iso:"shelf",
-   f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/><line x1="${w*.2}" y1="0" x2="${w*.2}" y2="${d}"/><line x1="${w*.8}" y1="0" x2="${w*.8}" y2="${d}"/>`},
- pshelf:{n:"رف مثقّب",e:"Perforated shelf",w:1220,d:400,iso:"pshelf",
-   f:(w,d)=>{let o="";for(let i=1;i<=6;i++)o+=`<circle cx="${w*i/7}" cy="${d/2}" r="${d*.09}" fill="none"/>`;
-     return `<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/>${o}`}},
+ wshelf:{n:"رف جداري",e:"Wall shelf",w:1200,d:400,iso:"wshelf",
+   f:(w,d,o)=>{let s=`<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/><line x1="${w*.1}" y1="0" x2="${w*.1}" y2="${d}"/><line x1="${w*.9}" y1="0" x2="${w*.9}" y2="${d}"/>`;
+     if((o&&o.v)===2){const nx=Math.max(4,Math.round(w/180));for(let i=1;i<=nx;i++)for(let j=1;j<=2;j++) s+=`<circle cx="${w*i/(nx+1)}" cy="${d*j/3}" r="${d*.07}" fill="none" opacity=".7"/>`}
+     return s}},
  burner:{n:"موقد / برنر",e:"Burner / range",w:1800,d:900,iso:"burner",
    f:(w,d,op)=>{const n=Math.max(1,(op&&op.n)||Math.round(w/450));let o="";
      for(let i=0;i<n;i++)o+=`<circle cx="${w*(i+.5)/n}" cy="${d/2}" r="${Math.min(d*.3,w/n*.36)}" fill="none"/>`;
@@ -691,9 +696,13 @@ const BLK={
            <path d="M${cx-r*.72} ${d*.5-r*.72} L${cx+r*.72} ${d*.5+r*.72} M${cx-r*.72} ${d*.5+r*.72} L${cx+r*.72} ${d*.5-r*.72}"/>`}
      return `<rect width="${w}" height="${d}" fill="#fff"/><rect x="0" y="0" width="${w}" height="${d*.22}" fill="none"/>${o}
        <path d="M${w*.5} ${d*1.12} v${d*.42} M${w*.5} ${d*1.54} l${-d*.14} ${-d*.16} M${w*.5} ${d*1.54} l${d*.14} ${-d*.16}" fill="none" opacity=".8"/>`}},
- rack:{n:"رفوف تخزين",e:"Storage rack",w:2000,d:600,iso:"shelf",
-   f:(w,d)=>{let o="";for(let x=250;x<w-50;x+=250)o+=`<line x1="${x}" y1="0" x2="${x}" y2="${d}" opacity=".55"/>`;
-     return `<rect width="${w}" height="${d}" fill="#fff"/>${o}<line x1="0" y1="${d*.5}" x2="${w}" y2="${d*.5}" opacity=".55"/>`}},
+ rack:{n:"وحدة أرفف",e:"Shelving unit",w:2000,d:600,iso:"rack",
+   f:(w,d,o)=>{const v=(o&&o.v)||1; let s=`<rect width="${w}" height="${d}" fill="#fff"/>`;
+     [[0,0],[w-40,0],[0,d-40],[w-40,d-40]].forEach(c=>{s+=`<rect x="${c[0]}" y="${c[1]}" width="40" height="40" fill="none"/>`});
+     if(v===2){const nx=Math.max(3,Math.round(w/180)),ny=Math.max(2,Math.round(d/180));
+       for(let i=1;i<=nx;i++)for(let j=1;j<=ny;j++) s+=`<circle cx="${w*i/(nx+1)}" cy="${d*j/(ny+1)}" r="14" fill="none" opacity=".7"/>`}
+     else s+=`<line x1="40" y1="${d/2}" x2="${w-40}" y2="${d/2}" opacity=".45"/>`;
+     return s}},
  door1:{n:"باب ١ ليف",e:"Door — single leaf",w:900,d:100,iso:"cabinet",
    vb:(w,d)=>`${-w*.12} ${-w-w*.12} ${w*1.24} ${w+d+w*.24}`,
    f:(w,d)=>`<rect width="${w}" height="${d}" fill="#fff" stroke="none"/>
@@ -897,35 +906,28 @@ const M3={
  sinkT3:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:3}),
  sink1:(x,y,w,d)=>sinkModel(x,y,w,d,{bowls:1,full:1}),
  sink:(x,y,w,d,o)=>sinkModel(x,y,w,d,{bowls:(o&&o.bowls)||2}),
- /* كابينة سفلية: أرجل، جسم، سطح عمل بظهر، وأبواب سحاب / مفصلية / بدون */
- cabinet:(x,y,w,d,o)=>{const v=(o&&o.v)||1, zb=150, zt=850, t=25, ins=30;
+ /* كابينة سفلية وفق المرجع: جسم مغلق على أرجل قصيرة، سطح عمل بارز بظهر، أبواب سحاب أو مفصلية */
+ cabinet:(x,y,w,d,o)=>{const v=(o&&o.v)||1, zb=150, zt=850, leg=40, ins=25;
    let s="";
-   [[x+ins,y+ins],[x+w-40-ins,y+ins],[x+ins,y+d-40-ins],[x+w-40-ins,y+d-40-ins]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
-     .forEach(c=>{s+=bx3(c[0]+6,c[1]+6,-28,28,28,28,{top:FL.dark,left:FL.dark,right:FL.dark});s+=post(c[0],c[1],0,zb,40,false)});
-   const bx=x+15, by=y+15, bw=w-30, bd=d-30, bh=zt-40-zb;                                  /* الجسم مرتد قليلًا عن السطح */
-   if(v===3){                                                                            /* مفتوحة: ألواح من الخلف للأمام */
-     s+=bx3(bx,by,zb,bw,t,bh,{top:FL.top,left:FL.left,right:FL.right});
-     s+=bx3(bx,by,zb,bw,bd,t,{top:FL.top,left:FL.right,right:FL.dark});
-     s+=bx3(bx,by,zb,t,bd,bh,{top:FL.top,left:FL.right,right:FL.left});
-     s+=bx3(bx+t,by+t,zb+bh/2,bw-2*t,bd-t-30,t,{top:FL.top,left:FL.right,right:FL.dark});
-     s+=bx3(bx+bw-t,by,zb,t,bd,bh,{top:FL.top,left:FL.left,right:FL.right});
-   }else{
-     s+=bx3(bx,by,zb,bw,bd,bh,{top:FL.top,left:FL.left,right:FL.right});
-     const yf=by+bd, F=(x1,z1,x2,z2,fill)=>face3([[x1,yf,z1],[x1,yf,z2],[x2,yf,z2],[x2,yf,z1]],fill);
-     if(v===1){                                                                          /* سحاب: ضلفتان متداخلتان */
-       s+=F(bx+30,zb+30,bx+bw*.52,zb+bh-30,FL.top);
-       s+=bx3(bx+bw*.48,yf,zb+30,bw*.52-30,18,bh-60,{top:FL.top,left:FL.top,right:FL.right});
-       s+=F(bx+bw*.52-130,zb+bh*.45,bx+bw*.52-70,zb+bh*.55,FL.dark);
-       s+=face3([[bx+bw*.48+70,yf+18,zb+bh*.45],[bx+bw*.48+70,yf+18,zb+bh*.55],[bx+bw*.48+130,yf+18,zb+bh*.55],[bx+bw*.48+130,yf+18,zb+bh*.45]],FL.dark);
-       s+=edge3([bx+20,yf,zb+bh-20],[bx+bw-20,yf,zb+bh-20]);                            /* السكة */
-     }else{                                                                              /* مفصلي */
-       s+=F(bx+30,zb+30,bx+bw/2-10,zb+bh-30,FL.top); s+=F(bx+bw/2+10,zb+30,bx+bw-30,zb+bh-30,FL.top);
-       s+=bx3(bx+bw/2-60,yf,zb+bh*.45,20,20,bh*.18,{top:FL.dark,left:FL.dark,right:FL.dark});
-       s+=bx3(bx+bw/2+40,yf,zb+bh*.45,20,20,bh*.18,{top:FL.dark,left:FL.dark,right:FL.dark});
-     }
+   [[x+ins,y+ins],[x+w-leg-ins,y+ins],[x+ins,y+d-leg-ins],[x+w-leg-ins,y+d-leg-ins]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
+     .forEach(c=>{s+=bx3(c[0]+8,c[1]+8,-26,leg-16,leg-16,26,{top:FL.dark,left:FL.dark,right:FL.dark});s+=post(c[0],c[1],0,zb,leg,false)});
+   const bx=x+12, by=y+12, bw=w-24, bd=d-24, bh=zt-40-zb, yf=by+bd;
+   s+=bx3(bx,by,zb,bw,bd,bh,{top:FL.top,left:FL.left,right:FL.right});                      /* الجسم */
+   const F=(x1,z1,x2,z2,fill,yy)=>face3([[x1,yy||yf,z1],[x1,yy||yf,z2],[x2,yy||yf,z2],[x2,yy||yf,z1]],fill);
+   if(v===2){                                                                              /* مفصلي: ضلفتان بينهما فاصل داكن */
+     s+=F(bx+25,zb+25,bx+bw/2-14,zb+bh-25,FL.top);
+     s+=F(bx+bw/2+14,zb+25,bx+bw-25,zb+bh-25,FL.top);
+     s+=F(bx+bw/2-14,zb+25,bx+bw/2+14,zb+bh-25,"#3E4A57");
+     s+=edge3([bx+bw/2-14,yf,zb+25],[bx+bw/2-14,yf,zb+bh-25]); s+=edge3([bx+bw/2+14,yf,zb+25],[bx+bw/2+14,yf,zb+bh-25]);
+   }else{                                                                                  /* سحاب: اليسرى للخلف واليمنى بارزة ومتداخلة */
+     s+=F(bx+25,zb+25,bx+bw*.53,zb+bh-25,FL.top);
+     s+=bx3(bx+bw*.47,yf,zb+25,bw*.53-25,16,bh-50,{top:FL.right,left:FL.top,right:FL.right});
+     s+=edge3([bx+20,yf,zb+bh-18],[bx+bw-20,yf,zb+bh-18]);                                 /* السكة العلوية */
+     s+=edge3([bx+20,yf,zb+20],[bx+bw-20,yf,zb+20]);                                       /* السكة السفلية */
    }
-   s+=bx3(x,y,zt-40,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});                    /* سطح العمل */
-   s+=bx3(x,y,zt,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});                    /* الظهر */
+   s+=bx3(x,y,zt-40,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});                       /* سطح العمل */
+   s+=bx3(x,y,zt,w,28,150,{top:FL.right,left:FL.left,right:FL.dark});                       /* الظهر */
+   s+=bx3(x,y+28,zt+150-18,w,32,18,{top:FL.right,left:FL.right,right:FL.dark});             /* رجوع الظهر العلوي */
    return s},
  /* ثلاجة أندر كاونتر: جسم على عجلات، سطح عمل، أبواب أمامية، وجانب كمبرسور مشبّك بشاشة */
  uc:(x,y,w,d)=>{const cw=Math.min(300,w*.22), n=Math.max(1,Math.round((w-cw)/560)), zb=110, zt=850;
@@ -967,44 +969,59 @@ const M3={
    s+=bx3(x+w-140,y+d,h*.35,26,26,h*.3,{top:FL.dark,left:FL.dark,right:FL.dark});
    return s},
  /* كابينة علوية: تُعلّق على ارتفاع ٥٠ سم فوق سطح العمل، أبواب سحاب أو مفصلية، ورف وسطي ظاهر من الطرف المفتوح */
+ /* كابينة علوية وفق المرجع: مفصلي = صندوق مغلق بضلفتين وفاصل داكن؛ سحاب = هيكل مفتوح بإطار وضلفتين منزلقتين؛ مفتوحة = بلا أبواب */
  wcab:(x,y,w,d,o)=>{const v=(o&&o.v)||1, zb=1350, h=600, t=25;
-   if(v===3){                                    /* مفتوحة: تُبنى من ألواحها من الخلف إلى الأمام */
-     let s=bx3(x,y,zb,w,t,h,{top:FL.top,left:FL.left,right:FL.right});                 /* الظهر — وجهه الداخلي ظاهر */
-     s+=bx3(x,y,zb,w,d,t,{top:FL.top,left:FL.right,right:FL.dark});                    /* القاع — أرضية الداخل */
-     s+=bx3(x,y,zb,t,d,h,{top:FL.top,left:FL.right,right:FL.left});                    /* الجانب الأيسر — وجهه الداخلي ظاهر */
-     s+=bx3(x+t,y+t,zb+h/2-t/2,w-2*t,d-t-30,t,{top:FL.top,left:FL.right,right:FL.dark});/* الرف الوسطي */
-     s+=bx3(x+w-t,y,zb,t,d,h,{top:FL.top,left:FL.left,right:FL.right});                /* الجانب الأيمن يحجب طرف الرف */
-     s+=bx3(x,y,zb+h-t,w,d,t,{top:FL.top,left:FL.right,right:FL.dark});                /* السقف */
+   if(v===2){
+     let s=bx3(x,y,zb,w,d,h,{top:FL.top,left:FL.left,right:FL.right});
+     const F=(x1,z1,x2,z2,fill)=>face3([[x1,y+d,z1],[x1,y+d,z2],[x2,y+d,z2],[x2,y+d,z1]],fill);
+     s+=F(x+22,zb+22,x+w/2-12,zb+h-40,FL.top); s+=F(x+w/2+12,zb+22,x+w-22,zb+h-40,FL.top);
+     s+=F(x+w/2-12,zb+22,x+w/2+12,zb+h-40,"#3E4A57");
+     s+=edge3([x+w/2-12,y+d,zb+22],[x+w/2-12,y+d,zb+h-40]); s+=edge3([x+w/2+12,y+d,zb+22],[x+w/2+12,y+d,zb+h-40]);
+     s+=bx3(x-8,y-8,zb+h-22,w+16,d+16,22,{top:FL.top,left:FL.right,right:FL.dark});           /* حافة السقف البارزة */
      return s;
    }
-   let s=bx3(x,y,zb,w,d,h,{top:FL.top,left:FL.left,right:FL.right});
-   const F=(x1,z1,x2,z2,fill)=>face3([[x1,y+d,z1],[x1,y+d,z2],[x2,y+d,z2],[x2,y+d,z1]],fill);
-   if(v===1){                                    /* سحاب: ضلفتان متداخلتان، اليسرى للخلف واليمنى بارزة */
-     s+=F(x+40,zb+40,x+w*.52,zb+h-40,FL.top);
-     s+=bx3(x+w*.48,y+d,zb+40,w*.52-40,18,h-80,{top:FL.top,left:FL.top,right:FL.right});
-     s+=edge3([x+w*.52-60,y+d+18,zb+h*.35],[x+w*.52-60,y+d+18,zb+h*.65]);
-     s+=edge3([x+w*.48+60,y+d,zb+h*.35],[x+w*.48+60,y+d,zb+h*.65]);
-     s+=edge3([x+30,y+d,zb+h-30],[x+w-30,y+d,zb+h-30]);   /* السكة */
-   }else{                                        /* مفصلي: ضلفتان بمقبضين في الوسط */
-     s+=F(x+30,zb+30,x+w/2-10,zb+h-30,FL.top); s+=F(x+w/2+10,zb+30,x+w-30,zb+h-30,FL.top);
-     s+=bx3(x+w/2-60,y+d,zb+h*.45,20,20,h*.18,{top:FL.dark,left:FL.dark,right:FL.dark});
-     s+=bx3(x+w/2+40,y+d,zb+h*.45,20,20,h*.18,{top:FL.dark,left:FL.dark,right:FL.dark});
+   /* هيكل مفتوح من الأمام يُبنى من ألواحه */
+   let s=bx3(x,y,zb,w,t,h,{top:FL.top,left:FL.left,right:FL.right});                           /* الظهر */
+   s+=bx3(x,y,zb,w,d,t,{top:FL.top,left:FL.right,right:FL.dark});                              /* القاع */
+   s+=bx3(x,y,zb,t,d,h,{top:FL.top,left:FL.right,right:FL.left});                              /* الجانب الأيسر */
+   s+=bx3(x+t,y+t,zb+h/2-t/2,w-2*t,d-t-40,t,{top:FL.top,left:FL.right,right:FL.dark});          /* الرف الوسطي */
+   if(v===1){                                                                                   /* سحاب: إطار وضلفتان منزلقتان */
+     s+=bx3(x+w*.06,y+d-44,zb+55,w*.46,14,h-110,{top:FL.right,left:FL.top,right:FL.right});     /* الضلفة الخلفية */
+     s+=bx3(x+w*.48,y+d-22,zb+55,w*.46,14,h-110,{top:FL.right,left:FL.top,right:FL.right});     /* الضلفة الأمامية */
+     s+=bx3(x+w*.48+60,y+d-8,zb+70,60,6,14,{top:FL.dark,left:FL.dark,right:FL.dark});           /* مسكة سفلية */
    }
+   s+=bx3(x+w-t,y,zb,t,d,h,{top:FL.top,left:FL.left,right:FL.right});                          /* الجانب الأيمن */
+   if(v===1){
+     s+=bx3(x,y+d-30,zb,w,30,55,{top:FL.right,left:FL.left,right:FL.dark});                     /* السكة السفلية */
+     s+=bx3(x,y+d-30,zb+h-55,w,30,55,{top:FL.top,left:FL.left,right:FL.dark});                  /* السكة العلوية */
+   }
+   s+=bx3(x,y,zb+h-t,w,d,t,{top:FL.top,left:FL.right,right:FL.dark});                          /* السقف */
    return s},
- hood:(x,y,w,d)=>{const zb=1900,h=560,t=150;
-   let s=face3([[x,y,zb],[x+w,y,zb],[x+w,y+d,zb],[x,y+d,zb]],FL.dark,'',true);
-   s+=face3([[x,y+d,zb],[x+t,y+d-t,zb+h],[x+w-t,y+d-t,zb+h],[x+w,y+d,zb]],FL.left);
-   s+=face3([[x+w,y,zb],[x+w,y+d,zb],[x+w-t,y+d-t,zb+h],[x+w-t,y+t,zb+h]],FL.right);
-   s+=face3([[x+w,y,zb],[x,y,zb],[x+t,y+t,zb+h],[x+w-t,y+t,zb+h]],FL.left);
-   s+=face3([[x,y+d,zb],[x,y,zb],[x+t,y+t,zb+h],[x+t,y+d-t,zb+h]],FL.right);
-   s+=face3([[x+t,y+t,zb+h],[x+w-t,y+t,zb+h],[x+w-t,y+d-t,zb+h],[x+t,y+d-t,zb+h]],FL.top);
-   s+=bx3(x+w/2-200,y+d/2-200,zb+h,400,400,260);
-   const k=Math.max(2,Math.round(w/500)); for(let i=1;i<k;i++) s+=edge3([x+w*i/k,y+d*.15,zb],[x+w*i/k,y+d*.85,zb]);
+ /* هود صندوقي وفق المرجع: جسم مستطيل، فلتر شبكي على الواجهة، فتحات تمديد على السطح، علبة كهرباء، وعروات تعليق */
+ hood:(x,y,w,d)=>{const zb=2000,h=450;
+   let s=bx3(x,y,zb,w,d,h,{top:FL.top,left:FL.left,right:FL.right});
+   /* الفلتر الشبكي على الواجهة */
+   const fx0=x+50,fx1=x+w-50,fz0=zb+50,fz1=zb+h-50;
+   const front=face3([[fx0,y+d,fz0],[fx0,y+d,fz1],[fx1,y+d,fz1],[fx1,y+d,fz0]],FL.dark);
+   if(front){ s+=front;
+     for(let gx=fx0+60;gx<fx1;gx+=60) s+=`<g stroke="#5B6774" stroke-opacity=".55">${edge3([gx,y+d,fz0],[gx,y+d,fz1])}</g>`;
+     for(let gz=fz0+60;gz<fz1;gz+=60) s+=`<g stroke="#5B6774" stroke-opacity=".55">${edge3([fx0,y+d,gz],[fx1,y+d,gz])}</g>`;
+   }
+   /* فتحات التمديد على السطح: صف أمامي وصف خلفي متعاقبان */
+   const n=Math.max(1,Math.round(w/700));
+   for(let i=0;i<n;i++){const cx=x+w*(i+.5)/n, cy=y+(i%2?d*.3:d*.7);
+     s+=bx3(cx-170,cy-120,zb+h,340,240,32,{top:FL.top,left:FL.right,right:FL.dark});
+     s+=face3([[cx-120,cy-80,zb+h+32],[cx+120,cy-80,zb+h+32],[cx+120,cy+80,zb+h+32],[cx-120,cy+80,zb+h+32]],FL.dark,'',true);
+   }
+   s+=bx3(x+w/2-110,y+d/2-60,zb+h,220,120,60,{top:FL.right,left:FL.dark,right:FL.dark});        /* علبة الكهرباء */
+   [[x+20,y+20],[x+w-80,y+20],[x+20,y+d-80],[x+w-80,y+d-80]].forEach(c=>{s+=bx3(c[0],c[1],zb+h,60,60,40,{top:FL.dark,left:FL.dark,right:FL.dark})}); /* عروات التعليق */
    return s},
- wshelf:(x,y,w,d)=>{const z=1500,t=40,up=110,g=230;
+ wshelf:(x,y,w,d,o)=>{const z=1500,t=40,up=110,g=230,v=(o&&o.v)||1;
    let s=face3([[x,y,z-t],[x,y,z-t-g],[x,y+d-4,z-t]],FL.dark,'',true);
    s+=face3([[x+w,y,z-t],[x+w,y,z-t-g],[x+w,y+d-4,z-t]],FL.right,'',true);
    s+=bx3(x,y,z-t,w,d,t,{top:FL.top,left:FL.dark,right:FL.right});
+   if(v===2){ const nx=Math.max(4,Math.round(w/110)), ny=Math.max(2,Math.round((d-60)/110));    /* ثقوب الرف المخرّم */
+     for(let i=1;i<=nx;i++)for(let j=1;j<=ny;j++) s+=ell(x+w*i/(nx+1),y+40+(d-60)*j/(ny+1),z,15,FL.dark) }
    s+=bx3(x,y,z,w,28,up,{top:FL.right,left:FL.left,right:FL.right}); return s},
  pshelf:(x,y,w,d)=>{const z=1500; let s=bx3(x,y,z,w,d,26);
    const k=Math.round(w/180); for(let i=1;i<=k;i++)for(let j=1;j<=2;j++) s+=ell(x+w*i/(k+1),y+d*j/3,z+26,26);
@@ -1041,10 +1058,22 @@ const M3={
    s+=face3([[x+70,y+70,850],[x+w-70,y+70,850],[x+w-70,y+d-70,850],[x+70,y+d-70,850]],FL.recess,'',true);
    for(let i=1;i<10;i++){const yy=y+70+(d-140)*i/10; s+=edge3([x+90,yy,864],[x+w-90,yy,864])}
    return s},
- rack:(x,y,w,d)=>{let s=""; const zs=[150,600,1050,1500,1800];
-   const cs=[[x,y],[x+w-40,y],[x,y+d-40],[x+w-40,y+d-40]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]));
-   let z0=0; zs.forEach((z,i)=>{cs.forEach(c=>{s+=post(c[0],c[1],z0,z,40,i===zs.length-1)});
-     if(i<zs.length-1){s+=bx3(x,y,z,w,d,22); for(let k=1;k<6;k++){const yy=y+d*k/6; s+=edge3([x+20,yy,z+22],[x+w-20,yy,z+22])}} z0=z+22});
+ /* وحدة أرفف وفق المرجع: أربعة أرفف مصمتة بحافة مطوية على قوائم زاوية مشقوقة */
+ rack:(x,y,w,d,o)=>{let s=""; const v=(o&&o.v)||1, zs=[150,650,1150,1650], H=1800, ps=40, t=30;
+   const cs=[[x,y],[x+w-ps,y],[x,y+d-ps],[x+w-ps,y+d-ps]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]));
+   let z0=0;
+   zs.forEach((z,i)=>{
+     cs.forEach(c=>{s+=post(c[0],c[1],z0,z,ps,false)});
+     s+=bx3(x+ps,y+ps,z,w-2*ps,d-2*ps,t,{top:FL.top,left:FL.right,right:FL.dark});           /* الرف بحافته */
+     if(v===2){                                                                                /* رف مخرّم: صفوف ثقوب */
+       const nx=Math.max(3,Math.round((w-2*ps)/110)), ny=Math.max(2,Math.round((d-2*ps)/110));
+       for(let i=1;i<=nx;i++)for(let j=1;j<=ny;j++) s+=ell(x+ps+(w-2*ps)*i/(nx+1),y+ps+(d-2*ps)*j/(ny+1),z+t,16,FL.dark);
+     }
+     z0=z+t;
+   });
+   cs.forEach(c=>{s+=post(c[0],c[1],z0,H,ps,true)});                                        /* امتداد القوائم فوق آخر رف */
+   /* شقوق القوائم على الوجه الأمامي */
+   [x+ps/2, x+w-ps/2].forEach(px=>{for(let z=90;z<H-40;z+=90) s+=face3([[px-6,y+d,z],[px-6,y+d,z+28],[px+6,y+d,z+28],[px+6,y+d,z]],"#3E4A57",'stroke="none"',true)});
    return s},
  evap:(x,y,w,d)=>{const z=1800,h=560, n=Math.max(1,Math.round(w/500));
    let s=bx3(x,y,z,w,d,h,{top:FL.top,left:FL.left,right:FL.dark});
@@ -1111,7 +1140,7 @@ const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[120
   cabinet:[1200,700],fridge:[700,800],uc:[1360,700],wcab:[1200,400],ur2:[1400,800],hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],
   rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100],door2:[1600,100],doorS:[1200,100],window:[1200,100]};
 const ISO={};
-Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:1900,wshelf:1230,pshelf:1500,evap:1800,window:1000,wcab:1350}[t]||0;
+Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:2000,wshelf:1230,pshelf:1500,evap:1800,window:1000,wcab:1350}[t]||0;
   const inner=model3(t,0,0,w,d,{v:v||(t==="wcab"?1:2),n:t==="burner"?v:undefined});
   return isoWrap(`<g transform="translate(0 ${f1(zb)})">${inner}</g>`,w,d,H3[t]-zb,-28)} });
 
@@ -1507,9 +1536,9 @@ function blocksSVG(){
 }
 /* ================= المنظور الآيزومترك من المسقط ================= */
 /* ارتفاع كل نوع ومنسوب قاعدته بالمليمتر */
-const H3D={table:{z:0,h:850},tableos:{z:0,h:850,over:[1400,1750]},sink1:{z:0,h:850},sink2:{z:0,h:850},
+const H3D={table:{z:0,h:850},hoodBox:{z:2000,h:450},tableos:{z:0,h:850,over:[1400,1750]},sink1:{z:0,h:850},sink2:{z:0,h:850},
  cabinet:{z:0,h:900},fridge:{z:0,h:2000},burner:{z:0,h:850},grill:{z:0,h:850},rack:{z:0,h:1800},
- wshelf:{z:1500,h:40},pshelf:{z:1500,h:40},hood:{z:1900,h:600},evap:{z:1800,h:600},faucet:{z:850,h:300},
+ wshelf:{z:1500,h:40},pshelf:{z:1500,h:40},hood:{z:2000,h:450},evap:{z:1800,h:600},faucet:{z:850,h:300},
  door1:{skip:1},door2:{skip:1},window:{skip:1},coldH:{skip:1},coldS:{skip:1}};
 const OPENING={door1:[0,2100],door2:[0,2100],coldH:[0,2100],coldS:[0,2100],window:[1000,2000]};
 const p3=(x,y,z)=>PERSP?persp(x,y,z):[(x-y)*C,(x+y)*S-z];
@@ -1648,10 +1677,10 @@ function iso3dBody(d,WT,RH){
         return;
       }
       const K2M={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",
-        fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",rack:"rack",
+        fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",hood:"hood",wshelf:"wshelf",burner:"burner",grill:"grill",rack:"rack",
         evap:"evap",faucet:"faucet"};
       const mt=K2M[o.b.k]||"table";
-      const opts = o.b.k==="table"?{v:o.b.v||2}:o.b.k==="burner"?{n:o.b.n||0}:o.b.k==="wcab"||o.b.k==="cabinet"?{v:o.b.v||1}:{};
+      const opts = o.b.k==="table"?{v:o.b.v||2}:o.b.k==="burner"?{n:o.b.n||0}:o.b.k==="wcab"||o.b.k==="cabinet"||o.b.k==="rack"||o.b.k==="wshelf"?{v:o.b.v||1}:{};
       body+=`<g class="unit">${unit3(mt,o.b,opts)}</g>`;
       if(o.b.item){
         const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
@@ -1804,23 +1833,25 @@ function addByPad(deg){
   d.pts.push([Math.round(px+Math.cos(r)*L),Math.round(py+Math.sin(r)*L)]);
   autoFit?fitView():growView(); renderPlan(); queueSave();
 }
-const CAB_V={1:["Base cabinet — sliding doors","كابينة سفلية بأبواب سحاب"],2:["Base cabinet — hinged doors","كابينة سفلية بأبواب مفصلية"],3:["Base cabinet — open (no doors)","كابينة سفلية مفتوحة بدون أبواب"]};
+const WS_V={1:["Wall shelf — solid","رف جداري مصمت"],2:["Wall shelf — perforated","رف جداري مخرّم"]};
+const RACK_V={1:["Shelving unit — solid shelves","وحدة أرفف مصمتة"],2:["Shelving unit — perforated shelves","وحدة أرفف مخرّمة"]};
+const CAB_V={1:["Base cabinet — sliding doors","كابينة سفلية بأبواب سحاب"],2:["Base cabinet — hinged doors","كابينة سفلية بأبواب مفصلية"]};
 const WCAB_V={1:["Wall cabinet — sliding doors","كابينة علوية بأبواب سحاب"],2:["Wall cabinet — hinged doors","كابينة علوية بأبواب مفصلية"],3:["Wall cabinet — open (no doors)","كابينة علوية مفتوحة بدون أبواب"]};
 const burnerName=n=>[`${n}-burner gas range`,`موقد غاز ${n} عيون`];
 const TABLE_V={1:["Work table with backsplash","طاولة عمل بظهر"],
  2:["Work table with backsplash & undershelf","طاولة عمل بظهر ورف سفلي"],
  3:["Work table with backsplash, undershelf & mid shelf","طاولة عمل بظهر ورف سفلي ووسطي"]};
 const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",
- hood:"hood",wshelf:"wshelf",pshelf:"pshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"rack",
+ hood:"hood",wshelf:"wshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"rack",
  evap:"evap",door1:"door",door2:"door2",window:"window",coldH:"door",coldS:"doorS"};
 /* كل بلوك يُسجَّل في جدول البنود بمقاسه واسمه — البلوكات المتطابقة تزيد الكمية */
 const NO_ITEM=["door1","door2","window"];   /* عناصر معمارية تُرسم فقط، لا تدخل جدول البنود */
 function itemForBlock(b){                 /* لكل قطعة بند مستقل برقم جديد */
   if(NO_ITEM.includes(b.k)) return null;
   const no=cur.items.reduce((m,i)=>Math.max(m,i.no),0)+1;
-  const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):b.k==="wcab"?WCAB_V[b.v||1]:b.k==="cabinet"?CAB_V[b.v||1]:null;
+  const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):b.k==="wcab"?WCAB_V[b.v||1]:b.k==="cabinet"?CAB_V[b.v||1]:b.k==="rack"?RACK_V[b.v||1]:b.k==="wshelf"?WS_V[b.v||1]:null;
   const it={no,tag:String(no),ar:tv?tv[1]:BLK[b.k].n,en:tv?tv[0]:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
-    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):b.k==="cabinet"?(b.v||1):b.k==="burner"?(b.n||Math.round(b.w/450)):b.k==="wcab"?(b.v||1):undefined,auto:true,k:b.k};
+    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):b.k==="cabinet"?(b.v||1):b.k==="rack"?(b.v||1):b.k==="wshelf"?(b.v||1):b.k==="burner"?(b.n||Math.round(b.w/450)):b.k==="wcab"?(b.v||1):undefined,auto:true,k:b.k};
   cur.items.push(it); return it;
 }
 function releaseItem(b){                 /* حذف البلوك يحذف بنده المولّد تلقائيًا */
@@ -1837,11 +1868,13 @@ function syncItemDim(b){                 /* المقاس والخيار ينعك
   if(b.k==="burner"){const n=b.n||Math.round(b.w/450); const bn2=burnerName(n); it.variant=n; it.en=bn2[0]; it.ar=bn2[1];}
   if(b.k==="wcab"){const tv=WCAB_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
   if(b.k==="cabinet"){const tv=CAB_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
+  if(b.k==="rack"){const tv=RACK_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
+  if(b.k==="wshelf"){const tv=WS_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
 }
 function placeBlock(x,y){
   if(cur._ro) return;
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
-  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:pending==="wcab"?wcabV:pending==="cabinet"?cabV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
+  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:pending==="wcab"?wcabV:pending==="cabinet"?cabV:pending==="rack"?rackV:pending==="wshelf"?wsV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
   constrain(nb); cur.blocks.push(nb);
   const it0=itemForBlock(nb); nb.item=it0?it0.no:null; renderCards();
   selBlock=nb.id;
@@ -1849,7 +1882,7 @@ function placeBlock(x,y){
 }
 
 /* ===== توليد بلوك لكل بند من الجدول ===== */
-const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",rack:"rack",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",evap:"evap",door:"coldH",doorS:"coldS",wshelf:"wshelf",shelf:"wshelf",pshelf:"pshelf",
+const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",rack:"rack",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",evap:"evap",door:"coldH",doorS:"coldS",wshelf:"wshelf",shelf:"wshelf",
   faucet:"faucet",cabinet:"cabinet",hood:"hood",burner:"burner",grill:"grill"};
 function dimsOf(it,k){
   const n=(it.dim.match(/\d+/g)||[]).map(Number);
@@ -1875,7 +1908,7 @@ function autoPlace(){
 
 /* ================= الأدوات ================= */
 function setTool(t){
-  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar")){$("tableVar").hidden=true;$("cabVar").hidden=true;$("burnerVar").hidden=true;$("wcabVar").hidden=true}
+  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar")){$("tableVar").hidden=true;$("cabVar").hidden=true;$("rackVar").hidden=true;$("wsVar").hidden=true;$("burnerVar").hidden=true;$("wcabVar").hidden=true}
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===(t==="place"?"block":t)));
   $("tabLine").hidden=t!=="line"; $("tabBlock").hidden=!(t==="block"||t==="place"); $("tabSel").hidden=t!=="sel";
   renderSelBar(); renderPlan();
@@ -1891,8 +1924,12 @@ $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").valu
 document.querySelectorAll("[data-corner]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),corner:+b.dataset.corner};renderPlan();queueSave()});
 document.querySelectorAll("[data-elev]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),elev:+b.dataset.elev};renderPlan();queueSave()});
 $("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
-let tableV=2, burnerN=0, wcabV=1, cabV=1;
+let tableV=2, burnerN=0, wcabV=1, cabV=1, rackV=1, wsV=1;
 function renderTableVar(){
+  $("wsVar").hidden=pending!=="wshelf";
+  document.querySelectorAll("#wsVar button").forEach(x=>{x.textContent=lang==="ar"?WS_V[x.dataset.s][1]:WS_V[x.dataset.s][0];x.setAttribute("aria-pressed",+x.dataset.s===wsV)});
+  $("rackVar").hidden=pending!=="rack";
+  document.querySelectorAll("#rackVar button").forEach(x=>{x.textContent=lang==="ar"?RACK_V[x.dataset.r][1]:RACK_V[x.dataset.r][0];x.setAttribute("aria-pressed",+x.dataset.r===rackV)});
   $("cabVar").hidden=pending!=="cabinet";
   document.querySelectorAll("#cabVar button").forEach(x=>{x.textContent=lang==="ar"?CAB_V[x.dataset.c][1]:CAB_V[x.dataset.c][0];x.setAttribute("aria-pressed",+x.dataset.c===cabV)});
   $("wcabVar").hidden=pending!=="wcab";
@@ -1906,6 +1943,8 @@ document.querySelectorAll("#tableVar button").forEach(x=>x.onclick=()=>{tableV=+
 document.querySelectorAll("#burnerVar button").forEach(x=>x.onclick=()=>{burnerN=+x.dataset.n;renderTableVar()});
 document.querySelectorAll("#wcabVar button").forEach(x=>x.onclick=()=>{wcabV=+x.dataset.w;renderTableVar()});
 document.querySelectorAll("#cabVar button").forEach(x=>x.onclick=()=>{cabV=+x.dataset.c;renderTableVar()});
+document.querySelectorAll("#rackVar button").forEach(x=>x.onclick=()=>{rackV=+x.dataset.r;renderTableVar()});
+document.querySelectorAll("#wsVar button").forEach(x=>x.onclick=()=>{wsV=+x.dataset.s;renderTableVar()});
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
@@ -2052,7 +2091,9 @@ function renderSelBar(){
     <div class="sizes"><div><label>${T("widthMM")}</label><input id="sw" type="number" step="10" value="${b.w}"></div>
     <div><label>${T("depthMM")}</label><input id="sd" type="number" step="10" value="${b.d}"></div></div>
     ${b.k==="burner"?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("burnersL")}</label><select id="sburn">${[0,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${(b.n||0)===n?"selected":""}>${n?n:T("autoN")}</option>`).join("")}</select>`:""}
-    ${b.k==="cabinet"?`<select id="scab" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?CAB_V[v][1]:CAB_V[v][0]}</option>`).join("")}</select>`:""}
+    ${b.k==="wshelf"?`<select id="sws" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?WS_V[v][1]:WS_V[v][0]}</option>`).join("")}</select>`:""}
+    ${b.k==="rack"?`<select id="srack" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?RACK_V[v][1]:RACK_V[v][0]}</option>`).join("")}</select>`:""}
+    ${b.k==="cabinet"?`<select id="scab" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?CAB_V[v][1]:CAB_V[v][0]}</option>`).join("")}</select>`:""}
     ${b.k==="wcab"?`<select id="swcab" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?WCAB_V[v][1]:WCAB_V[v][0]}</option>`).join("")}</select>`:""}
     ${b.k==="table"?`<select id="svar" style="margin-top:8px">${[1,2,3].map(v=>`<option value="${v}" ${(b.v||2)===v?"selected":""}>${lang==="ar"?TABLE_V[v][1]:TABLE_V[v][0]}</option>`).join("")}</select>`:""}
     <div style="height:8px"></div>
@@ -2067,6 +2108,8 @@ function renderSelBar(){
   $("sd").onchange=()=>{b.d=Math.max(50,+$("sd").value||b.d);constrain(b);syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("slink")) $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
   if($("svar")) $("svar").onchange=()=>{b.v=+$("svar").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
+  if($("sws")) $("sws").onchange=()=>{b.v=+$("sws").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
+  if($("srack")) $("srack").onchange=()=>{b.v=+$("srack").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("scab")) $("scab").onchange=()=>{b.v=+$("scab").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("swcab")) $("swcab").onchange=()=>{b.v=+$("swcab").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("sburn")) $("sburn").onchange=()=>{b.n=+$("sburn").value||undefined;syncItemDim(b);renderCards();renderPlan();queueSave()};
@@ -2810,13 +2853,14 @@ function pruneEmpty(){
 }
 const isBlank=v=>!v.client&&!v.site&&!v.items.length&&!v.blocks.length&&!v.draw.pts.length;
 const needsInfo=v=>!v.client&&!v.site;
-function fixItems(items){ items=(items||[]).filter(it=>!(it.auto&&NO_ITEM.includes(it.k))); items.forEach(it=>{ if(it.k&&BLK2TYPE[it.k]) it.type=BLK2TYPE[it.k]; }); return items; }
+function fixBlocks(blocks){ (blocks||[]).forEach(b=>{ if(b.k==="pshelf"){b.k="wshelf";b.v=2} }); return blocks; }
+function fixItems(items){ (items||[]).forEach(it=>{ if(it.k==="pshelf"){it.k="wshelf";it.variant=2;it.type="wshelf"} }); items=(items||[]).filter(it=>!(it.auto&&NO_ITEM.includes(it.k))); items.forEach(it=>{ if(it.k&&BLK2TYPE[it.k]) it.type=BLK2TYPE[it.k]; }); return items; }
 function rowToVisit(r){const d=r.data||{};
   return {id:r.id,client:r.client||"",site:r.site||"",city:r.city||"",date:r.visit_date||"",loc:r.loc||"",
     notes:r.notes||"",owner:r.owner,author:r.author_name||"",wallT:r.wall_t||100,scale:"",
     mode:d.mode||"draw",img:d.img||null,view:d.view||null,roomH:d.roomH||2600,cam:d.cam||null,
     revs:d.revs||[],revNo:d.revNo||1,revDate:d.revDate||r.visit_date||"",
-    draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:(d.blocks||[]).map(b=>NO_ITEM.includes(b.k)?{...b,item:null}:b),items:fixItems(d.items||[])}}
+    draw:d.draw||{pts:[],closed:false,kinds:[]},blocks:fixBlocks((d.blocks||[]).map(b=>NO_ITEM.includes(b.k)?{...b,item:null}:b)),items:fixItems(d.items||[])}}
 const visitToRow=v=>({id:v.id,owner:v.owner||me.id,author_name:v.author||me.name,
   client:v.client,site:v.site,city:v.city,visit_date:v.date||null,loc:v.loc,notes:v.notes,wall_t:v.wallT||100,
   data:{mode:v.mode,img:v.img,view:v.view,roomH:v.roomH||2600,cam:v.cam||null,revs:v.revs||[],revNo:v.revNo||1,revDate:v.revDate||v.date||"",draw:v.draw,blocks:v.blocks,items:v.items},updated_at:new Date().toISOString()});
@@ -2831,7 +2875,7 @@ function loadLocal(){
   try{const d=JSON.parse(localStorage.getItem(KEY)||"null");
     if(d&&Array.isArray(d.projects)){projects=d.projects.map(v=>({wallT:100,mode:"draw",img:null,view:null,
       items:[],blocks:[],draw:{pts:[],closed:false,kinds:[]},...v}));
-      projects.forEach(v=>{v.items=fixItems(v.items);v.blocks.forEach(b=>{if(NO_ITEM.includes(b.k))b.item=null})});
+      projects.forEach(v=>{v.items=fixItems(v.items);fixBlocks(v.blocks);v.blocks.forEach(b=>{if(NO_ITEM.includes(b.k))b.item=null})});
       bid=projects.reduce((m,v)=>Math.max(m,...v.blocks.map(b=>b.id),0),0)+1}
   }catch(e){}
 }
@@ -2916,9 +2960,9 @@ $("vSave").onclick=()=>{
 /* ===== إضافة بند إلى الجدول ===== */
 const ITEM_TYPES=[["table","Work table","طاولة عمل"],["table2","Table w/ overshelf","طاولة برف علوي"],
  ["sinkT1","Table with 1 bowl sink","طاولة بحوض واحد ومصفّى"],["sinkT2","Table with 2 bowl sink","طاولة بحوضين"],
- ["sinkT3","Table with 3 bowl sink","طاولة بثلاثة أحواض"],["sink1","Single bowl sink","حوض مفرد كبير"],["shelf","Wall shelf","رف جداري"],["pshelf","Perforated shelf","رف مثقّب"],
+ ["sinkT3","Table with 3 bowl sink","طاولة بثلاثة أحواض"],["sink1","Single bowl sink","حوض مفرد كبير"],["shelf","Wall shelf","رف جداري"],
  ["cabinet","Base cabinet","كابينة سفلية"],["hood","Hood","هود"],["burner","Burner","موقد"],["grill","Grill","شواية"],
- ["faucet","Faucet","خلاط"],["rack","Storage rack","رفوف تخزين"],["fridge","Upright chiller — 1 door","ثلاجة رأسية باب واحد"],
+ ["faucet","Faucet","خلاط"],["rack","Shelving unit","وحدة أرفف"],["fridge","Upright chiller — 1 door","ثلاجة رأسية باب واحد"],
  ["wcab","Wall cabinet","كابينة علوية"],["uc","Under-counter chiller","ثلاجة أندر كاونتر"],["ur2","Upright chiller — 2 doors","ثلاجة رأسية بابين"],
  ["evap","Evaporator (unit cooler)","مبخّرة (وحدة داخلية)"],["door","Cold room door — hinged","باب تبريد مفصلي"],
  ["doorS","Cold room door — sliding","باب تبريد سحاب"]];
