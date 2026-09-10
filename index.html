@@ -153,6 +153,9 @@ main{padding:0 0 96px}
 .hud{position:absolute;bottom:8px;inset-inline-start:8px;background:rgba(14,35,64,.92);color:#fff;font-family:"IBM Plex Mono",monospace;
  font-size:12px;padding:5px 9px;border-radius:2px;pointer-events:none;display:none}
 .hud.show{display:block}
+.z3{position:absolute;top:8px;inset-inline-end:8px;display:flex;flex-direction:column;gap:4px;z-index:5}
+.z3 button{width:38px;height:38px;border:1px solid var(--line);border-radius:2px;background:rgba(255,255,255,.95);font-size:18px;color:var(--ink);box-shadow:0 1px 3px rgba(14,35,64,.12)}
+@media print{.z3{display:none!important}}
 .plan-tools{display:flex;gap:8px;padding-top:9px;font-size:12px;color:#6B8199;align-items:center;flex-wrap:wrap}
 .tool{padding:6px 10px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink)}
 .tool[aria-pressed="true"]{background:var(--mark);border-color:var(--mark);color:#231704;font-weight:600}
@@ -322,7 +325,7 @@ header.top{padding-top:calc(10px + env(safe-area-inset-top))}
   <input id="upl" type="file" accept="image/*" hidden>
   <input id="svgFile" type="file" accept=".svg,.dxf,image/svg+xml" hidden>
 
-  <div class="plan-box" id="planBox"><div class="hud mono" id="hud"></div>
+  <div class="plan-box" id="planBox"><div class="hud mono" id="hud"></div><div class="z3" id="z3" hidden><button id="z3in">＋</button><button id="z3out">－</button><button id="z3fit">⤢</button></div>
     <div class="bbar" id="sbar">
       <input id="segLen" type="number" step="10" inputmode="numeric"><span class="x" data-i18n="mm"></span>
       <button id="segKind" style="width:auto;padding:0 9px;font-size:12px"></button>
@@ -972,8 +975,7 @@ const M3={
    s+=face3([[cx-50,yf+16,cz+20],[cx-50,yf+16,cz+60],[cx+50,yf+16,cz+60],[cx+50,yf+16,cz+20]],"#3E4A57",'',true);   /* الشاشة */
    s+=face3([[cx-18,yf+16,cz-55],[cx-18,yf+16,cz-15],[cx+18,yf+16,cz-15],[cx+18,yf+16,cz-55]],"#E0A020",'',true);   /* المفتاح */
    s+=bx3(x,y,zt-40,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});                        /* سطح العمل */
-   s+=bx3(x,y,zt,w,28,150,{top:FL.right,left:FL.left,right:FL.dark});                        /* الظهر */
-   s+=bx3(x,y+28,zt+150-18,w,32,18,{top:FL.right,left:FL.right,right:FL.dark});
+   s+=bx3(x,y,zt,w,30,150,{top:FL.right,left:FL.left,right:FL.dark});                        /* الظهر كبقية الوحدات */
    const ss=(o&&o.ss)||"";
    if(ss==="L"||ss==="LR") s+=bx3(x,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
    if(ss==="R"||ss==="LR") s+=bx3(x+w-28,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
@@ -1773,7 +1775,8 @@ function iso3dBody(d,WT,RH){
   const vb=[Math.min(...X)-pad*padL,Math.min(...Y)-pad*padT,
             (Math.max(...X)-Math.min(...X))*(1+2*padL),(Math.max(...Y)-Math.min(...Y))+pad*2*padT];
   $("isoNote").textContent=T("isoNote",blocks.length);
-  return `<svg viewBox="${vb.map(f1).join(" ")}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet">
+  const key=PERSP?"persp":"iso", vbUse=(cur.view3&&cur.view3[key])||vb;
+  return `<svg viewBox="${vbUse.map(f1).join(" ")}" xmlns="${NS}" preserveAspectRatio="xMidYMid meet">
     <g stroke="#12294D" stroke-width="${f1(vb[2]/520)}" stroke-linejoin="round" stroke-linecap="round" fill="#fff">
       ${far}<g stroke-width="${f1(vb[2]/900)}">${body}</g>${near}${tags}
       <g class="thin" stroke-width="${f1(vb[2]/900)}" fill="none">${dim}</g>
@@ -2213,14 +2216,24 @@ function zoomAnchor(){
     if(l[selSeg+1]) return [(l[selSeg][0]+l[selSeg+1][0])/2,(l[selSeg][1]+l[selSeg+1][1])/2]}
   return [undefined,undefined];
 }
+const is3D=()=>cur.mode==="iso"||cur.mode==="persp";
+function vb3(){const svg=box.querySelector("svg");return svg?svg.getAttribute("viewBox").split(/\s+/).map(Number):null}
+function setVb3(v){cur.view3=cur.view3||{};cur.view3[cur.mode]=v;renderPlan()}
+function zoom3(f,ax,ay){const v=vb3(); if(!v) return;
+  const px=ax===undefined?v[0]+v[2]/2:ax, py=ay===undefined?v[1]+v[3]/2:ay;
+  setVb3([px-(px-v[0])*f, py-(py-v[1])*f, v[2]*f, v[3]*f])}
+function pan3(dxPx,dyPx){const v=vb3(); if(!v) return; const r=box.getBoundingClientRect(), k=v[2]/(r.width||1);
+  setVb3([v[0]-dxPx*k, v[1]-dyPx*k, v[2], v[3]])}
+$("z3in").onclick=()=>zoom3(.8); $("z3out").onclick=()=>zoom3(1.25);
+$("z3fit").onclick=()=>{if(cur.view3) delete cur.view3[cur.mode]; renderPlan()};
 function zoomBtn(f){
   const a=zoomAnchor(); zoom(f,a[0],a[1]);
   if(a[0]!==undefined){                      /* توسيط المحدد بعد التكبير */
     const v=cur.view; cur.view={w:v.w,h:v.h,x:a[0]-v.w/2,y:a[1]-v.h/2}; renderPlan();
   }
 }
-$("zin").onclick=()=>zoomBtn(.8);
-$("zout").onclick=()=>zoomBtn(1.25);
+$("zin").onclick=()=>is3D()?zoom3(.8):zoomBtn(.8);
+$("zout").onclick=()=>is3D()?zoom3(1.25):zoomBtn(1.25);
 $("pan").onclick=()=>{panMode=!panMode;$("pan").setAttribute("aria-pressed",panMode);renderPlan()};
 document.querySelectorAll(".pad button[data-a]").forEach(b=>b.onclick=()=>addByPad(+b.dataset.a));
 
@@ -2313,7 +2326,14 @@ document.addEventListener("keydown",e=>{if(e.code==="Space"&&cur.mode==="draw"){
   if(document.activeElement===document.body)e.preventDefault();}});
 document.addEventListener("keyup",e=>{if(e.code==="Space")spacePan=false});
 const touches=new Map();
+let nav3=null, pinch3=null; const touch3=new Map();
 box.addEventListener("pointerdown",e=>{
+  if(is3D()){                                   /* تنقل في المنظور: سحب = تحريك، إصبعان = تكبير */
+    try{box.setPointerCapture(e.pointerId)}catch(err){}
+    touch3.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(touch3.size===2){const [a,b]=[...touch3.values()]; pinch3={d:Math.hypot(a.x-b.x,a.y-b.y),mid:[(a.x+b.x)/2,(a.y+b.y)/2]}; nav3=null; return}
+    nav3={x:e.clientX,y:e.clientY}; e.preventDefault(); return;
+  }
   if(cur.mode!=="draw"||editing) return;
   if(e.pointerType==="touch"){ try{box.setPointerCapture(e.pointerId)}catch(err){} }
   if(e.button===1||spacePan){                 /* زر الماوس الأوسط أو مسافة = كف */
@@ -2337,6 +2357,13 @@ box.addEventListener("pointerdown",e=>{
       renderSelBar();renderPlan();sbarUpdate()}}
 });
 box.addEventListener("pointermove",e=>{
+  if(is3D()){
+    if(touch3.has(e.pointerId)) touch3.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pinch3&&touch3.size===2){const [a,b]=[...touch3.values()]; const dist=Math.hypot(a.x-b.x,a.y-b.y), mid=[(a.x+b.x)/2,(a.y+b.y)/2];
+      pan3(mid[0]-pinch3.mid[0],mid[1]-pinch3.mid[1]); pinch3.mid=mid;
+      if(dist>4&&pinch3.d>4){const q=pos({clientX:mid[0],clientY:mid[1]}); zoom3(pinch3.d/dist,q&&q.x,q&&q.y); pinch3.d=dist} return}
+    if(nav3){pan3(e.clientX-nav3.x,e.clientY-nav3.y); nav3={x:e.clientX,y:e.clientY}} return;
+  }
   if(cur.mode!=="draw"||editing) return;
   if(touches.has(e.pointerId)) touches.set(e.pointerId,{x:e.clientX,y:e.clientY});
   if(pinch&&touches.size===2){
@@ -2372,6 +2399,7 @@ box.addEventListener("pointermove",e=>{
   const s=snap(q.x,q.y); if(s.deg!==undefined)lastDeg=((-s.deg%360)+360)%360; ghost(s); chipUpdate(s.L);
 });
 box.addEventListener("pointerup",e=>{
+  if(is3D()||nav3||pinch3){ touch3.delete(e.pointerId); if(touch3.size<2) pinch3=null; if(!touch3.size) nav3=null; if(is3D()) return; }
   touches.delete(e.pointerId);
   if(pinch){ if(touches.size<2){pinch=null} return; }
   if(handPan){handPan=false;panStart=null;box.classList.remove("panning");return}
@@ -2379,7 +2407,7 @@ box.addEventListener("pointerup",e=>{
   if(drag){const moved=drag.moved;drag=null;if(moved){growView();renderPlan();queueSave();lastAct=Date.now();return}}
   act(e);
 });
-box.addEventListener("pointercancel",e=>{touches.delete(e.pointerId);pinch=null;panStart=null;drag=null;clearGhost()});
+box.addEventListener("pointercancel",e=>{touch3.delete(e.pointerId);pinch3=null;nav3=null;touches.delete(e.pointerId);pinch=null;panStart=null;drag=null;clearGhost()});
 box.addEventListener("pointerleave",()=>{panStart=null;clearGhost()});
 box.addEventListener("click",e=>{
   if(editing&&sel){const r=box.getBoundingClientRect(),it=cur.items.find(i=>i.no===sel);
@@ -2388,6 +2416,7 @@ box.addEventListener("click",e=>{
   if(Date.now()-lastAct>300) act(e);
 });
 box.addEventListener("wheel",e=>{
+  if(is3D()){ e.preventDefault(); const q=pos(e); zoom3(e.deltaY>0?1.12:.89, q&&q.x, q&&q.y); return; }
   if(cur.mode!=="draw")return; e.preventDefault();
   const q=pos(e);
   zoom(e.deltaY>0?1.12:.89, q&&q.x, q&&q.y);
@@ -2449,11 +2478,12 @@ $("vGeo").onclick=()=>{
     ()=>{$("verr").textContent=T("gpsFail")},{enableHighAccuracy:true,timeout:8000});
 };
 function renderPlan(){
-  const hud=$("hud"), dyn=$("dyn"), bbar=$("bbar"), sbar=$("sbar");
+  const hud=$("hud"), dyn=$("dyn"), bbar=$("bbar"), sbar=$("sbar"), z3=$("z3");
   if(cur.mode==="img"&&!cur.img) cur.mode="draw";
   box.innerHTML = cur.mode==="img"?`<img src="${cur.img}" alt="${pn(cur)}">`
                 : cur.mode==="iso"?iso3dSVG(false):cur.mode==="persp"?iso3dSVG(true):drawSVG();
-  box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar); box.appendChild(sbar);
+  box.appendChild(hud); box.appendChild(dyn); box.appendChild(bbar); box.appendChild(sbar); box.appendChild(z3);
+  z3.hidden=!(cur.mode==="iso"||cur.mode==="persp");
   if(cur.mode==="img"||editing) cur.items.forEach(it=>{
     const pin=document.createElement("button");
     pin.className="pin"+(sel===it.no?" on":"");pin.textContent=tagOf(it);
