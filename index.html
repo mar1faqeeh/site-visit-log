@@ -403,6 +403,13 @@ header.top{padding-top:calc(10px + env(safe-area-inset-top))}
       <div id="tableVar" class="sortrow" style="margin-top:10px" hidden>
         <button data-v="1"></button><button data-v="2" aria-pressed="true"></button><button data-v="3"></button>
       </div>
+      <div id="ucModel" style="margin-top:10px" hidden>
+        <label style="font-size:11px;color:#6B8199" data-i18n="stdSize"></label>
+        <select id="ucSel" style="width:100%;padding:9px;border:1px solid var(--line);border-radius:2px;background:#fff"></select>
+      </div>
+      <div id="frVar" class="sortrow" style="margin-top:10px" hidden>
+        <button data-f="1" aria-pressed="true"></button><button data-f="2"></button>
+      </div>
       <div id="wsVar" class="sortrow" style="margin-top:10px" hidden>
         <button data-s="1" aria-pressed="true"></button><button data-s="2"></button>
       </div>
@@ -569,7 +576,7 @@ const L={
   widthMM:"Width mm",depthMM:"Depth mm",blockHint:"Pick a block, then tap the plan to place it",
   blockReady:"“{0}” ready — tap the plan to place it",selHint:"Tap a block or a wall on the plan",segHint:"Wall selected — change its length, switch wall/panel, or delete it",
   panView:"Pan",fit:"Fit",moveTags:"Move item tags",boq:"Bill of quantities",itemsN:"{0} items",
-  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete the visit “{0}” with all its revisions and items? This cannot be undone.",deleted:"Visit deleted.",delDenied:"Not deleted — only the visit's owner or an admin can delete it.",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",mIso:"3D view",sideSplash:"Side splash (corner)",ssNone:"None",ssL:"Left side",ssR:"Right side",ssLR:"Both sides",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",sketchBtn:"Sketch the isometric by hand",sketchH:"Isometric sketch",sketchLede:"Draw the unit freehand on the isometric grid. Beautify straightens every stroke onto the 30°/90° axes, joins corners and turns round strokes into true iso circles.",beautify:"Beautify",showRaw:"Show sketch",skSaveType:"Use for this type",skSaveItem:"Use for this item only",skSaveIso:"Use in 3D view",skSaved:"Saved.",skEmpty:"Draw something first.",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Start a visit",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
+  cloudSetup:"Cloud settings",sbUrl:"Supabase project URL",sbKey:"Anon public key",saveConnect:"Save & connect",cloudOn:"Cloud sync on",cloudOff:"Local device only",emailL:"Email",signingIn:"Signing in…",deleteVisit:"Delete this visit",confirmDel:"Delete the visit “{0}” with all its revisions and items? This cannot be undone.",deleted:"Visit deleted.",delDenied:"Not deleted — only the visit's owner or an admin can delete it.",surveyedBy:"Surveyed by",syncing:"syncing…",syncErr:"sync failed — kept locally",inviteNote:"Add users from Supabase → Authentication → Users. They appear here after their first sign-in.",newVisitShort:"+ New visit",savedAt:"saved {0}",notSaved:"not saved on this device",editItem:"Item",tagL:"Item no.",descL:"Description",descPh:"finish, gauge, accessories…",svgUp:"Replace symbol (SVG / DXF)",dxfInsert:"{0} block references were skipped — EXPLODE them in AutoCAD and export again.",dxfEmpty:"No drawable geometry in this DXF.",dxfFound:"file contains: {0}",dxfDimsOnly:"This DXF only holds dimension lines — the unit itself was not exported.",dxfBinary:"This is a binary DXF — save it as ASCII DXF and try again.",dxf3d:"This DXF holds 3D geometry — export a flat 2D plan view (FLATSHOT or a 2D drawing).",dxfOk:"DXF read: {0} entities.",svgUpOld:"Replace symbol (SVG)",svgReset:"Restore built-in symbol",svgSaved:"Block symbol updated.",svgBad:"Not a valid SVG (a viewBox is required).",doorsN:"doors",mIso:"3D view",stdSize:"Standard size (Tecnodom / Coreco)",customSize:"Custom size",sideSplash:"Side splash (corner)",ssNone:"None",ssL:"Left side",ssR:"Right side",ssLR:"Both sides",mPersp:"Perspective",cFR:"Front-right",cFL:"Front-left",cBL:"Back-left",cBR:"Back-right",eLow:"Low",eEye:"Eye level",eHigh:"High",perspNote:"Presentation view — dimensions are not to scale here; use the 3D view for measurements",autoN:"Auto",burnersL:"Burners",roomH:"Room height",isoNote:"Isometric projection generated from the plan — {0} blocks",isoLib:"3D artwork",setIsoArt:"Upload 3D view (isometric)",resetIsoArt:"Back to the generated 3D",isoSaved:"3D artwork updated.",typeLib:"Type thumbnail — applies to every item of this type",setTypeThumb:"Upload for this type",resetTypeThumb:"Back to the default drawing",typeSaved:"Type thumbnail updated.",chooseIcon:"Thumbnail",uploadPhoto:"Upload photo",removePhoto:"Use drawing",saveItem:"Save item",deleteItem:"Delete item",email:"Email",fullName:"Full name",surveyedBy:"Surveyed by",loadingV:"Loading visits…",offline:"Connection problem — not saved.",savingV:"saving…",adminOnly:"Admins only.",userAdded:"User created.",saveNow:"Save",sketchBtn:"Sketch the isometric by hand",sketchH:"Isometric sketch",sketchLede:"Draw the unit freehand on the isometric grid. Beautify straightens every stroke onto the 30°/90° axes, joins corners and turns round strokes into true iso circles.",beautify:"Beautify",showRaw:"Show sketch",skSaveType:"Use for this type",skSaveItem:"Use for this item only",skSaveIso:"Use in 3D view",skSaved:"Saved.",skEmpty:"Draw something first.",revsN:"Rev {0}",revsH:"Revisions",revsLede:"Every visit day is kept as its own revision. Older revisions open read-only.",newRev:"New revision (today)",current:"current",viewingRev:"Viewing revision {0} — {1} — read-only",backToCurrent:"Back to current",restoreRev:"Restore as current",revLine:"Revision {0} — {1}",dashH:"Dashboard",hide:"Start a visit",recentH:"Recent visits",topClientsH:"Most visited clients",kVisits:"visits this month",kTotal:"visits total",kClients:"clients",kItems:"items surveyed",visitsOf:"{0} visits",visitsH:"Site visits",visitsN:"Visits ({0})",searchPh:"Search client, site or city…",sortDate:"By date",sortClient:"By client",sortSite:"By site",noResults:"No visits match your search.",locL:"Location",locPh:"24.7136, 46.6753 or a maps link",useGps:"Use GPS",gpsFail:"Location unavailable — type it manually.",openMap:"Open in Maps",editVisit:"Edit visit",newVisit:"+ New visit",visitLede:"These details appear on the exported PDF.",clientL:"Client",siteL:"Site / project",cityL:"City",dateL:"Visit date",notesL:"Note",saveVisit:"Save visit",newVisitTitle:"New site visit",editVisitTitle:"Visit details",needSite:"Enter a client and a site.",untitled:"Untitled site",addItem:"Add item",itemName:"Item name",dimsL:"Dimensions (mm)",qtyL:"Qty",typeL:"Type",wallType:"Wall",panelType:"Sandwich panel",panelsN:"{0} panels",wallT:"Thickness",autoBlocks:"Auto-place all items",placed:"{0} blocks placed from the item list",exportPdf:"Export PDF",resetTags:"Reset tags",usersH:"Users",usersLede:"Only the admin can add accounts and set their role.",
   urole:"Role",addUser:"Add user",uEdit:"Edit",uPass:"Password",uDel:"Delete",askName:"Full name:",askRole:"Role (tech / admin):",askPass:"New password for {0} (min 6 characters):",askDel:"Delete user {0}? Their visits stay in the database.",updated:"Updated.",roleDefault:"Site technician",admin:"System admin",tech:"Site technician",
   notLinked:"— not linked —",itemOpt:"Item {0} — {1}",rotate:"Rotate 90°",dup:"Duplicate",del:"Delete",
   typeLen:"Type the length and press Enter, then pick a direction",drawBtn:"Draw",unlock:"Unlock length",badCred:"Wrong username or password.",needUserPass:"Enter a username and password.",
@@ -584,7 +591,7 @@ const L={
   widthMM:"العرض مم",depthMM:"العمق مم",blockHint:"اختر بلوك ثم اضغط على المخطط لوضعه",
   blockReady:"«{0}» جاهز — اضغط على المخطط لوضعه",selHint:"اضغط على بلوك أو جدار في المخطط",segHint:"جدار محدد — غيّر طوله أو نوعه أو احذفه",
   panView:"تحريك العرض",fit:"ملاءمة",moveTags:"تحريك أرقام البنود",boq:"جدول البنود",itemsN:"{0} بنود",
-  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة «{0}» بكل إصداراتها وبنودها؟ لا يمكن التراجع.",deleted:"تم حذف الزيارة.",delDenied:"لم تُحذف — الحذف لصاحب الزيارة أو المدير فقط.",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",mIso:"منظور ٣D",sideSplash:"جانب مرفوع (للزاوية)",ssNone:"بدون",ssL:"الجانب الأيسر",ssR:"الجانب الأيمن",ssLR:"الجانبان",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",sketchBtn:"ارسم الآيزومترك بيدك",sketchH:"سكيتش آيزومترك",sketchLede:"ارسم القطعة بإصبعك على شبكة الآيزومترك. زر «تحسين» يقوّم كل خطة على محاور ٣٠° و٩٠°، يصل الأركان، ويحوّل الخطوط المستديرة إلى دوائر آيزومترك صحيحة.",beautify:"تحسين",showRaw:"عرض السكيتش",skSaveType:"اعتمده لهذا النوع",skSaveItem:"لهذا البند فقط",skSaveIso:"استخدمه في المنظور ٣D",skSaved:"تم الحفظ.",skEmpty:"ارسم شيئًا أولًا.",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"بدء زيارة",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
+  cloudSetup:"إعدادات الاتصال",sbUrl:"رابط مشروع Supabase",sbKey:"المفتاح العام anon",saveConnect:"حفظ واتصال",cloudOn:"المزامنة السحابية مفعّلة",cloudOff:"تخزين محلي على هذا الجهاز فقط",emailL:"البريد الإلكتروني",signingIn:"جارٍ الدخول…",deleteVisit:"حذف هذه الزيارة",confirmDel:"حذف الزيارة «{0}» بكل إصداراتها وبنودها؟ لا يمكن التراجع.",deleted:"تم حذف الزيارة.",delDenied:"لم تُحذف — الحذف لصاحب الزيارة أو المدير فقط.",surveyedBy:"رفع الموقع",syncing:"جارٍ المزامنة…",syncErr:"فشلت المزامنة — حُفظت محليًا",inviteNote:"أضف المستخدمين من Supabase ← Authentication ← Users، ويظهرون هنا بعد أول دخول لهم.",newVisitShort:"+ زيارة جديدة",savedAt:"حُفظت {0}",notSaved:"الحفظ غير متاح هنا",editItem:"البند",tagL:"رقم البند",descL:"الوصف",descPh:"التشطيب، السماكة، الملحقات…",svgUp:"استبدال الرمز (SVG / DXF)",dxfInsert:"تم تجاهل {0} كتلة (INSERT) — سوِّ لها EXPLODE في أوتوكاد وأعد التصدير.",dxfEmpty:"ما فيه رسم قابل للاستخدام في هذا الـ DXF.",dxfFound:"محتوى الملف: {0}",dxfDimsOnly:"الملف يحتوي خطوط أبعاد فقط — رسم الوحدة نفسه لم يُصدَّر.",dxfBinary:"الملف DXF ثنائي — احفظه بصيغة ASCII DXF وأعد المحاولة.",dxf3d:"الملف فيه هندسة ثلاثية الأبعاد — صدّر مسقطاً أفقياً ثنائي الأبعاد (FLATSHOT أو رسم 2D).",dxfOk:"تمت قراءة الـ DXF: {0} عنصر.",svgUpOld:"استبدال الرمز (SVG)",svgReset:"استرجاع الرمز الأصلي",svgSaved:"تم تحديث رمز البلوك.",svgBad:"ملف SVG غير صالح (يلزم وجود viewBox).",doorsN:"أبواب",mIso:"منظور ٣D",stdSize:"مقاس قياسي (تكنودوم / كوريكو)",customSize:"مقاس مغاير",sideSplash:"جانب مرفوع (للزاوية)",ssNone:"بدون",ssL:"الجانب الأيسر",ssR:"الجانب الأيمن",ssLR:"الجانبان",mPersp:"منظور عرض",cFR:"أمام-يمين",cFL:"أمام-يسار",cBL:"خلف-يسار",cBR:"خلف-يمين",eLow:"منخفض",eEye:"مستوى العين",eHigh:"مرتفع",perspNote:"للعرض فقط — المقاسات هنا غير قابلة للقياس؛ استخدم منظور ٣D للأبعاد",autoN:"تلقائي",burnersL:"عدد العيون",roomH:"ارتفاع الغرفة",isoNote:"منظور آيزومترك مولّد من المسقط — {0} بلوك",isoLib:"رسم المنظور",setIsoArt:"رفع صورة المنظور (آيزومترك)",resetIsoArt:"العودة للمنظور المولّد",isoSaved:"تم تحديث رسم المنظور.",typeLib:"مصغّرة النوع — تنطبق على كل بند من هذا النوع",setTypeThumb:"رفع مصغّرة لهذا النوع",resetTypeThumb:"استرجاع الرسم الافتراضي",typeSaved:"تم تحديث مصغّرة النوع.",chooseIcon:"الصورة المصغّرة",uploadPhoto:"رفع صورة",removePhoto:"استخدام الرسم",saveItem:"حفظ البند",deleteItem:"حذف البند",email:"البريد الإلكتروني",fullName:"الاسم الكامل",surveyedBy:"رفع الموقع",loadingV:"جاري تحميل الزيارات…",offline:"مشكلة اتصال — لم يُحفظ.",savingV:"يحفظ…",adminOnly:"للمدير فقط.",userAdded:"تم إنشاء المستخدم.",saveNow:"حفظ",sketchBtn:"ارسم الآيزومترك بيدك",sketchH:"سكيتش آيزومترك",sketchLede:"ارسم القطعة بإصبعك على شبكة الآيزومترك. زر «تحسين» يقوّم كل خطة على محاور ٣٠° و٩٠°، يصل الأركان، ويحوّل الخطوط المستديرة إلى دوائر آيزومترك صحيحة.",beautify:"تحسين",showRaw:"عرض السكيتش",skSaveType:"اعتمده لهذا النوع",skSaveItem:"لهذا البند فقط",skSaveIso:"استخدمه في المنظور ٣D",skSaved:"تم الحفظ.",skEmpty:"ارسم شيئًا أولًا.",revsN:"إصدار {0}",revsH:"الإصدارات",revsLede:"كل يوم زيارة يُحفظ كإصدار مستقل. الإصدارات القديمة تُفتح للاطلاع فقط.",newRev:"إصدار جديد (اليوم)",current:"الحالي",viewingRev:"تعرض الإصدار {0} — {1} — للاطلاع فقط",backToCurrent:"رجوع للحالي",restoreRev:"استرجاعه كحالي",revLine:"الإصدار {0} — {1}",dashH:"لوحة المتابعة",hide:"بدء زيارة",recentH:"آخر الزيارات",topClientsH:"العملاء الأكثر زيارة",kVisits:"زيارة هذا الشهر",kTotal:"إجمالي الزيارات",kClients:"عميل",kItems:"بند مرفوع",visitsOf:"{0} زيارات",visitsH:"زيارات المواقع",visitsN:"الزيارات ({0})",searchPh:"ابحث باسم العميل أو الموقع أو المدينة…",sortDate:"حسب التاريخ",sortClient:"حسب العميل",sortSite:"حسب الموقع",noResults:"ما فيه زيارة تطابق البحث.",locL:"الموقع الجغرافي",locPh:"24.7136, 46.6753 أو رابط خرائط",useGps:"تحديد موقعي",gpsFail:"تعذّر تحديد الموقع — اكتبه يدويًا.",openMap:"فتح في الخرائط",editVisit:"تعديل الزيارة",newVisit:"+ زيارة جديدة",visitLede:"هذه البيانات تظهر في ملف الـ PDF المصدَّر.",clientL:"العميل",siteL:"الموقع / المشروع",cityL:"المدينة",dateL:"تاريخ الزيارة",notesL:"ملاحظة",saveVisit:"حفظ الزيارة",newVisitTitle:"زيارة موقع جديدة",editVisitTitle:"بيانات الزيارة",needSite:"اكتب اسم العميل والموقع.",untitled:"موقع بدون اسم",addItem:"إضافة بند",itemName:"اسم البند",dimsL:"المقاسات (مم)",qtyL:"الكمية",typeL:"النوع",wallType:"جدار",panelType:"ساندويتش بانل",panelsN:"{0} لوح",wallT:"السماكة",autoBlocks:"توليد بلوكات البنود",placed:"تم وضع {0} بلوك من قائمة البنود",exportPdf:"تصدير PDF",resetTags:"إرجاع الأرقام",usersH:"المستخدمون",usersLede:"المدير وحده يضيف حسابات جديدة ويحدد دورها.",
   urole:"الدور",addUser:"إضافة المستخدم",uEdit:"تعديل",uPass:"كلمة المرور",uDel:"حذف",askName:"الاسم الكامل:",askRole:"الدور (tech / admin):",askPass:"كلمة مرور جديدة لـ {0} (٦ أحرف على الأقل):",askDel:"حذف المستخدم {0}؟ زياراته تبقى في قاعدة البيانات.",updated:"تم التحديث.",roleDefault:"فني ميداني",admin:"مدير النظام",tech:"فني ميداني",
   notLinked:"— غير مربوط ببند —",itemOpt:"بند {0} — {1}",rotate:"تدوير ٩٠°",dup:"تكرار",del:"حذف",
   typeLen:"اكتب الطول واضغط Enter ثم اختر الاتجاه",drawBtn:"ارسم",unlock:"إلغاء تثبيت المقاس",badCred:"الاسم أو كلمة المرور غير صحيحة.",needUserPass:"اكتب اسم المستخدم وكلمة المرور.",
@@ -650,6 +657,12 @@ const BLK={
    f:(w,d,o)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="${w*.08}" y="${d*.17}" width="${w*.84}" height="${d*.66}" rx="60" fill="none"/><circle cx="${w/2}" cy="${d*.5}" r="${d*.07}" fill="none"/><circle cx="${w/2}" cy="95" r="50" fill="none"/>${ssPlan(w,d,o&&o.ss)}`},
  cabinet:{n:"كابينة سفلية",e:"Base cabinet",w:1200,d:700,iso:"cabinet",
    f:(w,d,o)=>`<rect width="${w}" height="${d}" fill="#fff"/><rect x="0" y="0" width="${w}" height="40" fill="none"/>${planDoors((o&&o.v)||1,w,d,d-30)}${ssPlan(w,d,o&&o.ss)}`},
+ hotcab:{n:"كابينة تسخين",e:"Hot cabinet",w:1500,d:700,iso:"hotcab",
+   f:(w,d,o)=>{const panel=Math.min(300,w*.22), dw=w-panel;
+     return `<rect width="${w}" height="${d}" fill="#fff"/><rect x="0" y="0" width="${w}" height="40" fill="none"/>
+     <line x1="0" y1="${d-30}" x2="${dw*.55}" y2="${d-30}"/><line x1="${dw*.45}" y1="${d}" x2="${dw}" y2="${d}"/>
+     <path d="M${dw*.30} ${d-60} h${dw*.14} m0 0 l-45 -28 m45 28 l-45 28" fill="none"/><path d="M${dw*.70} ${d-60} h${-dw*.14} m0 0 l45 -28 m-45 28 l45 28" fill="none"/>
+     <line x1="${dw}" y1="${d-60}" x2="${dw}" y2="${d}"/><rect x="${dw+panel/2-45}" y="${d-110}" width="90" height="70" fill="none"/>${ssPlan(w,d,o&&o.ss)}`}},
  wcab:{n:"كابينة علوية",e:"Wall cabinet",w:1200,d:400,iso:"wcab",
    f:(w,d,o)=>`<rect width="${w}" height="${d}" fill="#fff" stroke-dasharray="${dash(w)}"/>${planDoors((o&&o.v)||1,w,d,d-30)}`},
  hood:{n:"هود",e:"Hood",w:2000,d:1200,iso:"hood",
@@ -665,8 +678,8 @@ const BLK={
  grill:{n:"شواية",e:"Grill",w:900,d:800,iso:"grill",
    f:(w,d)=>{let o="";for(let y=110;y<d-60;y+=90)o+=`<line x1="70" y1="${y}" x2="${w-70}" y2="${y}"/>`;
      return `<rect width="${w}" height="${d}" fill="#fff"/>${o}`}},
- uc:{n:"ثلاجة أندر كاونتر",e:"Under-counter chiller",w:1360,d:700,iso:"uc",
-   f:(w,d)=>{const cw=Math.min(300,w*.22), n=Math.max(1,Math.round((w-cw)/560)); let o=`<rect width="${w}" height="${d}" fill="#fff"/>`;
+ uc:{n:"ثلاجة أندر كاونتر",e:"Under-counter chiller",w:1420,d:700,iso:"uc",
+   f:(w,d,op)=>{const cw=Math.min(300,w*.22), n=Math.max(1,(op&&op.doors)||Math.round((w-cw)/560)); let o=`<rect width="${w}" height="${d}" fill="#fff"/>`;
      o+=`<line x1="0" y1="${d-70}" x2="${w-cw}" y2="${d-70}"/>`;
      for(let i=1;i<n;i++){const x=(w-cw)*i/n; o+=`<line x1="${x}" y1="${d-70}" x2="${x}" y2="${d}"/>`}
      for(let y=60;y<d-40;y+=70) o+=`<line x1="${w-cw+40}" y1="${y}" x2="${w-40}" y2="${y}" opacity=".5"/>`;
@@ -939,8 +952,34 @@ const M3={
    if(ss==="L"||ss==="LR") s+=bx3(x,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
    if(ss==="R"||ss==="LR") s+=bx3(x+w-28,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
    return s},
+ /* كابينة تسخين وفق المرجع: أبواب سحاب على معظم الواجهة، ولوح ثابت في الطرف الأيمن عليه صندوق التحكم */
+ hotcab:(x,y,w,d,o)=>{const zb=150, zt=850, leg=40, ins=25, panel=Math.min(300,w*.22);
+   let s="";
+   [[x+ins,y+ins],[x+w-leg-ins,y+ins],[x+ins,y+d-leg-ins],[x+w-leg-ins,y+d-leg-ins]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
+     .forEach(c=>{s+=bx3(c[0]+8,c[1]+8,-26,leg-16,leg-16,26,{top:FL.dark,left:FL.dark,right:FL.dark});s+=post(c[0],c[1],0,zb,leg,false)});
+   const bx=x+12, by=y+12, bw=w-24, bd=d-24, bh=zt-40-zb, yf=by+bd;
+   s+=bx3(bx,by,zb,bw,bd,bh,{top:FL.top,left:FL.left,right:FL.right});                        /* الجسم */
+   const F=(x1,z1,x2,z2,fill,yy)=>face3([[x1,yy||yf,z1],[x1,yy||yf,z2],[x2,yy||yf,z2],[x2,yy||yf,z1]],fill);
+   const dw=bw-panel;                                                                        /* منطقة الأبواب */
+   s+=F(bx+25,zb+25,bx+dw*.53,zb+bh-25,FL.top);                                              /* الضلفة الخلفية */
+   s+=bx3(bx+dw*.47,yf,zb+25,dw*.53-10,16,bh-50,{top:FL.right,left:FL.top,right:FL.right});    /* الضلفة الأمامية */
+   s+=edge3([bx+20,yf,zb+bh-18],[bx+dw,yf,zb+bh-18]); s+=edge3([bx+20,yf,zb+20],[bx+dw,yf,zb+20]);   /* السكتان */
+   s+=edge3([bx+dw,yf,zb],[bx+dw,yf,zb+bh]);                                                 /* حد اللوح الثابت */
+   s+=F(bx+dw+20,zb+25,bx+bw-25,zb+bh-25,FL.left);                                           /* اللوح الثابت */
+   /* صندوق التحكم على اللوح الثابت */
+   const cx=bx+dw+panel/2, cz=zb+bh*.42;
+   s+=bx3(cx-70,yf,cz-80,140,16,170,{top:FL.dark,left:FL.top,right:FL.dark});
+   s+=face3([[cx-50,yf+16,cz+20],[cx-50,yf+16,cz+60],[cx+50,yf+16,cz+60],[cx+50,yf+16,cz+20]],"#3E4A57",'',true);   /* الشاشة */
+   s+=face3([[cx-18,yf+16,cz-55],[cx-18,yf+16,cz-15],[cx+18,yf+16,cz-15],[cx+18,yf+16,cz-55]],"#E0A020",'',true);   /* المفتاح */
+   s+=bx3(x,y,zt-40,w,d,40,{top:FL.top,left:FL.right,right:FL.dark});                        /* سطح العمل */
+   s+=bx3(x,y,zt,w,28,150,{top:FL.right,left:FL.left,right:FL.dark});                        /* الظهر */
+   s+=bx3(x,y+28,zt+150-18,w,32,18,{top:FL.right,left:FL.right,right:FL.dark});
+   const ss=(o&&o.ss)||"";
+   if(ss==="L"||ss==="LR") s+=bx3(x,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
+   if(ss==="R"||ss==="LR") s+=bx3(x+w-28,y,zt,28,d,150,{top:FL.right,left:FL.left,right:FL.dark});
+   return s},
  /* ثلاجة أندر كاونتر: جسم على عجلات، سطح عمل، أبواب أمامية، وجانب كمبرسور مشبّك بشاشة */
- uc:(x,y,w,d)=>{const cw=Math.min(300,w*.22), n=Math.max(1,Math.round((w-cw)/560)), zb=110, zt=850;
+ uc:(x,y,w,d,o)=>{const cw=Math.min(300,w*.22), n=Math.max(1,(o&&o.doors)||Math.round((w-cw)/560)), zb=110, zt=850, frz=(o&&o.v)===2;
    let s="";
    [[x+60,y+60],[x+w-110,y+60],[x+60,y+d-110],[x+w-110,y+d-110]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
      .forEach(c=>{s+=ell(c[0]+25,c[1]+25,0,30,FL.dark)+bx3(c[0],c[1],0,50,50,zb,{top:FL.dark,left:FL.dark,right:FL.dark})});   /* عجلات */
@@ -952,29 +991,33 @@ const M3={
      s+=bx3(x0+dw/2-90,y+d,zt-140,180,22,26,{top:FL.dark,left:FL.dark,right:FL.dark});                      /* المقبض */
    }
    for(let z=zb+60;z<zt-90;z+=60) s+=edge3([x+w-cw+40,y+d,z],[x+w-40,y+d,z]);                                /* شبك الكمبرسور */
-   s+=face3([[x+w-cw+50,y+d,zt-130],[x+w-cw+50,y+d,zt-80],[x+w-70,y+d,zt-80],[x+w-70,y+d,zt-130]],"#2B4FA8");   /* الشاشة */
+   s+=face3([[x+w-cw+50,y+d,zt-130],[x+w-cw+50,y+d,zt-80],[x+w-70,y+d,zt-80],[x+w-70,y+d,zt-130]],frz?"#0E2340":"#2B4FA8");   /* الشاشة */
+   if(frz) s+=face3([[x+30,y+d,zt-62],[x+30,y+d,zt-48],[x+w-cw-30,y+d,zt-48],[x+w-cw-30,y+d,zt-62]],"#7FA6E0");   /* شريط المجمّد */
    return s},
  /* ثلاجة رأسية بابين: على أرجل، رأس بشاشة، بابان بمقبضين طوليين */
- ur2:(x,y,w,d)=>{const h=2050, zb=150, head=230;
+ ur2:(x,y,w,d,o)=>{const h=2050, zb=150, head=230;
    let s="";
    [[x+40,y+40],[x+w-90,y+40],[x+40,y+d-90],[x+w-90,y+d-90]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
      .forEach(c=>{s+=bx3(c[0],c[1],0,50,50,zb,{top:FL.dark,left:FL.dark,right:FL.dark})});
    s+=bx3(x,y,zb,w,d,h-zb,{top:FL.top,left:FL.left,right:FL.right});
    s+=edge3([x,y+d,h-head],[x+w,y+d,h-head]);                                                 /* خط الرأس */
-   s+=face3([[x+w/2-90,y+d,h-head+95],[x+w/2-90,y+d,h-head+140],[x+w/2+90,y+d,h-head+140],[x+w/2+90,y+d,h-head+95]],"#2B4FA8");
+   const frz=(o&&o.v)===2;
+   s+=face3([[x+w/2-90,y+d,h-head+95],[x+w/2-90,y+d,h-head+140],[x+w/2+90,y+d,h-head+140],[x+w/2+90,y+d,h-head+95]],frz?"#0E2340":"#2B4FA8");
+   if(frz) s+=face3([[x+40,y+d,h-head+40],[x+40,y+d,h-head+70],[x+w-40,y+d,h-head+70],[x+w-40,y+d,h-head+40]],"#7FA6E0");
    s+=face3([[x+30,y+d,zb+30],[x+30,y+d,h-head-30],[x+w/2-12,y+d,h-head-30],[x+w/2-12,y+d,zb+30]],FL.top);
    s+=face3([[x+w/2+12,y+d,zb+30],[x+w/2+12,y+d,h-head-30],[x+w-30,y+d,h-head-30],[x+w-30,y+d,zb+30]],FL.top);
    s+=bx3(x+w/2-70,y+d,h*.35,26,26,h*.3,{top:FL.dark,left:FL.dark,right:FL.dark});
    s+=bx3(x+w/2+44,y+d,h*.35,26,26,h*.3,{top:FL.dark,left:FL.dark,right:FL.dark});
    return s},
  /* ثلاجة رأسية بباب واحد: نفس تصميم البابين */
- fridge:(x,y,w,d)=>{const h=2050, zb=150, head=230;
+ fridge:(x,y,w,d,o)=>{const h=2050, zb=150, head=230, frz=(o&&o.v)===2;
    let s="";
    [[x+40,y+40],[x+w-90,y+40],[x+40,y+d-90],[x+w-90,y+d-90]].sort((a,b)=>dep(a[0],a[1])-dep(b[0],b[1]))
      .forEach(c=>{s+=bx3(c[0],c[1],0,50,50,zb,{top:FL.dark,left:FL.dark,right:FL.dark})});
    s+=bx3(x,y,zb,w,d,h-zb,{top:FL.top,left:FL.left,right:FL.right});
    s+=edge3([x,y+d,h-head],[x+w,y+d,h-head]);
-   s+=face3([[x+w/2-90,y+d,h-head+95],[x+w/2-90,y+d,h-head+140],[x+w/2+90,y+d,h-head+140],[x+w/2+90,y+d,h-head+95]],"#2B4FA8");
+   s+=face3([[x+w/2-90,y+d,h-head+95],[x+w/2-90,y+d,h-head+140],[x+w/2+90,y+d,h-head+140],[x+w/2+90,y+d,h-head+95]],frz?"#0E2340":"#2B4FA8");
+   if(frz) s+=face3([[x+40,y+d,h-head+40],[x+40,y+d,h-head+70],[x+w-40,y+d,h-head+70],[x+w-40,y+d,h-head+40]],"#7FA6E0");
    s+=face3([[x+30,y+d,zb+30],[x+30,y+d,h-head-30],[x+w-30,y+d,h-head-30],[x+w-30,y+d,zb+30]],FL.top);
    s+=bx3(x+w-140,y+d,h*.35,26,26,h*.3,{top:FL.dark,left:FL.dark,right:FL.dark});
    return s},
@@ -1132,7 +1175,7 @@ const M3={
    s+=face3([[x+60,y,60],[x+w-60,y,60],[x+w-60,y,h-60],[x+60,y,h-60]],FL.top);
    s+=bx3(x+w-160,y+d,950,26,26,180); return s},
 };
-const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:1000,fridge:2050,uc:850,wcab:1950,ur2:2050,hood:2500,
+const H3={table:850,table2:1600,sink:1200,sinkT1:1200,sinkT2:1200,sinkT3:1200,sink1:1200,cabinet:1000,hotcab:1000,fridge:2050,uc:850,wcab:1950,ur2:2050,hood:2500,
   wshelf:1650,pshelf:1550,burner:900,grill:900,rack:1800,evap:2400,faucet:400,door:2100,door2:2100,doorS:2200,window:2000};
 function model3(type,x,y,w,d,o){ return (M3[type]||M3.table)(x,y,w,d,o||{}) }
 /* يرسم وحدة بموضعها ودورانها في العالم */
@@ -1147,7 +1190,7 @@ function isoWrap(inner,W,D,H,Z0){
     <g stroke="#12294D" stroke-width="${f1(lw)}" stroke-linejoin="round" stroke-linecap="round">${inner}</g></svg>`;
 }
 const THUMB_SIZE={table:[1200,700],table2:[1200,700],sink:[1200,700],sinkT1:[1200,700],sinkT2:[1200,700],sinkT3:[1800,700],sink1:[1000,700],
-  cabinet:[1200,700],fridge:[700,800],uc:[1360,700],wcab:[1200,400],ur2:[1400,800],hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],
+  cabinet:[1200,700],hotcab:[1500,700],fridge:[700,800],uc:[1360,700],wcab:[1200,400],ur2:[1400,800],hood:[1600,1000],wshelf:[1200,400],pshelf:[1200,400],burner:[1200,800],grill:[900,800],
   rack:[1600,600],evap:[1500,600],faucet:[400,400],door:[1000,100],door2:[1600,100],doorS:[1200,100],window:[1200,100]};
 const ISO={};
 Object.keys(M3).forEach(t=>{ ISO[t]=(v)=>{const [w,d]=THUMB_SIZE[t]; const zb={hood:2000,wshelf:1230,pshelf:1500,evap:1800,window:1000,wcab:1350}[t]||0;
@@ -1534,7 +1577,7 @@ function blocksSVG(){
     const B=BLK[b.k], on=selBlock===b.id||(b.item&&b.item===sel);
     const g=`<g data-block="${b.id}" transform="translate(${b.x},${b.y}) rotate(${b.rot})"
       stroke="${on?"#E0A020":"#0E2340"}" stroke-width="${on?3:2}" vector-effect="non-scaling-stroke" fill="none">
-      ${symbol(b.k,b.w,b.d,{n:b.n,v:b.v,ss:b.ss})}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
+      ${symbol(b.k,b.w,b.d,{n:b.n,v:b.v,ss:b.ss,doors:b.doors})}${on?`<rect x="-40" y="-40" width="${b.w+80}" height="${b.d+80}" fill="none" stroke="#E0A020" stroke-dasharray="${dash(b.w)}" stroke-width="2" vector-effect="non-scaling-stroke"/>`:""}</g>`;
     const r=b.rot*Math.PI/180, cx=b.x+(b.w/2)*Math.cos(r)-(b.d/2)*Math.sin(r), cy=b.y+(b.w/2)*Math.sin(r)+(b.d/2)*Math.cos(r);
     const tr=Math.max(70,Math.min(Math.min(b.w,b.d)*.2,220));    /* حجم الرقم يتبع البلوك */
     const lbl=tagFor(b.item);
@@ -1687,10 +1730,10 @@ function iso3dBody(d,WT,RH){
         return;
       }
       const K2M={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",
-        fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",hood:"hood",wshelf:"wshelf",burner:"burner",grill:"grill",rack:"rack",
+        fridge:"fridge",uc:"uc",ur2:"ur2",hotcab:"hotcab",wcab:"wcab",hood:"hood",wshelf:"wshelf",burner:"burner",grill:"grill",rack:"rack",
         evap:"evap",faucet:"faucet"};
       const mt=K2M[o.b.k]||"table";
-      const opts = o.b.k==="table"?{v:o.b.v||2,ss:o.b.ss||""}:SS_KINDS.includes(o.b.k)?{v:o.b.v||1,ss:o.b.ss||""}:o.b.k==="burner"?{n:o.b.n||0}:o.b.k==="wcab"||o.b.k==="cabinet"||o.b.k==="rack"||o.b.k==="wshelf"?{v:o.b.v||1}:{};
+      const opts = o.b.k==="table"?{v:o.b.v||2,ss:o.b.ss||""}:SS_KINDS.includes(o.b.k)?{v:o.b.v||1,ss:o.b.ss||""}:o.b.k==="burner"?{n:o.b.n||0}:o.b.k==="uc"?{v:o.b.v||1,doors:o.b.doors}:o.b.k==="wcab"||o.b.k==="cabinet"||o.b.k==="rack"||o.b.k==="wshelf"||FR_KINDS.includes(o.b.k)?{v:o.b.v||1}:{};
       body+=`<g class="unit">${unit3(mt,o.b,opts)}</g>`;
       if(o.b.item){
         const c=o.cs.reduce((m,p)=>[m[0]+p[0]/4,m[1]+p[1]/4],[0,0]);
@@ -1844,17 +1887,25 @@ function addByPad(deg){
   autoFit?fitView():growView(); renderPlan(); queueSave();
 }
 const WS_V={1:["Wall shelf — solid","رف جداري مصمت"],2:["Wall shelf — perforated","رف جداري مخرّم"]};
+/* مقاسات قياسية لطاولات التبريد الأفقية (مم): عرض × عمق × ارتفاع */
+const UC_MODELS=[
+ {m:"Tecnodom TF02 MID",doors:2,w:1420,d:700},{m:"Tecnodom TF03 MID",doors:3,w:1870,d:700},{m:"Tecnodom TF04 MID",doors:4,w:2320,d:700},
+ {m:"Coreco MRS-150 / MCS-150",doors:2,w:1495,d:600},{m:"Coreco MRS-200 / MCS-200",doors:3,w:2020,d:600},
+ {m:"Coreco MRS-250",doors:4,w:2545,d:600},{m:"Coreco MRS-300",doors:5,w:3070,d:600}];
+const FR_V={1:["chiller","تبريد"],2:["freezer","تجميد"]};
+const FR_KINDS=["fridge","ur2","uc"];
+const frName=(k,v)=>k==="uc"?[`Under-counter ${FR_V[v][0]}`,`ثلاجة أندر كاونتر — ${FR_V[v][1]}`]:k==="ur2"?[`Upright ${FR_V[v][0]} — 2 doors`,`ثلاجة رأسية بابين — ${FR_V[v][1]}`]:[`Upright ${FR_V[v][0]} — 1 door`,`ثلاجة رأسية باب واحد — ${FR_V[v][1]}`];
 const RACK_V={1:["Shelving unit — solid shelves","وحدة أرفف مصمتة"],2:["Shelving unit — perforated shelves","وحدة أرفف مخرّمة"]};
 const CAB_V={1:["Base cabinet — sliding doors","كابينة سفلية بأبواب سحاب"],2:["Base cabinet — hinged doors","كابينة سفلية بأبواب مفصلية"]};
 const WCAB_V={1:["Wall cabinet — sliding doors","كابينة علوية بأبواب سحاب"],2:["Wall cabinet — hinged doors","كابينة علوية بأبواب مفصلية"],3:["Wall cabinet — open (no doors)","كابينة علوية مفتوحة بدون أبواب"]};
 const burnerName=n=>[`${n}-burner gas range`,`موقد غاز ${n} عيون`];
-const SS_KINDS=["table","cabinet","sink1","sink2","sinkT1","sinkT3"];
+const SS_KINDS=["table","cabinet","hotcab","sink1","sink2","sinkT1","sinkT3"];
 const ssPlan=(w,d,ss)=>((ss==="L"||ss==="LR")?`<rect x="0" y="0" width="28" height="${d}" fill="#fff"/>`:"")+((ss==="R"||ss==="LR")?`<rect x="${w-28}" y="0" width="28" height="${d}" fill="#fff"/>`:"");
 const SS_N={L:[" + side splash (L)"," + جانب يسار"],R:[" + side splash (R)"," + جانب يمين"],LR:[" + side splash (L+R)"," + جانبين"]};
 const TABLE_V={1:["Work table with backsplash","طاولة عمل بظهر"],
  2:["Work table with backsplash & undershelf","طاولة عمل بظهر ورف سفلي"],
  3:["Work table with backsplash, undershelf & mid shelf","طاولة عمل بظهر ورف سفلي ووسطي"]};
-const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",
+const BLK2TYPE={table:"table",tableos:"table2",sink1:"sink1",sink2:"sinkT2",sinkT1:"sinkT1",sinkT3:"sinkT3",cabinet:"cabinet",hotcab:"hotcab",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",
  hood:"hood",wshelf:"wshelf",burner:"burner",grill:"grill",faucet:"faucet",rack:"rack",
  evap:"evap",door1:"door",door2:"door2",window:"window",coldH:"door",coldS:"doorS"};
 /* كل بلوك يُسجَّل في جدول البنود بمقاسه واسمه — البلوكات المتطابقة تزيد الكمية */
@@ -1862,9 +1913,9 @@ const NO_ITEM=["door1","door2","window"];   /* عناصر معمارية تُر�
 function itemForBlock(b){                 /* لكل قطعة بند مستقل برقم جديد */
   if(NO_ITEM.includes(b.k)) return null;
   const no=cur.items.reduce((m,i)=>Math.max(m,i.no),0)+1;
-  const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):b.k==="wcab"?WCAB_V[b.v||1]:b.k==="cabinet"?CAB_V[b.v||1]:b.k==="rack"?RACK_V[b.v||1]:b.k==="wshelf"?WS_V[b.v||1]:null;
+  const tv=b.k==="table"?TABLE_V[b.v||2]:b.k==="burner"?burnerName(b.n||Math.round(b.w/450)):b.k==="wcab"?WCAB_V[b.v||1]:b.k==="cabinet"?CAB_V[b.v||1]:b.k==="rack"?RACK_V[b.v||1]:b.k==="wshelf"?WS_V[b.v||1]:FR_KINDS.includes(b.k)?frName(b.k,b.v||1).map(t=>t+(b.model?" — "+b.model:"")):null;
   const it={no,tag:String(no),ar:tv?tv[1]:BLK[b.k].n,en:tv?tv[0]:BLK[b.k].e,desc:"",dim:`${b.w} × ${b.d}`,
-    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):b.k==="cabinet"?(b.v||1):b.k==="rack"?(b.v||1):b.k==="wshelf"?(b.v||1):b.k==="burner"?(b.n||Math.round(b.w/450)):b.k==="wcab"?(b.v||1):undefined,auto:true,k:b.k};
+    qty:1,type:BLK2TYPE[b.k]||"table",variant:b.k==="table"?(b.v||2):b.k==="cabinet"?(b.v||1):b.k==="rack"?(b.v||1):b.k==="wshelf"?(b.v||1):FR_KINDS.includes(b.k)?(b.v||1):b.k==="burner"?(b.n||Math.round(b.w/450)):b.k==="wcab"?(b.v||1):undefined,auto:true,k:b.k};
   cur.items.push(it); return it;
 }
 function releaseItem(b){                 /* حذف البلوك يحذف بنده المولّد تلقائيًا */
@@ -1878,18 +1929,20 @@ function syncItemDim(b){                 /* المقاس والخيار ينعك
   const it=cur.items.find(i=>i.no===b.item); if(!it||!it.auto) return;
   it.dim=`${b.w} × ${b.d}`;
   if(b.k==="table"){const tv=TABLE_V[b.v||2], sx=SS_N[b.ss]||["",""]; it.variant=b.v||2; it.en=tv[0]+sx[0]; it.ar=tv[1]+sx[1];}
-  if(b.k==="cabinet"||b.k.startsWith("sink")){const sx=SS_N[b.ss]||["",""];
+  if(b.k==="cabinet"||b.k==="hotcab"||b.k.startsWith("sink")){const sx=SS_N[b.ss]||["",""];
     const base=b.k==="cabinet"?CAB_V[b.v||1]:[BLK[b.k].e,BLK[b.k].n]; it.en=base[0]+sx[0]; it.ar=base[1]+sx[1];}
   if(b.k==="burner"){const n=b.n||Math.round(b.w/450); const bn2=burnerName(n); it.variant=n; it.en=bn2[0]; it.ar=bn2[1];}
   if(b.k==="wcab"){const tv=WCAB_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
   if(b.k==="cabinet"){const tv=CAB_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
   if(b.k==="rack"){const tv=RACK_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
   if(b.k==="wshelf"){const tv=WS_V[b.v||1]; it.variant=b.v||1; it.en=tv[0]; it.ar=tv[1];}
+  if(FR_KINDS.includes(b.k)){const tv=frName(b.k,b.v||1); it.variant=b.v||1; it.en=tv[0]+(b.model?" — "+b.model:""); it.ar=tv[1]+(b.model?" — "+b.model:"");}
 }
 function placeBlock(x,y){
   if(cur._ro) return;
   const B=BLK[pending], w=Math.max(50,+$("bw").value||B.w), d=Math.max(50,+$("bd").value||B.d);
-  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:pending==="wcab"?wcabV:pending==="cabinet"?cabV:pending==="rack"?rackV:pending==="wshelf"?wsV:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
+  const nb={id:nextId(),k:pending,x:rnd(x-w/2),y:rnd(y-d/2),w,d,rot:0,item:null,v:pending==="table"?tableV:pending==="wcab"?wcabV:pending==="cabinet"?cabV:pending==="rack"?rackV:pending==="wshelf"?wsV:FR_KINDS.includes(pending)?frV:undefined,
+    model:pending==="uc"&&ucPick?ucPick.m:undefined,doors:pending==="uc"&&ucPick?ucPick.doors:undefined,n:pending==="burner"&&burnerN?burnerN:undefined};
   constrain(nb); cur.blocks.push(nb);
   const it0=itemForBlock(nb); nb.item=it0?it0.no:null; renderCards();
   selBlock=nb.id;
@@ -1897,7 +1950,7 @@ function placeBlock(x,y){
 }
 
 /* ===== توليد بلوك لكل بند من الجدول ===== */
-const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",rack:"rack",fridge:"fridge",uc:"uc",ur2:"ur2",wcab:"wcab",evap:"evap",door:"coldH",doorS:"coldS",wshelf:"wshelf",shelf:"wshelf",
+const TYPE2BLK={table:"table",table2:"tableos",sink:"sink2",sinkT1:"sinkT1",sinkT2:"sink2",sinkT3:"sinkT3",sink1:"sink1",rack:"rack",fridge:"fridge",uc:"uc",ur2:"ur2",hotcab:"hotcab",wcab:"wcab",evap:"evap",door:"coldH",doorS:"coldS",wshelf:"wshelf",shelf:"wshelf",
   faucet:"faucet",cabinet:"cabinet",hood:"hood",burner:"burner",grill:"grill"};
 function dimsOf(it,k){
   const n=(it.dim.match(/\d+/g)||[]).map(Number);
@@ -1923,7 +1976,7 @@ function autoPlace(){
 
 /* ================= الأدوات ================= */
 function setTool(t){
-  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar")){$("tableVar").hidden=true;$("cabVar").hidden=true;$("rackVar").hidden=true;$("wsVar").hidden=true;$("burnerVar").hidden=true;$("wcabVar").hidden=true}
+  tool=t; if(t!=="place")pending=null; if(t!=="sel")selSeg=null; if(t!=="place"&&$("tableVar")){$("tableVar").hidden=true;$("cabVar").hidden=true;$("rackVar").hidden=true;$("wsVar").hidden=true;$("frVar").hidden=true;$("ucModel").hidden=true;$("burnerVar").hidden=true;$("wcabVar").hidden=true}
   document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.tool===(t==="place"?"block":t)));
   $("tabLine").hidden=t!=="line"; $("tabBlock").hidden=!(t==="block"||t==="place"); $("tabSel").hidden=t!=="sel";
   renderSelBar(); renderPlan();
@@ -1939,8 +1992,12 @@ $("wallT").addEventListener("change",()=>{cur.wallT=Math.max(20,+$("wallT").valu
 document.querySelectorAll("[data-corner]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),corner:+b.dataset.corner};renderPlan();queueSave()});
 document.querySelectorAll("[data-elev]").forEach(b=>b.onclick=()=>{cur.cam={...(cur.cam||{corner:0,elev:1}),elev:+b.dataset.elev};renderPlan();queueSave()});
 $("roomH").addEventListener("change",()=>{cur.roomH=Math.max(1800,+$("roomH").value||2600);renderPlan();queueSave()});
-let tableV=2, burnerN=0, wcabV=1, cabV=1, rackV=1, wsV=1;
+let tableV=2, burnerN=0, wcabV=1, cabV=1, rackV=1, wsV=1, frV=1;
 function renderTableVar(){
+  $("frVar").hidden=!FR_KINDS.includes(pending);
+  $("ucModel").hidden=pending!=="uc";
+  if(pending==="uc"&&!$("ucSel").options.length) $("ucSel").innerHTML=`<option value="">${T("customSize")}</option>`+UC_MODELS.map((m,i)=>`<option value="${i}">${m.m} — ${m.doors} ${T("doorsN")} — ${m.w}×${m.d}</option>`).join("");
+  document.querySelectorAll("#frVar button").forEach(x=>{x.textContent=lang==="ar"?FR_V[x.dataset.f][1]:FR_V[x.dataset.f][0];x.setAttribute("aria-pressed",+x.dataset.f===frV)});
   $("wsVar").hidden=pending!=="wshelf";
   document.querySelectorAll("#wsVar button").forEach(x=>{x.textContent=lang==="ar"?WS_V[x.dataset.s][1]:WS_V[x.dataset.s][0];x.setAttribute("aria-pressed",+x.dataset.s===wsV)});
   $("rackVar").hidden=pending!=="rack";
@@ -1960,6 +2017,10 @@ document.querySelectorAll("#wcabVar button").forEach(x=>x.onclick=()=>{wcabV=+x.
 document.querySelectorAll("#cabVar button").forEach(x=>x.onclick=()=>{cabV=+x.dataset.c;renderTableVar()});
 document.querySelectorAll("#rackVar button").forEach(x=>x.onclick=()=>{rackV=+x.dataset.r;renderTableVar()});
 document.querySelectorAll("#wsVar button").forEach(x=>x.onclick=()=>{wsV=+x.dataset.s;renderTableVar()});
+document.querySelectorAll("#frVar button").forEach(x=>x.onclick=()=>{frV=+x.dataset.f;renderTableVar()});
+let ucPick=null;
+$("ucSel").onchange=()=>{const i=$("ucSel").value; ucPick=i===""?null:UC_MODELS[+i];
+  if(ucPick){$("bw").value=ucPick.w;$("bd").value=ucPick.d}};
 function renderPalette(){
   $("palette").innerHTML="";
   Object.entries(BLK).forEach(([k,B])=>{
@@ -2087,9 +2148,9 @@ $("svgFile").onchange=e=>{
 const nextId=()=>{bid=Math.max(bid,...cur.blocks.map(b=>b.id),0)+1;return bid};
 ["pointerdown","pointerup","click","pointermove"].forEach(t=>$("bbar").addEventListener(t,e=>e.stopPropagation()));
 $("bw2").addEventListener("change",()=>{const b=bbarBlock();if(!b)return;
-  b.w=Math.max(50,+$("bw2").value||b.w);constrain(b);syncItemDim(b);renderCards();renderSelBar();renderPlan();queueSave()});
+  b.w=Math.max(50,+$("bw2").value||b.w);constrain(b);if(b.model&&(b.w!==UC_MODELS.find(m=>m.m===b.model)?.w||b.d!==UC_MODELS.find(m=>m.m===b.model)?.d)){b.model=undefined;b.doors=undefined}syncItemDim(b);renderCards();renderSelBar();renderPlan();queueSave()});
 $("bd2").addEventListener("change",()=>{const b=bbarBlock();if(!b)return;
-  b.d=Math.max(50,+$("bd2").value||b.d);constrain(b);syncItemDim(b);renderCards();renderSelBar();renderPlan();queueSave()});
+  b.d=Math.max(50,+$("bd2").value||b.d);constrain(b);if(b.model&&(b.w!==UC_MODELS.find(m=>m.m===b.model)?.w||b.d!==UC_MODELS.find(m=>m.m===b.model)?.d)){b.model=undefined;b.doors=undefined}syncItemDim(b);renderCards();renderSelBar();renderPlan();queueSave()});
 $("bRot").onclick=()=>{const b=bbarBlock();if(!b)return;
   b.rot=(b.rot+90)%360;constrain(b);autoFit?fitView():growView();renderPlan();queueSave()};
 $("bDup").onclick=()=>{const b=bbarBlock();if(!b)return;
@@ -2107,6 +2168,8 @@ function renderSelBar(){
     <div><label>${T("depthMM")}</label><input id="sd" type="number" step="10" value="${b.d}"></div></div>
     ${b.k==="burner"?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("burnersL")}</label><select id="sburn">${[0,2,3,4,5,6,7,8].map(n=>`<option value="${n}" ${(b.n||0)===n?"selected":""}>${n?n:T("autoN")}</option>`).join("")}</select>`:""}
     ${SS_KINDS.includes(b.k)?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("sideSplash")}</label><select id="sss">${[["",T("ssNone")],["L",T("ssL")],["R",T("ssR")],["LR",T("ssLR")]].map(([v,l])=>`<option value="${v}" ${(b.ss||"")===v?"selected":""}>${l}</option>`).join("")}</select>`:""}
+    ${b.k==="uc"?`<label style="font-size:11px;color:#6B8199;display:block;margin-top:8px">${T("stdSize")}</label><select id="sucm"><option value="">${T("customSize")}</option>${UC_MODELS.map((m,i)=>`<option value="${i}" ${b.model===m.m?"selected":""}>${m.m} — ${m.doors} ${T("doorsN")} — ${m.w}×${m.d}</option>`).join("")}</select>`:""}
+    ${FR_KINDS.includes(b.k)?`<select id="sfr" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?FR_V[v][1]:FR_V[v][0]}</option>`).join("")}</select>`:""}
     ${b.k==="wshelf"?`<select id="sws" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?WS_V[v][1]:WS_V[v][0]}</option>`).join("")}</select>`:""}
     ${b.k==="rack"?`<select id="srack" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?RACK_V[v][1]:RACK_V[v][0]}</option>`).join("")}</select>`:""}
     ${b.k==="cabinet"?`<select id="scab" style="margin-top:8px">${[1,2].map(v=>`<option value="${v}" ${(b.v||1)===v?"selected":""}>${lang==="ar"?CAB_V[v][1]:CAB_V[v][0]}</option>`).join("")}</select>`:""}
@@ -2125,6 +2188,8 @@ function renderSelBar(){
   if($("slink")) $("slink").onchange=()=>{b.item=+$("slink").value||null;renderPlan();queueSave()};
   if($("svar")) $("svar").onchange=()=>{b.v=+$("svar").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("sss")) $("sss").onchange=()=>{b.ss=$("sss").value||undefined;syncItemDim(b);renderCards();renderPlan();queueSave()};
+  if($("sucm")) $("sucm").onchange=()=>{const i=$("sucm").value; if(i===""){b.model=undefined;b.doors=undefined}else{const m=UC_MODELS[+i];b.model=m.m;b.doors=m.doors;b.w=m.w;b.d=m.d;constrain(b)} syncItemDim(b);renderCards();renderSelBar();renderPlan();queueSave()};
+  if($("sfr")) $("sfr").onchange=()=>{b.v=+$("sfr").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("sws")) $("sws").onchange=()=>{b.v=+$("sws").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("srack")) $("srack").onchange=()=>{b.v=+$("srack").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
   if($("scab")) $("scab").onchange=()=>{b.v=+$("scab").value;syncItemDim(b);renderCards();renderPlan();queueSave()};
@@ -2978,7 +3043,7 @@ $("vSave").onclick=()=>{
 const ITEM_TYPES=[["table","Work table","طاولة عمل"],["table2","Table w/ overshelf","طاولة برف علوي"],
  ["sinkT1","Table with 1 bowl sink","طاولة بحوض واحد ومصفّى"],["sinkT2","Table with 2 bowl sink","طاولة بحوضين"],
  ["sinkT3","Table with 3 bowl sink","طاولة بثلاثة أحواض"],["sink1","Single bowl sink","حوض مفرد كبير"],["shelf","Wall shelf","رف جداري"],
- ["cabinet","Base cabinet","كابينة سفلية"],["hood","Hood","هود"],["burner","Burner","موقد"],["grill","Grill","شواية"],
+ ["cabinet","Base cabinet","كابينة سفلية"],["hotcab","Hot cabinet","كابينة تسخين"],["hood","Hood","هود"],["burner","Burner","موقد"],["grill","Grill","شواية"],
  ["faucet","Faucet","خلاط"],["rack","Shelving unit","وحدة أرفف"],["fridge","Upright chiller — 1 door","ثلاجة رأسية باب واحد"],
  ["wcab","Wall cabinet","كابينة علوية"],["uc","Under-counter chiller","ثلاجة أندر كاونتر"],["ur2","Upright chiller — 2 doors","ثلاجة رأسية بابين"],
  ["evap","Evaporator (unit cooler)","مبخّرة (وحدة داخلية)"],["door","Cold room door — hinged","باب تبريد مفصلي"],
